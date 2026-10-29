@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>保镖 A（BGA）攻略 · MapleLegends</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --panel: #1a222c;
+    --panel2: #232d3a;
+    --line: #2e3a4a;
+    --text: #e8eef6;
+    --muted: #9aabbd;
+    --accent: #5b9dff;
+    --accent2: #7ec8ff;
+    --warn: #ffb454;
+    --ok: #6dffa8;
+    --danger: #ff6b6b;
+    --bga: #5b9dff;
+    --bgb: #ff8a5b;
+    --boss: #d9a5ff;
+    --anego: #ff6b9d;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "IBM Plex Sans", "Noto Sans SC", "PingFang SC", sans-serif;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #152a3a 0%, transparent 55%),
+      radial-gradient(900px 500px at 90% 0%, #1a2438 0%, transparent 50%),
+      var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+  }
+  a { color: var(--accent2); }
+  .boss-switch {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap;
+    padding: .65rem 1rem;
+    background: rgba(10,14,20,.94);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(8px);
+  }
+  .boss-switch a {
+    text-decoration: none; color: var(--muted);
+    padding: .45rem 1rem; border-radius: 999px;
+    border: 1px solid var(--line); font-size: .88rem;
+  }
+  .boss-switch a:hover { color: var(--text); background: var(--panel2); }
+  .boss-switch a.active {
+    color: #0b1220; background: var(--accent); border-color: var(--accent); font-weight: 700;
+  }
+  .layout { display: grid; grid-template-columns: 250px 1fr; min-height: calc(100vh - 52px); }
+  nav {
+    position: sticky; top: 52px; align-self: start;
+    height: calc(100vh - 52px); overflow: auto;
+    background: rgba(15,20,25,.92);
+    border-right: 1px solid var(--line);
+    padding: 1.25rem 1rem 2rem;
+  }
+  nav h1 { font-size: .95rem; margin: 0 0 .25rem; color: var(--accent); }
+  nav .sub { color: var(--muted); font-size: .75rem; margin-bottom: 1rem; }
+  nav a {
+    display: block; text-decoration: none; color: var(--muted);
+    padding: .35rem .5rem; border-radius: 6px; font-size: .82rem;
+  }
+  nav a:hover { background: var(--panel2); color: var(--text); }
+  nav .group { margin-top: .85rem; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: #6b7c90; padding: 0 .5rem; }
+  main { padding: 2rem 2.5rem 4rem; max-width: 1100px; }
+  header.hero {
+    margin-bottom: 2rem; padding: 1.5rem 1.75rem;
+    background: linear-gradient(135deg, #152a3a, #1a2430);
+    border: 1px solid var(--line); border-radius: 14px;
+  }
+  header.hero h1 { margin: 0 0 .5rem; font-size: 1.85rem; }
+  header.hero p { margin: .35rem 0; color: var(--muted); }
+  .badge {
+    display: inline-block; font-size: .72rem; padding: .2rem .55rem;
+    border-radius: 999px; border: 1px solid var(--line); color: var(--warn);
+    margin-right: .35rem;
+  }
+  section {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 1.35rem 1.5rem 1.5rem; margin-bottom: 1.25rem;
+  }
+  section h2 {
+    margin: 0 0 1rem; font-size: 1.35rem;
+    border-bottom: 1px solid var(--line); padding-bottom: .55rem;
+  }
+  section h3 { margin: 1.25rem 0 .55rem; font-size: 1.08rem; color: var(--accent2); }
+  .muted { color: var(--muted); }
+  .note {
+    background: #1e2a1e; border-left: 3px solid var(--ok);
+    padding: .75rem 1rem; margin: .85rem 0; border-radius: 0 8px 8px 0;
+  }
+  .warnbox {
+    background: #2a2214; border-left: 3px solid var(--warn);
+    padding: .75rem 1rem; margin: .85rem 0; border-radius: 0 8px 8px 0;
+  }
+  .danger {
+    background: #2a1518; border-left: 3px solid var(--danger);
+    padding: .75rem 1rem; margin: .85rem 0; border-radius: 0 8px 8px 0;
+  }
+  ul, ol { padding-left: 1.25rem; }
+  li { margin: .25rem 0; }
+  table { width: 100%; border-collapse: collapse; margin: .75rem 0 1rem; font-size: .92rem; }
+  th, td { border: 1px solid var(--line); padding: .55rem .65rem; text-align: left; vertical-align: top; }
+  th { background: var(--panel2); color: var(--accent2); }
+  .flow { display: grid; gap: 1.35rem; margin: 1rem 0; }
+  .step {
+    display: grid; grid-template-columns: 42px 1fr; gap: .85rem; align-items: center;
+  }
+  .num {
+    width: 42px; height: 42px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--accent); color: #0b1220; font-weight: 700;
+  }
+  .strat-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: .85rem; margin: .85rem 0 1rem;
+  }
+  .strat-card {
+    background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 10px; padding: .9rem 1rem;
+  }
+  .strat-card h3 { margin: 0 0 .45rem; font-size: 1.02rem; color: var(--accent); border: 0; padding: 0; }
+  .c-bga { color: var(--bga); font-weight: 600; }
+  .c-bgb { color: var(--bgb); font-weight: 600; }
+  .c-boss { color: var(--boss); font-weight: 600; }
+  .c-anego { color: var(--anego); font-weight: 600; }
+  .src-card {
+    background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 8px; padding: .7rem .9rem; margin: .4rem 0;
+  }
+  footer { color: var(--muted); font-size: .85rem; margin-top: 2rem; }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    nav { position: relative; top: 0; height: auto; max-height: 240px; }
+    main { padding: 1rem 1rem 3rem; }
+  }
+</style>
+</head>
+<body>
+<div class="boss-switch" role="navigation" aria-label="Boss 切换">
+  <a href="pink-bean-animations-guide.html">品克缤（PB）</a>
+  <a class="active" href="bodyguard-a-bga-guide.html">保镖 A（BGA）</a>
+</div>
+<div class="layout">
+<nav>
+  <h1>BGA 攻略</h1>
+  <div class="sub">Bodyguard A · NLC</div>
+  <div class="group">总览</div>
+  <a href="#intro">前言</a>
+  <a href="#tldr">TL;DR</a>
+  <a href="#flow">流程</a>
+  <a href="#prereq">前置 / 次数</a>
+  <div class="group">怪物 / 技能</div>
+  <a href="#skills">Boss 技能说明</a>
+  <a href="#summons">召唤小怪</a>
+  <a href="#mobs">四连结构</a>
+  <a href="#comp">编制</a>
+  <a href="#phases">阶段打法</a>
+  <div class="group">附录</div>
+  <a href="#sair">船长细则</a>
+  <a href="#sources">相关链接</a>
+</nav>
+<main>
+
+<header class="hero" id="intro">
+  <span class="badge">BGA = Bodyguard A</span>
+  <span class="badge">资料截止约 2025–2026</span>
+  <h1>保镖 A 攻略 <span class="muted" style="font-size:.55em">Bodyguard A / BGA</span></h1>
+  <p>MapleLegends 新叶城（NLC）保镖战。口语常把整场叫 <strong>BGA</strong>，实际会陆续打到保镖 A、保镖 B、老大（The Boss）与女老板（Anego）。</p>
+  <div class="warnbox">
+    本页侧重技能与打法要点。机制以现行版本为准；细节以当周主持人（host）口令为准。
+  </div>
+  <div class="note">
+    <strong>简称对照：</strong>
+    <strong>保镖 A（BGA）</strong>、<strong>保镖 B（BGB）</strong>、<strong>老大（The Boss）</strong>、
+    <strong>女老板（Anego / Female Boss）</strong>、
+    <strong>pin</strong>（把怪顶/压在角落）、<strong>cleave</strong>（群攻）、
+    <strong>鸟笼/鸟（Homing Beacon / bird，船长）</strong>、<strong>章鱼（Octopus）</strong>。
+  </div>
+</header>
+
+<section id="tldr">
+  <h2>TL;DR</h2>
+  <ul>
+    <li><strong>现行：</strong>近战 cleave 更吃香；远程仍可打。</li>
+    <li><strong>核心：</strong>把怪 pin 在角落，别让人站进保镖 A 出拳范围；脱 pin 时近战冲上去重新 pin，输出先停手。</li>
+    <li><strong>优先点杀保镖 A：</strong>它决定老大刷新节奏，还会晕队。</li>
+    <li><strong>女老板：</strong>可与大群分开用单体点掉；船长鸟笼点到时极快。</li>
+    <li><strong>编制：</strong>常见 3–4 人；cleave 核心 + 能 pin 的近战；神射手（BM）远程里相对吃香。</li>
+  </ul>
+</section>
+
+<section id="skills">
+  <h2>Boss 技能说明（重点）</h2>
+  <p class="muted">保镖 A/B <strong>同时刷新</strong>；老大在 A+B <strong>合计掉血到约一半</strong>后出场，不是等 BGB 死光。全场<strong>无触碰</strong>；单下伤害上限约 <strong>11.5k</strong>；仍有把血蓝打成 <strong>1/1</strong> 的技能。</p>
+
+  <h3><span class="c-bga">保镖 A（BGA）</span></h3>
+  <table>
+    <thead><tr><th>技能 / 现象</th><th>效果</th><th>应对</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>近战拳 / 踢（贴身）</td>
+        <td>贴身危险；有人进攻击圈会诱发出拳。短距拳可带<strong>晕（Stun）</strong>。</td>
+        <td>pin 在角落后远程在射程外打；未 pin 住时输出停手，近战去重新 pin。</td>
+      </tr>
+      <tr>
+        <td>晕（Stun）</td>
+        <td>仍有晕，频率不高（大约 <strong>1 次/分钟</strong> 量级）。</td>
+        <td>pin 位可能吃晕；晕住时队友勿乱打导致脱 pin。</td>
+      </tr>
+      <tr>
+        <td>属性</td>
+        <td>弱<strong>毒（Poison）</strong>。击退阈值约 <strong>5 万</strong>。</td>
+        <td>毒系有发挥；pin 需要够击退。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3><span class="c-bgb">保镖 B（BGB）</span></h3>
+  <table>
+    <thead><tr><th>技能 / 现象</th><th>效果</th><th>应对</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>弹雨 / 子弹雨（Bullet rain）</td>
+        <td>头顶砸弹，单次大约 <strong>~10k</strong>。船在弹雨下耐久有限。</td>
+        <td>船长可用下马吃弹 / 金弹无敌帧续船；其他人注意走位与吃药。</td>
+      </tr>
+      <tr>
+        <td>金色子弹（Golden bullet）</td>
+        <td>被金弹打中可获得无敌帧，用来躲下一波弹雨。</td>
+        <td>需要无敌帧时可主动吃金弹，再继续输出。</td>
+      </tr>
+      <tr>
+        <td>短距激光 + 晕</td>
+        <td>短距激光可晕人。</td>
+        <td>pin BGB 时别贴太死；分开 pin 时留意激光范围。</td>
+      </tr>
+      <tr>
+        <td>属性</td>
+        <td>弱<strong>毒</strong>。几乎站桩（Speed 0）；击退阈值约 <strong>3 万</strong>。</td>
+        <td>相对更好 pin；仍要防弹雨与激光。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3><span class="c-boss">老大（The Boss）</span></h3>
+  <table>
+    <thead><tr><th>技能 / 现象</th><th>效果</th><th>应对</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>出场时机</td>
+        <td>A+B 合血掉到约一半后刷新；A/B 会继续打到死。</td>
+        <td>注意刷新位置；有人负责 pin、有人转火。</td>
+      </tr>
+      <tr>
+        <td>蓝风（Blue wind）</td>
+        <td>脚下出现蓝风提示。</td>
+        <td>下马 / 离开该格。</td>
+      </tr>
+      <tr>
+        <td>紫圈 / 紫云（Purple area / cloud）</td>
+        <td>身边大紫圈；pin 在角落时范围可盖到大约 <strong>地图 2/3</strong>。</td>
+        <td>下马躲开；分边打时注意另一侧紫云扫射。</td>
+      </tr>
+      <tr>
+        <td>1/1（血蓝打成 1）</td>
+        <td>仍存在，会把血蓝打成 1。</td>
+        <td>立刻灌超级药水；有圣灵之盾（HS）更稳。</td>
+      </tr>
+      <tr>
+        <td>召唤小怪（Summons）</td>
+        <td>会周期性刷出多类小怪（数值见 <a href="#summons">召唤小怪</a>）。可回血、加速、加防；另可召出带诱惑的女老板型。</td>
+        <td>至少 2 名可靠 cleave；控不住召唤往往等于团灭节奏。</td>
+      </tr>
+      <tr>
+        <td>属性 / pin</td>
+        <td>无元素弱；击退约 <strong>4 万</strong>；回避 60。</td>
+        <td>命中要够；pin 门槛不低。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3><span class="c-anego">女老板（Anego / Female Boss）</span></h3>
+  <table>
+    <thead><tr><th>技能 / 现象</th><th>效果</th><th>应对</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>半图跳跃诱惑（Jump seduce）</td>
+        <td>朝她面向方向半图跳诱惑；大约 <strong>30 秒</strong>一轮。</td>
+        <td>尽量分开点杀；备圣灵之盾 / 勇士的意志（Will）；鸟笼优先点她。</td>
+      </tr>
+      <tr>
+        <td>刷新</td>
+        <td>由老大召唤进场。</td>
+        <td>刷出时转单体点杀。</td>
+      </tr>
+      <tr>
+        <td>属性</td>
+        <td>弱<strong>雷 / 圣</strong>；HP 约 7500 万；击退 1000。</td>
+        <td>圣/雷输出有效；击退低，好推离人群。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <strong>全场通用：</strong>
+    伤害上限 11.5k；有 1/1；无触碰；柱子平台脚点已删；地图无自然刷怪；掉落要等 <strong>A、B、老大都死后</strong>才出。
+  </div>
+</section>
+
+<section id="summons">
+  <h2>召唤小怪</h2>
+  <p class="muted">图鉴能查到召唤怪<strong>面板</strong>；地图页不写固定刷怪（动态召唤，Locations 为空）。公开帖也<strong>没有</strong>写清「几点血 / 几秒刷几只」的完整公式，只有实战规律。</p>
+
+  <h3>图鉴数据</h3>
+  <table>
+    <thead>
+      <tr><th>名称</th><th>HP</th><th>EXP</th><th>击退</th><th>备注</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>The Boss Summon（Leader A）</td>
+        <td>1000 万</td>
+        <td>25 万</td>
+        <td>1000</td>
+        <td>弱毒；物理偏高防（W.Def 2100）；自动仇恨</td>
+      </tr>
+      <tr>
+        <td>The Boss Summon（Leader B）</td>
+        <td>1000 万</td>
+        <td>25 万</td>
+        <td>1000</td>
+        <td>弱毒；物魔都有；自动仇恨</td>
+      </tr>
+      <tr>
+        <td>The Boss Summon（Male Boss）</td>
+        <td>2000 万</td>
+        <td>50 万</td>
+        <td>1000</td>
+        <td>有少量 HP 回复（Regen 100）；自动仇恨</td>
+      </tr>
+      <tr>
+        <td>The Boss Summon（Female Boss）</td>
+        <td>2000 万</td>
+        <td>100 万</td>
+        <td>1000</td>
+        <td>防高；与独立「女老板 7500 万」不是同一条目</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>已知召唤逻辑（实战）</h3>
+  <ul>
+    <li>老大出场后开始刷召唤；小怪很肉，单一 cleave 往往清不完。</li>
+    <li>召唤可<strong>互奶 / 给老大回血</strong>（约 5 万–50 万一跳）；可给附近怪<strong>加速</strong>；还可<strong>加防（Defense up）</strong>——没有破甲时更难清。</li>
+    <li>可刷出带<strong>半图跳诱惑</strong>的女老板型召唤。</li>
+    <li>召唤似乎有<strong>血量阈值</strong>：cleave 过猛、保镖还没死就把召唤血线压穿，会刷得更凶（召唤 spam）；血线太歪时反而需要单体去秒关键目标（如女老板）。</li>
+    <li>公开资料<strong>未写明</strong>：精确刷新间隔、每次数量、与老大剩余血量的对应表。</li>
+  </ul>
+  <div class="note">
+    链接：
+    <a href="https://legends.ml/lib/monster?id=9400301" target="_blank" rel="noopener">Leader A</a> ·
+    <a href="https://legends.ml/lib/monster?id=9400302" target="_blank" rel="noopener">Leader B</a> ·
+    <a href="https://legends.ml/lib/monster?id=9400303" target="_blank" rel="noopener">Male</a> ·
+    <a href="https://legends.ml/lib/monster?id=9400304" target="_blank" rel="noopener">Female</a>
+  </div>
+</section>
+
+<section id="flow">
+  <h2>七步流程</h2>
+  <div class="flow">
+    <div class="step"><div class="num">1</div><div>确认次数与门票/路线（新叶城保镖入口）。队里说好谁 pin、谁 cleave、谁点 BGA。</div></div>
+    <div class="step"><div class="num">2</div><div>开打后尽快把 <span class="c-bga">保镖 A（BGA）</span> pin 在角落；远程/船长保持距离输出。</div></div>
+    <div class="step"><div class="num">3</div><div><span class="c-bgb">保镖 B（BGB）</span> 会下弹雨（约 10k 级）；船长等职业要算船耐久 / 下马吃弹。</div></div>
+    <div class="step"><div class="num">4</div><div>优先压低 BGA 血量，促使 <span class="c-boss">老大（The Boss）</span> 更早出场。</div></div>
+    <div class="step"><div class="num">5</div><div>老大同场时：有人继续 pin，其他人集火还活着的保镖；注意召唤怪血线，别 cleave 过猛提前刷满召唤。</div></div>
+    <div class="step"><div class="num">6</div><div>BGA 死后改 pin / 点 BGB；BGB 死后集火老大。</div></div>
+    <div class="step"><div class="num">7</div><div><span class="c-anego">女老板（Anego）</span> 出现时尽量分开点杀（单体 / 鸟笼）；同时躲老大的蓝风与紫圈。</div></div>
+  </div>
+</section>
+
+<section id="prereq">
+  <h2>前置与次数</h2>
+  <ul>
+    <li>地点：新叶城（NLC）保镖相关副本入口（具体 NPC / 地图以游戏内为准）。</li>
+    <li>次数：社群讨论里 BGA 曾长期是<strong>每日 1 次</strong>（相对多数 Boss 每日 2 次）；以当前补丁为准。</li>
+    <li>图鉴合计参考：保镖 A 3.5 亿 + 保镖 B 4 亿 + 女老板 7500 万，外加老大本体；聚合条目「Bodyguards A B Boss」显示约 <strong>11.5 亿</strong>总池（图鉴归并值，非精确分段）。</li>
+  </ul>
+</section>
+
+<section id="mobs">
+  <h2>四连结构</h2>
+  <table>
+    <thead><tr><th>名称</th><th>等级</th><th>HP</th><th>要点</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="c-bga">保镖 A（BGA）</span></td>
+        <td>175</td>
+        <td>3.5 亿</td>
+        <td>弱毒；击退阈值约 5 万；会晕；优先点杀影响老大刷新。触碰/出拳范围危险。</td>
+      </tr>
+      <tr>
+        <td><span class="c-bgb">保镖 B（BGB）</span></td>
+        <td>175</td>
+        <td>4 亿</td>
+        <td>弱毒；击退阈值约 3 万；弹雨约 10k；站桩感更强（Speed 0）。</td>
+      </tr>
+      <tr>
+        <td><span class="c-boss">老大（The Boss）</span></td>
+        <td>—</td>
+        <td>（计入总池）</td>
+        <td>蓝风 / 大紫圈需下马或躲开；会出召唤；吃 cleave + 协同。</td>
+      </tr>
+      <tr>
+        <td><span class="c-anego">女老板（Anego）</span></td>
+        <td>130</td>
+        <td>7500 万</td>
+        <td>弱雷/圣；可与人群分开用单体处理。船长鸟笼点中时建议开心停/苹果集火。</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="comp">
+  <h2>编制（2025 后口令）</h2>
+  <div class="strat-grid">
+    <div class="strat-card">
+      <h3>刚需倾向</h3>
+      <ul>
+        <li>能持续 cleave 的近战（英雄 / 黑骑士 / 冲锋队长等，以队内面板为准）</li>
+        <li>能冲刺重新 pin 的近战（脱 pin 时的保险）</li>
+        <li>有人专门盯保镖 A 的仇恨与血线</li>
+      </ul>
+    </div>
+    <div class="strat-card">
+      <h3>加分</h3>
+      <ul>
+        <li>神射手（BM）：脚筋等工具，远程里更受欢迎</li>
+        <li>船长（Corsair）：鸟笼点 BGA→BGB→女老板；章鱼补伤</li>
+        <li>主教：容错；全场弱毒，毒系魔导也有发挥</li>
+        <li>箭神穿透等单体窗口（血线歪了要秒某个目标时）</li>
+      </ul>
+    </div>
+    <div class="strat-card">
+      <h3>常见人数</h3>
+      <ul>
+        <li>常见 <strong>3–4 人</strong></li>
+        <li>人越少越依赖 pin 与不吃弹雨失误</li>
+        <li>隐士（NL）可打，但常需额外 cleave 位搭配；主持人未必优先收</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note">
+    现行偏 cleave；远程仍可打。招人常见 melee / cleave preferred。
+  </div>
+</section>
+
+<section id="phases">
+  <h2>阶段打法要点</h2>
+  <h3>1. Pin</h3>
+  <ul>
+    <li>目标：把保镖 A pin 在角落，输出在安全距离打。</li>
+    <li>脱 pin：近战冲过去重新 pin；<strong>未 pin 住时输出先停</strong>，避免把它打向人群。</li>
+    <li>别站进它的出拳范围——拳可能扫到整队。</li>
+  </ul>
+  <h3>2. 保镖 A + B 同场</h3>
+  <ul>
+    <li>优先蛋/鸟/点 <strong>BGA</strong>（刷新老大、控晕）。</li>
+    <li>BGB 弹雨约 10k；船耐久有限，可用下马吃弹 / 金弹无敌帧续船。</li>
+    <li>双方防御都很高：召唤物（如章鱼）价值大。</li>
+  </ul>
+  <h3>3. 老大进场</h3>
+  <ul>
+    <li>常见策略：有人 pin 住老大或控场，其他人先清还活着的保镖，再集火老大。</li>
+    <li>注意召唤血线：cleave 过猛可能在保镖没死前刷出过多召唤，英雄舞等技能一次只能打有限目标，会变丑。</li>
+    <li>攻击提示：脚下蓝风、身边大紫圈——下马/躲开。</li>
+  </ul>
+  <h3>4. 女老板</h3>
+  <ul>
+    <li>尽量与主人群分开，用单体点掉。</li>
+    <li>船长：尽量鸟笼点上；第一只可考虑苹果覆盖后两波。</li>
+    <li>鸟笼没点上：用心停等爆发 + 鱼雷等范围技补，同时继续躲老大。</li>
+  </ul>
+</section>
+
+<section id="sair">
+  <h2>附录 · 船长（Corsair）在 BGA</h2>
+  <p class="muted">船长在本战的操作要点。</p>
+  <ol>
+    <li><strong>船破后：</strong>远处连射（Rapid Fire），章鱼好了就放；角落放章鱼方便 cleave 维持 pin。</li>
+    <li><strong>BGA+BGB：</strong>鸟笼优先 BGA；尽量保持章鱼。BGB 弹雨：未上船吃第一下再上船，打约 3 炮后完美下马吃弹再上船；见金弹则撞金弹拿无敌帧，计数改为约 5 炮。</li>
+    <li><strong>老大出现：</strong>蓝风/紫圈下马躲；同时躲 BGB 很难，尽力而为。</li>
+    <li><strong>BGA 死：</strong>鸟笼改 BGB，早脱弹雨监狱。</li>
+    <li><strong>BGB 死：</strong>船长进入舒适区——鸟笼老大、章鱼、躲技能。</li>
+    <li><strong>女老板：</strong>请队友别瞬秒，留鸟笼窗口；点上则心停/苹果集火。</li>
+  </ol>
+</section>
+
+<section id="sources">
+  <h2>相关链接</h2>
+  <div class="src-card"><a href="https://legends.ml/lib/monster?id=9400112" target="_blank" rel="noopener">Bodyguard A</a> · <a href="https://legends.ml/lib/monster?id=9400113" target="_blank" rel="noopener">B</a> · <a href="https://legends.ml/lib/monster?id=9400300" target="_blank" rel="noopener">The Boss</a> · <a href="https://legends.ml/lib/monster?id=9400121" target="_blank" rel="noopener">Female Boss</a></div>
+  <div class="src-card"><a href="https://forum.legends.ml/index.php?threads/november-2024-balance-changes-explained.56433/" target="_blank" rel="noopener">2024-11 改版说明</a> · <a href="https://forum.legends.ml/index.php?threads/corsair-bga-guide.59643/" target="_blank" rel="noopener">Corsair BGA</a></div>
+</section>
+
+<footer>
+  <p><a href="pink-bean-animations-guide.html">← 切回品克缤（PB）</a> · <a href="index.html">入口首页</a></p>
+</footer>
+</main>
+</div>
+</body>
+</html>

@@ -26,6 +26,23 @@
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
+  .boss-switch {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap;
+    padding: .65rem 1rem;
+    background: rgba(10,14,20,.94);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(8px);
+  }
+  .boss-switch a {
+    text-decoration: none; color: var(--muted);
+    padding: .45rem 1rem; border-radius: 999px;
+    border: 1px solid var(--line); font-size: .88rem;
+  }
+  .boss-switch a:hover { color: var(--text); background: var(--panel2); }
+  .boss-switch a.active {
+    color: #1a1016; background: var(--accent); border-color: var(--accent); font-weight: 700;
+  }
   body {
     margin: 0;
     font-family: "IBM Plex Sans", "Noto Sans SC", "PingFang SC", sans-serif;
@@ -39,8 +56,8 @@
   a { color: var(--accent2); }
   .layout { display: grid; grid-template-columns: 270px 1fr; min-height: 100vh; }
   nav {
-    position: sticky; top: 0; align-self: start;
-    height: 100vh; overflow: auto;
+    position: sticky; top: 52px; align-self: start;
+    height: calc(100vh - 52px); overflow: auto;
     background: rgba(15,20,25,.92);
     border-right: 1px solid var(--line);
     padding: 1.25rem 1rem 2rem;
@@ -100,6 +117,19 @@
     background: #2a1518; border-left: 3px solid var(--danger);
     padding: .75rem 1rem; margin: .85rem 0; border-radius: 0 8px 8px 0;
   }
+  .strat-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: .85rem; margin: .85rem 0 1rem;
+  }
+  .strat-card {
+    background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 10px; padding: .9rem 1rem;
+  }
+  .strat-card h3 { margin: 0 0 .45rem; font-size: 1.02rem; color: var(--accent); border: 0; padding: 0; }
+  .strat-card .meta { font-size: .78rem; color: var(--muted); margin-bottom: .5rem; }
+  .strat-card ul { margin: .35rem 0 0; }
+  .must { color: var(--danger); font-weight: 600; }
+  .nice { color: var(--ok); }
   .oldbox {
     background: #1c1f24; border-left: 3px dashed #7a6f62;
     padding: .75rem 1rem; margin: .85rem 0; border-radius: 0 8px 8px 0;
@@ -177,9 +207,9 @@
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: .9em;
   }
-  .flow { display: grid; gap: .75rem; margin: 1rem 0; }
+  .flow { display: grid; gap: 1.35rem; margin: 1rem 0; }
   .step {
-    display: grid; grid-template-columns: 42px 1fr; gap: .75rem; align-items: start;
+    display: grid; grid-template-columns: 42px 1fr; gap: .85rem; align-items: center;
   }
   .num {
     width: 42px; height: 42px; border-radius: 50%;
@@ -224,6 +254,10 @@
 </style>
 </head>
 <body>
+<div class="boss-switch" role="navigation" aria-label="Boss 切换">
+  <a class="active" href="pink-bean-animations-guide.html">品克缤（PB）</a>
+  <a href="bodyguard-a-bga-guide.html">保镖 A（BGA）</a>
+</div>
 <div class="layout">
 <nav>
   <h1>品克缤攻略</h1>
@@ -232,26 +266,27 @@
   <a href="#intro">前言 / 免责</a>
   <a href="#tldr">TL;DR 速查</a>
   <a href="#flow">九步流程</a>
+  <a href="#strats">打法分类 / 人数编制</a>
   <a href="#prereq">前置条件</a>
   <a href="#before">开战前</a>
   <div class="group">雕像阶段</div>
   <a href="#statue-intro">雕像总览</a>
-  <a href="#p1">阶段 1 所罗门</a>
-  <a href="#p2">阶段 2 + 雷克斯</a>
-  <a href="#p3">阶段 3 + 胡金</a>
-  <a href="#p4">阶段 4 + 穆宁</a>
-  <a href="#p5">阶段 5 + 阿里尔</a>
+  <a href="#p1">阶段 1 所罗门（左人）</a>
+  <a href="#p2">阶段 2 + 雷克斯（右人）</a>
+  <a href="#p3">阶段 3 + 胡金（左鸟）</a>
+  <a href="#p4">阶段 4 + 穆宁（右鸟）</a>
+  <a href="#p5">阶段 5 + 阿里尔（中间）</a>
   <div class="group">本体</div>
   <a href="#pb-body">品克缤本体</a>
   <a href="#safety">安全网 / 仇恨</a>
   <a href="#meso">金币爆炸</a>
   <a href="#bucc">冲锋队长专项</a>
   <div class="group">技能表</div>
-  <a href="#anim-solomon">所罗门</a>
-  <a href="#anim-rex">雷克斯</a>
-  <a href="#anim-hugin">胡金</a>
-  <a href="#anim-munin">穆宁</a>
-  <a href="#anim-ariel">阿里尔</a>
+  <a href="#anim-solomon">所罗门（左人）</a>
+  <a href="#anim-rex">雷克斯（右人）</a>
+  <a href="#anim-hugin">胡金（左鸟）</a>
+  <a href="#anim-munin">穆宁（右鸟）</a>
+  <a href="#anim-ariel">阿里尔（中间）</a>
   <a href="#anim-pb">品克缤</a>
   <a href="#anim-mini">休息豆 / 小豆</a>
   <div class="group">其他</div>
@@ -286,15 +321,21 @@
   <p>GIF 主要来自公开直播（感谢 Blu301、Eiji 等早期跑本玩家）。本页为玩家整理的参考资料，非官方最终裁定。</p>
   <p class="muted">原帖：<a href="https://forum.legends.ml/index.php?threads/pink-bean-animations-guide.35740/" target="_blank" rel="noopener">forum.legends.ml · Pink Bean Animations Guide</a></p>
   <div class="note">
-    <strong>国服译名核对（怀旧服资料库）：</strong>
-    Hyper Body=<strong>神圣之火</strong>（口语「超体」）；Holy Shield=<strong>圣灵之盾</strong>；
-    Hero's Will=<strong>勇士的意志</strong>；Time Leap=<strong>伺机待发</strong>；
-    主教 Dispel=<strong>净化</strong>（Boss 驱 buff 仍称驱散）；
-    Barrage=<strong>金手指</strong>；Snatch=<strong>索命</strong>；Dragon Strike=<strong>潜龙出渊</strong>；
-    Energy Orb=<strong>超能量</strong>；Energy Drain=<strong>能量耗转</strong>；
-    Strafe=<strong>箭扫射</strong>；Hurricane=<strong>暴风箭雨</strong>；Dark Sight=<strong>隐身术</strong>。
+    <strong>国服常用名 + 简称对照（正文写法：中文（简称），如主持人（host）、伺机待发（TL））：</strong>
+    <strong>神圣之火（HB）</strong>、<strong>圣灵之盾（HS）</strong>、
+    <strong>勇士的意志（Will）</strong>、<strong>伺机待发（TL）</strong>、
+    <strong>混沌大理石（Chaos Marble）</strong>（进本门票，勿只写「大理石」）、
+    <strong>净化（Dispel）</strong>（Boss 清 buff 仍称驱散）、
+    <strong>金手指（Barrage）</strong>、<strong>索命（Snatch）</strong>、<strong>潜龙出渊（Dragon Strike）</strong>、
+    <strong>超能量（Energy Orb）</strong>、<strong>能量耗转（Energy Drain）</strong>、
+    <strong>箭扫射（Strafe）</strong>、<strong>暴风箭雨（Hurricane）</strong>、<strong>隐身术（Dark Sight）</strong>、
+    <strong>魔法盾（MG）</strong>、<strong>反伤（DR）</strong>、<strong>击退（KB）</strong>、
+    <strong>主持人（host）</strong>、<strong>传送门（portal）</strong>。
+    <br>职业简称：<strong>隐士（NL）</strong>、<strong>侠盗（Shad）</strong>、<strong>冲锋队长（Bucc）</strong>、
+    <strong>大魔导士（AM）</strong>、<strong>黑骑士（DK）</strong>、<strong>神射手（BM）</strong>、<strong>箭神（MM）</strong>。
+    <br>雕像口令：<strong>所罗门（左人）</strong>、<strong>雷克斯（右人）</strong>、<strong>胡金（左鸟）</strong>、<strong>穆宁（右鸟）</strong>、<strong>阿里尔（中间 / 女神像）</strong>。
   </div>
-  <p class="muted">译名按大陆国服/怀旧服习惯；L 服英文缩写保留在括号内便于对照。</p>
+  <p class="muted">正文以国服中文为主；关键术语首次出现写「中文（简称）」，后文可只写中文。</p>
 </header>
 
 <section id="tldr">
@@ -303,31 +344,31 @@
     <div class="tldr-card">
       <h3>驱散 Dispel</h3>
       <div class="gallery">
-        <div class="shot"><figure class="media"><img src="https://i.imgur.com/UrxXqCk.gif" alt="雷克斯驱散" loading="lazy"><figcaption>雷克斯驱散</figcaption></figure></div>
-        <div class="shot"><figure class="media"><img src="https://i.imgur.com/s1vvCeD.gif" alt="阿里尔驱散" loading="lazy"><figcaption>阿里尔驱散</figcaption></figure></div>
+        <div class="shot"><figure class="media"><img src="https://i.imgur.com/UrxXqCk.gif" alt="雷克斯（右人）驱散" loading="lazy"><figcaption>雷克斯（右人）驱散</figcaption></figure></div>
+        <div class="shot"><figure class="media"><img src="https://i.imgur.com/s1vvCeD.gif" alt="阿里尔（中间）驱散" loading="lazy"><figcaption>阿里尔（中间）驱散</figcaption></figure></div>
       </div>
-      <p>掉 buff 时立刻补上保命 buff（神圣之火 HB / 魔法盾 MG）。</p>
+      <p>掉 buff 时立刻补上保命 buff（神圣之火（HB） / 魔法盾（MG））。</p>
     </div>
     <div class="tldr-card">
-      <h3>伤害反弹 Damage Reflect（DR）</h3>
+      <h3>伤害反弹 Damage Reflect（反伤）</h3>
       <div class="gallery">
-        <div class="shot"><figure class="media"><img src="https://i.imgur.com/vXCHMMi.gif" alt="胡金 DR 动画" loading="lazy"><figcaption>胡金 DR 动画</figcaption></figure></div>
-        <div class="shot"><figure class="media"><img src="https://i.imgur.com/TBQiBpD.gif" alt="品克缤 DR 动画" loading="lazy"><figcaption>品克缤 DR 动画</figcaption></figure></div>
+        <div class="shot"><figure class="media"><img src="https://i.imgur.com/vXCHMMi.gif" alt="胡金（左鸟）反伤动画" loading="lazy"><figcaption>胡金（左鸟）反伤动画</figcaption></figure></div>
+        <div class="shot"><figure class="media"><img src="https://i.imgur.com/TBQiBpD.gif" alt="品克缤反伤动画" loading="lazy"><figcaption>品克缤反伤动画</figcaption></figure></div>
       </div>
       <div class="gallery">
         <div class="shot"><figure class="media"><img src="https://i.imgur.com/LO5n3oU.png" alt="武器反伤" loading="lazy"><figcaption>武器反伤</figcaption></figure></div>
         <div class="shot"><figure class="media"><img src="https://i.imgur.com/Ro3ZalE.png" alt="魔法反伤" loading="lazy"><figcaption>魔法反伤</figcaption></figure></div>
         <div class="shot"><figure class="media"><img src="https://i.imgur.com/PZiFCQO.png" alt="双反伤" loading="lazy"><figcaption>双反伤</figcaption></figure></div>
       </div>
-      <p><strong>看到胸口发黄 / DR 动画就立刻停手。</strong></p>
+      <p><strong>看到胸口发黄 / 反伤动画就立刻停手。</strong></p>
     </div>
     <div class="tldr-card">
       <h3>诱惑 Seduce</h3>
       <div class="gallery">
-        <div class="shot"><figure class="media"><img src="https://i.imgur.com/ucmDmcV.gif" alt="穆宁群体诱惑" loading="lazy"><figcaption>穆宁群体诱惑</figcaption></figure></div>
+        <div class="shot"><figure class="media"><img src="https://i.imgur.com/ucmDmcV.gif" alt="穆宁（右鸟）群体诱惑" loading="lazy"><figcaption>穆宁（右鸟）群体诱惑</figcaption></figure></div>
         <div class="shot"><figure class="media"><img src="https://i.imgur.com/fB5cXNF.gif" alt="品克缤音符" loading="lazy"><figcaption>品克缤音符</figcaption></figure></div>
       </div>
-      <p>被诱惑立刻开 <strong>勇士的意志 Hero's Will</strong>。</p>
+      <p>被诱惑立刻开 <strong>勇士的意志（Hero's Will）</strong>。</p>
     </div>
   </div>
   <div class="note">
@@ -343,26 +384,178 @@
     <strong>时间账：</strong>远征限时 1 小时 30 分。雕像五段合计约 40 分钟、总伤约 55.5 亿；本体血量 21 亿，但物理伤害减半，体感接近 42 亿，通常再花约 40 分钟。站位和停手比单纯面板更决定能不能过。
   </div>
   <div class="flow">
-    <div class="step"><div class="num">1</div><div>时间神殿做到「力场」任务。提前至少 24 小时找神殿守卫再接「打破屏障」，拿到 1 颗混沌大理石。</div></div>
-    <div class="step"><div class="num">2</div><div>在破碎回廊集合。全员到齐后再向右走两张图进报名点。走进右侧传送门就会扣大理石。</div></div>
+    <div class="step"><div class="num">1</div><div>时间神殿做到「力场」任务。提前至少 24 小时找神殿守卫再接「打破屏障」，拿到 1 颗混沌大理石（Chaos Marble）。</div></div>
+    <div class="step"><div class="num">2</div><div>在破碎回廊集合。全员到齐后再向右走两张图进报名点。走进右侧传送门（portal）就会扣混沌大理石。</div></div>
     <div class="step"><div class="num">3</div><div>报名进房。全员进图之前不要点克尔斯顿。点了之后五座雕像按阶段苏醒。</div></div>
-    <div class="step"><div class="num">4</div><div>阶段 1–2 在左上平台打所罗门；阶段 2 优先先去右边打雷克斯，再回左边，给阶段 3 省走路。</div></div>
-    <div class="step"><div class="num">5</div><div>阶段 3 起左鸟胡金优先。胸口发黄就停手，那是伤害反弹。</div></div>
-    <div class="step"><div class="num">6</div><div>阶段 4 右鸟穆宁会群体诱惑。要么圣灵之盾覆盖先秒鸟，要么让隐士和侠盗先进图扛诱惑、把鸟留到最后。</div></div>
-    <div class="step"><div class="num">7</div><div>阶段 5 加上阿里尔。左鸟反伤和阿里尔武器取消要错开打。最后一座倒下前站到本体出生点正确一侧。负责拉怪的冲锋队长提前几分钟保持超级变身。</div></div>
+    <div class="step"><div class="num">4</div><div>阶段 1–2 在左上平台打所罗门（左人）；阶段 2 优先先去右边打雷克斯（右人），再回左边，给阶段 3 省走路。</div></div>
+    <div class="step"><div class="num">5</div><div>阶段 3 起胡金（左鸟）优先。胸口发黄就停手，那是伤害反弹。</div></div>
+    <div class="step"><div class="num">6</div><div>阶段 4 穆宁（右鸟）会群体诱惑。要么圣灵之盾（HS）覆盖先秒鸟，要么让隐士（NL）和侠盗（Shad）先进图扛诱惑、把鸟留到最后。</div></div>
+    <div class="step"><div class="num">7</div><div>阶段 5 加上阿里尔（中间）。胡金（左鸟）反伤和阿里尔（中间）武器取消要错开打。最后一座倒下前站到本体出生点正确一侧。负责拉怪的冲锋队长（Bucc）提前几分钟保持超级变身。</div></div>
     <div class="step"><div class="num">8</div><div>冲锋队长把品克缤拉到地图中右、面朝右。90% 血之前可以放开打；之后改为点按，准备停反伤。80% 开始招小豆，优先群攻清掉（魔导终极技更快；主教创世也可，小豆已不圣免疫）。</div></div>
-    <div class="step"><div class="num">9</div><div>看到反伤立刻停手。吃到音符诱惑立刻勇士的意志。面朝左会放创世和音符；近战在左侧当安全网，把它的脸转回来。</div></div>
+    <div class="step"><div class="num">9</div><div>看到反伤立刻停手。吃到音符诱惑立刻勇士的意志（Will）。面朝左会放创世和音符；近战在左侧当安全网，把它的脸转回来。</div></div>
+  </div>
+</section>
+
+
+<section id="strats">
+  <h2>打法分类与人数编制</h2>
+  <p class="muted">论坛没有「官方 18 人攻略」专帖，但材料能拼出清晰分类：主帖按<strong>右鸟策略</strong>分鸟先 / 鸟后；Alyosha 进图帖按<strong>圣灵之盾（HS）覆盖面</strong>（前 15 / 前 18）分编组；中文社群现行口令是<strong>满编 30 + 鸟先 Rush</strong>。人数档位是主持人（host）实务，不是系统模式。</p>
+
+  <h3>先看两把尺子</h3>
+  <ul>
+    <li><strong>系统上限：</strong>远征最多 30 人、限时 1 小时 30 分（主帖）。</li>
+    <li><strong>诱惑名单：</strong>向左走打最先进入的约 10 人；跳跃诱惑打最先进入的约 15 人；部分技能会扩到约 16–20 人。放逐会把目标扔到队尾（约第 30），名单会滚动。</li>
+    <li><strong>队伍槽：</strong>游戏里一队 6 人。满编 30 ≈ 5 队；常见「中编」≈ 3 队（18 人）或录像里的约 20 人。</li>
+  </ul>
+
+  <h3>一、按右鸟策略分（主帖现行两套）</h3>
+  <div class="strat-grid">
+    <div class="strat-card">
+      <h3>鸟先 · Bird first</h3>
+      <div class="meta">主帖 · 中文社群默认 · 录像常见</div>
+      <p>阶段 4/5 开场用圣灵之盾盖住，火力秒穆宁（右鸟）；盾断前靠冲锋队长（Bucc）伺机待发（TL）刷新盾（通常 1–2 轮，约 80–120 秒窗口）。</p>
+      <ul>
+        <li><span class="must">刚需：</span>每队尽量有主教开盾；至少能轮换的冲锋队长（满级伺机待发 + 索命（Snatch）/意志）；够在盾窗内砍死右鸟的总伤</li>
+        <li><span class="nice">加分：</span>4 名冲锋队长错开变身（中文社群）；双主教/多开把覆盖加长；魔导加快清豆</li>
+        <li><strong>不适合：</strong>主教或伺机待发不够、右鸟打不进盾窗——盾一断，群体诱惑 + 其他雕像很容易崩</li>
+      </ul>
+    </div>
+    <div class="strat-card">
+      <h3>鸟后 · Bird last</h3>
+      <div class="meta">主帖 · 火力/盾不足时的稳妥枝</div>
+      <p>先清其他雕像，最后再碰穆宁（右鸟）。整阶段前 10 个进图位持续吃向左走诱惑。</p>
+      <ul>
+        <li><span class="must">刚需：</span>大量隐士（NL）/侠盗先进图扛诱惑（理想约 30k HP）；足够主教持续复活；全队会意志</li>
+        <li><span class="nice">加分：</span>高回避诱惑坦克、放逐轮换理解清楚</li>
+        <li><strong>不适合：</strong>远程脆皮占满前 10；复活跟不上——苹果期会反复死</li>
+      </ul>
+    </div>
+    <div class="strat-card">
+      <h3>椅子诱饵 · Chair</h3>
+      <div class="meta">Alyosha / Pasta，2022-04 · 精英变体</div>
+      <p>约 7 个角色角落坐椅当诱饵，主力在盾下（甚至曾试过零盾）秒鸟；少带主教、多带输出。</p>
+      <ul>
+        <li><span class="must">刚需：</span>进图顺序严格执行（放逐位 / 坐椅位 / 永盾队 / 隐身输出）；有人负责清小豆（小豆会把椅子人打下来）</li>
+        <li><span class="nice">加分：</span>3 主教 + 3 高价值输出永盾队；隐士隐身术（Dark Sight）</li>
+        <li><strong>定位：</strong>公会精锐优化，不是萌新公会默认口令</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>二、按人数档位分（实务编制）</h3>
+  <table class="req-table">
+    <thead>
+      <tr><th>档位</th><th>人数</th><th>典型编队</th><th>更常见打法</th><th>编制含义</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>满编</strong></td>
+        <td>30</td>
+        <td>5 队 × 6</td>
+        <td>鸟先 + 伺机待发轮盾（中文社群口令）</td>
+        <td>系统上限。报名齐人、进图顺序、换队指挥成本最高；功能位（盾/神圣之火/拉怪）通常更齐，人均面板可以稍低。</td>
+      </tr>
+      <tr>
+        <td><strong>中编</strong></td>
+        <td>约 18–20</td>
+        <td>3 队 × 6（或再补 1–2 人）</td>
+        <td>鸟先或鸟后都常见；录像有 20 人流程</td>
+        <td>论坛「双主教诱惑坦克」明确按<strong>前 18 进图位</strong>做 80–100 秒覆盖。总伤更少，右鸟盾窗更紧，人均输出要求更高。</td>
+      </tr>
+      <tr>
+        <td><strong>精锐偏少</strong></td>
+        <td>约 12–15</td>
+        <td>2–3 队</td>
+        <td>鸟后、椅子、或多开主教永盾</td>
+        <td>Alyosha 提到 3–4 队跑法的优势是「更能塞功能/多开」。人少时每死一个、每个功能空窗都更致命。</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="note">
+    <strong>「18」在论坛里常有两层意思：</strong>
+    （1）远征大约 18 人开打；（2）鸟先时用双主教编组，把圣灵之盾盖住<strong>最先进入的 18 人</strong>（Alyosha）。满编 30 跑鸟先时，后半段进图位本来就不在跳跃诱惑核心名单里，但死人会让诱惑往下滚——所以前 15–18 的盾/坦克质量仍然决定阶段稳不稳。
+  </div>
+
+  <h3>三、刚需配置对照 · 主持人（host）招人用</h3>
+  <p class="muted">「系统门槛」仍是等级 / 混沌大理石（Chaos Marble，门票）/ 神圣之火（HB）前血量（见 <a href="#app-req">队员门槛</a>）。下表是<strong>策略刚需</strong>：缺了就很难按该打法打，不是游戏拦截。</p>
+  <table>
+    <thead>
+      <tr><th>功能</th><th>鸟先 · 满编 30</th><th>鸟先 · 中编 18–20</th><th>鸟后 · 任意人数</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>主教（圣灵之盾）</td>
+        <td><span class="must">刚需</span>：理想每队 1 名（≈5）；中文社群用换队 + 伺机待发打出 3 次盾</td>
+        <td><span class="must">刚需</span>：至少每队 1 名（≈3）。若走「双主教盖前 18」则要 6 名主教</td>
+        <td><span class="must">刚需</span>：持续复活优先；盾是加分不是唯一解</td>
+      </tr>
+      <tr>
+        <td>冲锋队长（伺机待发 / 索命）</td>
+        <td><span class="must">刚需</span>：至少 2 名能错开；社群口令常备 4 名排顺序</td>
+        <td><span class="must">刚需</span>：至少 2 名能轮换伺机待发；火力不足时更依赖盾次数</td>
+        <td>本体拉位仍要；右鸟阶段伺机待发压力较低</td>
+      </tr>
+      <tr>
+        <td>神圣之火（黑骑士（DK））</td>
+        <td><span class="must">刚需</span>覆盖；常用黑骑士小号而不是主号输出</td>
+        <td>同左；人少时神圣之火空窗更危险</td>
+        <td>同左；诱惑坦克更吃血量</td>
+      </tr>
+      <tr>
+        <td>清豆（魔导 / 主教创世）</td>
+        <td><span class="nice">加分</span>：魔导更快；2022 周年后非圣免疫，不强制魔导</td>
+        <td>人少时小豆骚扰更痛，建议至少 1 名可靠清豆</td>
+        <td>同左；椅子打法里清豆几乎刚需（防打落椅子）</td>
+      </tr>
+      <tr>
+        <td>隐士 / 侠盗</td>
+        <td>主力输出；进图顺序里常最前</td>
+        <td>同左；人均输出要求更高</td>
+        <td><span class="must">刚需</span>占满前 10 诱惑位，理想约 30k HP</td>
+      </tr>
+      <tr>
+        <td>远程物理（箭神（MM） / 神射 / 船长）</td>
+        <td>雕像与本体主力 DPS</td>
+        <td>更挑面板：右鸟必须进盾窗</td>
+        <td>主要打非鸟雕像；别误触激活线</td>
+      </tr>
+      <tr>
+        <td>进图纪律</td>
+        <td><span class="must">刚需</span>：齐 30 再进；按主持人定的职业顺序点 NPC</td>
+        <td><span class="must">刚需</span>：前 15–18 是谁必须预先排好</td>
+        <td><span class="must">刚需</span>：诱惑坦克最先；脆皮法师偏后（法师帖建议靠近队尾）</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>四、进图盾覆盖的三种编组（鸟先专用细节）</h3>
+  <p class="muted">来源：Alyosha《Guide to Pink Bean entry order and Right Bird management》（2022）。与人数档位正交——18 人队也可以用「盖前 15」，30 人队也可以上双主教盖前 18。</p>
+  <ul>
+    <li><strong>轮换主教：</strong>前 15 进图分成 3 队输出；主教偏后进，进队放盾再换人。约 6 主教 → 前 15 覆盖约 80–100 秒；有伺机待发更稳。16–24 号位无盾，宜放生存强的人。</li>
+    <li><strong>双主教诱惑坦克队：</strong>前 18 里每队 2 主教，覆盖 18 人约 80–100 秒（加伺机待发可盖满右鸟）。同样约 6 主教，但主教要进前排。</li>
+    <li><strong>多开永盾（Kakine）：</strong>约 9 主教小号组成 3 队（3 主教 + 3 输出/坦克）一直盾。人少精锐或多开文化重的公会才玩得转。</li>
+  </ul>
+
+  <h3>五、怎么选（给主持人）</h3>
+  <ol>
+    <li>能凑齐「每队主教 + 至少两名伺机待发冲锋队长 + 右鸟盾窗内打得死」→ 优先<strong>鸟先</strong>；满编按 <a href="#cn-run">中文社群跑团</a>口令即可。</li>
+    <li>盾与伺机待发不齐，但隐士侠盗多、血厚、复活稳 → 改<strong>鸟后</strong>，把前 10 让给诱惑坦克。</li>
+    <li>只有约 3 队、面板很高 → 仍可鸟先，但按「中编」收紧人均输出，并预先排前 15–18 进图位；也可参考双主教盖 18。</li>
+    <li>公会熟练、肯练椅子/多开 → 再考虑椅子或永盾变体（见 <a href="#app-entry">进图顺序 / 右鸟</a>）。</li>
+  </ol>
+  <div class="warnbox">
+    旧版「&gt;5 主教 / &lt;5 主教」阶段 4 站位分歧写在主帖 Pre-2024：满 5 主教可全队同时盾、自由换边；不足 5 则不能随意过激活线。现行中文社群用换队伺机待发把盾打满三轮，逻辑仍是「盾覆盖人数 ≥ 诱惑核心名单」。细节动画仍以阶段 4 小节为准。
   </div>
 </section>
 
 <section id="prereq">
   <h2>前置条件（Pre-requisites）</h2>
   <ul>
-    <li>完成时间神殿任务线直到 <strong>力场 Force Field</strong>。</li>
-    <li>每次进入需要 1 个<strong>混沌大理石</strong> Chaos Marble <img class="icon" src="https://maplestory.io/api/GMS/210.1.1/item/4032002/icon" alt="混沌大理石">（与神殿守卫接任务 <strong>再次打破屏障 Breaking the Barrier again</strong>，每 24 小时可领）。</li>
+    <li>完成时间神殿任务线直到 <strong>力场 力场</strong>。</li>
+    <li>每次进入需要 1 个<strong>混沌大理石（Chaos Marble）</strong>（进本门票）<img class="icon" src="https://maplestory.io/api/GMS/210.1.1/item/4032002/icon" alt="混沌大理石">（与神殿守卫接任务「再次打破屏障」，每 24 小时可领）。</li>
     <li>每日最多进入 1 次；每周最多成功通关 1 次（周三重置）。</li>
     <li>报名等级：最低 <strong>175</strong>（2022 周年补丁；挂经验同要求）。帖子里曾出现的 150 是旧门槛。</li>
-    <li>最低血量（神圣之火之前）：近战 <strong>15k</strong>；远程 <strong>11.9k</strong>（策略允许时可为 8.1k）。</li>
+    <li>最低血量（无神圣之火（HB）时）：近战 <strong>15k</strong>；远程 <strong>11.9k</strong>（策略允许时可为 8.1k）。</li>
     <li>远征时间 <strong>1 小时 30 分</strong>，最多 <strong>30</strong> 人。</li>
     <li>建议物资：约 500 万能药、1000 超级药水、10 苹果。宠物自动喝药打开；本体阶段关掉宠物拾取。</li>
   </ul>
@@ -373,10 +566,10 @@
   <h2>开战前（Before you begin）</h2>
   <h3>集合点 · 神殿深处：破碎回廊</h3>
   <figure class="media"><img src="https://i.imgur.com/e5xi0gh.jpeg" alt="Deep Place of Temple: Broken Corridor" loading="lazy"><figcaption>神殿深处：破碎回廊（Broken Corridor）</figcaption></figure>
-  <p>人们通常在约定时间前在此集合，可随意活动且<strong>不会消耗混沌大理石</strong>。</p>
+  <p>人们通常在约定时间前在此集合，可随意活动且<strong>不会消耗混沌大理石（Chaos Marble）</strong>。</p>
   <p>真正报名区在右侧再走 <strong>2 张图</strong>。下一张是空图，需走过。</p>
-  <div class="danger">从右侧 portal 进入会<strong>立刻消耗</strong>混沌大理石，小心别误进！法师帖提醒：上方向键只点一下，连点可能直接扣掉大理石。</div>
-  <p>集合完毕后：右 portal → 继续向右 → 再右 portal，到达报名区。</p>
+  <div class="danger">从右侧传送门（portal）进入会<strong>立刻消耗</strong>混沌大理石，小心别误进！法师帖提醒：上方向键只点一下，连点可能直接扣掉混沌大理石。</div>
+  <p>集合完毕后：右传送门 → 继续向右 → 再进右传送门，到达报名区。</p>
 
   <h3>报名区 · 神殿深处：被遗忘的黄昏</h3>
   <figure class="media"><img src="https://i.imgur.com/8qPEoQx.png" alt="Forgotten Twilight" loading="lazy"><figcaption>神殿深处：被遗忘的黄昏（Forgotten Twilight）</figcaption></figure>
@@ -393,7 +586,7 @@
   </ul>
   <div class="oldbox">
     <span class="tag oldtag">旧</span>
-    2024 年前的集合点是时间通道「遗忘休息处 4」。主教可以开门把人带过来，实际报名点在右边第三张图。下一张是普通神殿怪，再下一张才扣大理石。命运之轮当时可向德拉购买：500 万金币加 3 个时间碎片，只能在品克缤战中使用，背包最多叠 1 个。使用后在地图左侧以 50 血复活，要立刻灌药。
+    2024 年前的集合点是时间通道「遗忘休息处 4」。主教可以开门把人带过来，实际报名点在右边第三张图。下一张是普通神殿怪，再下一张才扣混沌大理石。命运之轮当时可向德拉购买：500 万金币加 3 个时间碎片，只能在品克缤战中使用，背包最多叠 1 个。使用后在地图左侧以 50 血复活，要立刻灌药。
   </div>
 </section>
 
@@ -407,85 +600,85 @@
     <thead><tr><th>阶段</th><th>苏醒雕像</th><th>难度</th><th>时间</th><th>血条</th><th>占总雕像伤害</th></tr></thead>
     <tbody>
       <tr><td>1</td><td><span class="c-solomon">所罗门</span>（左人，1）</td><td>非常简单</td><td>1–2 分</td><td>3 亿</td><td>约 5.5%</td></tr>
-      <tr><td>2</td><td>所罗门 + <span class="c-rex">雷克斯</span>（右人，5）</td><td>简单，小心驱散</td><td>2–4 分</td><td>6 亿</td><td>约 11%</td></tr>
+      <tr><td>2</td><td>所罗门（左人） + <span class="c-rex">雷克斯</span>（右人，5）</td><td>简单，小心驱散</td><td>2–4 分</td><td>6 亿</td><td>约 11%</td></tr>
       <tr><td>3</td><td>上两者 + <span class="c-hugin">胡金</span>（左鸟，2）</td><td>中等</td><td>5–8 分</td><td>10.5 亿</td><td>约 19%</td></tr>
       <tr><td>4</td><td>上三者 + <span class="c-munin">穆宁</span>（右鸟，4）</td><td>不小心就会很难</td><td>8–13 分</td><td>15 亿</td><td>约 27%</td></tr>
-      <tr><td>5</td><td>全部 + <span class="c-ariel">阿里尔</span>（3）</td><td>不小心就会很难</td><td>12–20 分</td><td>21 亿</td><td>约 38%</td></tr>
+      <tr><td>5</td><td>全部 + <span class="c-ariel">阿里尔（中间）</span>（3）</td><td>不小心就会很难</td><td>12–20 分</td><td>21 亿</td><td>约 38%</td></tr>
       <tr><td>本体</td><td>品克缤</td><td>仇恨和停手决定成败</td><td>约 40 分</td><td>21 亿（物理减半）</td><td>—</td></tr>
     </tbody>
   </table>
-  <p>文字颜色对应阶段切换时的血条颜色。实际等于：所罗门×5、雷克斯×4、胡金×3、穆宁×2、阿里尔×1，才轮到品克缤。</p>
-  <p>各座基础血量：所罗门 3 亿、雷克斯 3 亿、胡金 4.5 亿、穆宁 4.5 亿、阿里尔 6 亿，合计 <strong>55.5 亿</strong>。雕像阶段总目标约 <strong>~40 分钟</strong>。</p>
+  <p>文字颜色对应阶段切换时的血条颜色。实际等于：所罗门（左人）×5、雷克斯（右人）×4、胡金（左鸟）×3、穆宁（右鸟）×2、阿里尔（中间）×1，才轮到品克缤。</p>
+  <p>各座基础血量：所罗门（左人） 3 亿、雷克斯（右人） 3 亿、胡金（左鸟） 4.5 亿、穆宁（右鸟） 4.5 亿、阿里尔（中间） 6 亿，合计 <strong>55.5 亿</strong>。雕像阶段总目标约 <strong>~40 分钟</strong>。</p>
   <div class="warnbox"><strong>注意：雕像阶段骑乘坐骑会被触碰伤害打到！</strong></div>
 </section>
 
 <section id="p1">
-  <h2>雕像阶段 1 · 所罗门 Solomon</h2>
+  <h2>雕像阶段 1 · 所罗门（左人）</h2>
   <figure class="media"><img src="https://i.imgur.com/7J9NRGU.jpeg" alt="阶段 1" loading="lazy"><figcaption>阶段 1</figcaption></figure>
   <div class="phase-card">
     <div class="stat"><b>难度</b>非常简单</div>
     <div class="stat"><b>时间</b>1–2 min</div>
     <div class="stat"><b>HP</b>0.3 bil（约雕像总血 5.5%）</div>
   </div>
-  <p>仅激活所罗门（1）。一般站<strong>左上平台</strong>躲避杖砸。</p>
+  <p>仅激活所罗门（左人）（1）。一般站<strong>左上平台</strong>躲避杖砸。</p>
   <ul>
     <li>输出：正常打，被 debuff 用万能药。</li>
-    <li>主教：杖砸时尽量圣灵之盾防晕；闪电动画时净化，减少输出被 debuff 烦扰。</li>
+    <li>主教：杖砸时尽量圣灵之盾防晕；闪电动画时净化（Dispel），减少输出被 debuff 烦扰。</li>
   </ul>
   <div class="oldbox"><span class="tag oldtag">旧</span>更早版本写的是主教一直刷净化，并用圣灵之盾防杖砸。现行帖改成对着闪电动画净化。</div>
 </section>
 
 <section id="p2">
-  <h2>雕像阶段 2 · + 雷克斯 Rex</h2>
+  <h2>雕像阶段 2 · + 雷克斯（右人）</h2>
   <figure class="media"><img src="https://i.imgur.com/73TsZmq.jpeg" alt="阶段 2" loading="lazy"><figcaption>阶段 2</figcaption></figure>
   <div class="phase-card">
     <div class="stat"><b>难度</b>简单（注意驱散）</div>
     <div class="stat"><b>时间</b>2–4 min</div>
     <div class="stat"><b>HP</b>0.6 bil（约 11%）</div>
   </div>
-  <p>激活所罗门 (1) + <strong>雷克斯 (5)</strong>。</p>
-  <figure class="media"><img src="https://i.imgur.com/UrxXqCk.gif" alt="雷克斯驱散动画" loading="lazy"><figcaption>雷克斯驱散动画</figcaption></figure>
-  <p>策略同阶段 1，但可能被雷克斯<strong>驱散</strong>——保命 buff（神圣之火、魔法盾）务必常驻。</p>
-  <p>常见打法：先杀所罗门再杀雷克斯。<br>
-  <strong>更优：</strong>先去右侧杀雷克斯，再回左杀所罗门。因为阶段 3 有胡金减速，换边更慢——阶段 2 就先就位。</p>
+  <p>激活所罗门（左人） (1) + <strong>雷克斯（右人） (5)</strong>。</p>
+  <figure class="media"><img src="https://i.imgur.com/UrxXqCk.gif" alt="雷克斯（右人）驱散动画" loading="lazy"><figcaption>雷克斯（右人）驱散动画</figcaption></figure>
+  <p>策略同阶段 1，但可能被雷克斯（右人）<strong>驱散</strong>——保命 buff（神圣之火、魔法盾）务必常驻。</p>
+  <p>常见打法：先杀所罗门（左人）再杀雷克斯（右人）。<br>
+  <strong>更优：</strong>先去右侧杀雷克斯（右人），再回左杀所罗门（左人）。因为阶段 3 有胡金（左鸟）减速，换边更慢——阶段 2 就先就位。</p>
   <div class="note">被黄闪电打中黑暗（命中 debuff）请万能药清掉。<br>
   两座各占血条约 50%，在 50% / 0% 附近开神圣祈祷 HS。HD 客户端 50% 大约在计时器 <code>xx:<strong>X</strong>x</code> 第二位数字处。</div>
 </section>
 
 <section id="p3">
-  <h2>雕像阶段 3 · + 胡金 Hugin</h2>
+  <h2>雕像阶段 3 · + 胡金（左鸟）</h2>
   <figure class="media"><img src="https://i.imgur.com/eCBaMHq.jpeg" alt="阶段 3" loading="lazy"><figcaption>阶段 3</figcaption></figure>
   <div class="phase-card">
     <div class="stat"><b>难度</b>中等</div>
     <div class="stat"><b>时间</b>5–8 min</div>
     <div class="stat"><b>HP</b>1.05 bil（约 19%）</div>
-    <div class="stat"><b>血条占比</b>所罗门 &amp; 雷克斯 各 ~28.6%，胡金 ~42.8%</div>
+    <div class="stat"><b>血条占比</b>所罗门（左人） &amp; 雷克斯（右人） 各 ~28.6%，胡金（左鸟） ~42.8%</div>
   </div>
-  <p>激活所罗门 + <strong>胡金 (2)</strong> + 雷克斯。</p>
-  <div class="note">&gt;8k HP 远程可无神圣之火存活本阶段，黑骑士不一定要死跟队伍。</div>
-  <p><strong>优先杀胡金</strong>——DR 等于浪费约 20 秒进度。</p>
-  <h4>胡金伤害反弹</h4>
+  <p>激活所罗门（左人） + <strong>胡金（左鸟） (2)</strong> + 雷克斯（右人）。</p>
+  <div class="note">&gt;8k HP 远程可无神圣之火（HB）存活本阶段，黑骑士（DK）不一定要死跟队伍。</div>
+  <p><strong>优先杀胡金（左鸟）</strong>——反伤等于浪费约 20 秒进度。</p>
+  <h4>胡金（左鸟）伤害反弹</h4>
   <div class="gallery">
-    <div class="shot"><figure class="media"><img src="https://i.imgur.com/vXCHMMi.gif" alt="DR 动画" loading="lazy"><figcaption>DR 动画</figcaption></figure></div>
+    <div class="shot"><figure class="media"><img src="https://i.imgur.com/vXCHMMi.gif" alt="反伤动画" loading="lazy"><figcaption>反伤动画</figcaption></figure></div>
     <div class="shot"><figure class="media"><img src="https://i.imgur.com/ShpbGFj.png" alt="武器反伤" loading="lazy"><figcaption>武器反伤</figcaption></figure></div>
     <div class="shot"><figure class="media"><img src="https://i.imgur.com/ulxlBJS.png" alt="魔法反伤" loading="lazy"><figcaption>魔法反伤</figcaption></figure></div>
     <div class="shot"><figure class="media"><img src="https://i.imgur.com/kiUZW32.png" alt="双反伤" loading="lazy"><figcaption>双反伤</figcaption></figure></div>
   </div>
   <div class="danger">胸口发黄立刻停手。武器/魔法反伤约 8.5k–11.5k；双反伤约 13.5k–16.5k。技能表区间略宽：武器/魔法 8k–12k，双反伤 13k–17k。<br>
-  神射手这段改用箭扫射 Strafe，不要用暴风箭雨 Hurricane，降低被 DR 秒杀风险。</div>
-  <div class="oldbox"><span class="tag oldtag">旧</span>冲锋队长金手指 + 潜龙出渊时要额外小心，潜龙出渊打得到左鸟。2024 现行阶段说明里没再强调，但技能距离没变；金手指本身也打不到阿里尔。</div>
+  神射手（BM）这段改用箭扫射（Strafe），不要用暴风箭雨（Hurricane），降低被反伤（DR）秒杀风险。</div>
+  <div class="oldbox"><span class="tag oldtag">旧</span>冲锋队长（Bucc）金手指（Barrage） + 潜龙出渊（Dragon Strike）时要额外小心，潜龙出渊打得到左鸟。2024 现行阶段说明里没再强调，但技能距离没变；金手指本身也打不到阿里尔（中间）。</div>
 </section>
 
 <section id="p4">
-  <h2>雕像阶段 4 · + 穆宁 Munin</h2>
+  <h2>雕像阶段 4 · + 穆宁（右鸟）</h2>
   <figure class="media"><img src="https://i.imgur.com/ctsz555.jpeg" alt="阶段 4" loading="lazy"><figcaption>阶段 4</figcaption></figure>
   <div class="phase-card">
     <div class="stat"><b>难度</b>不小心会很难</div>
     <div class="stat"><b>时间</b>8–13 min</div>
     <div class="stat"><b>HP</b>1.5 bil（约 27%）</div>
   </div>
-  <p>激活所罗门 + 胡金 + <strong>穆宁 (4)</strong> + 雷克斯。最大威胁是穆宁（右鸟）群体诱惑。</p>
-  <p>三种群体诱惑按穆宁剩余血量触发（不是随机三选一）：</p>
+  <p>激活所罗门（左人） + 胡金（左鸟） + <strong>穆宁（右鸟） (4)</strong> + 雷克斯（右人）。最大威胁是穆宁（右鸟）群体诱惑。</p>
+  <p>三种群体诱惑按穆宁（右鸟）剩余血量触发（不是随机三选一）：</p>
   <table>
     <thead><tr><th>诱惑</th><th>触发血量</th><th>持续</th><th>冷却</th><th>目标</th><th>危险程度</th></tr></thead>
     <tbody>
@@ -498,47 +691,47 @@
   <p>当前两种主流：<strong>鸟先（Bird first）</strong> / <strong>鸟后（Bird last）</strong>。</p>
 
   <details open>
-    <summary>鸟先策略（先杀穆宁）</summary>
-    <p>用较大火力在圣灵之盾保护下爆发穆宁。通常每队自带主教，阶段 4 开场放盾。</p>
-    <p>盾结束后主教可能离队与冲锋队长组队吃伺机待发（TL）刷新圣灵之盾，再回原队续盾。视冲锋队长与火力一般 TL 1–2 次。</p>
+    <summary>鸟先策略（先杀穆宁（右鸟））</summary>
+    <p>用较大火力在圣灵之盾（HS）保护下爆发穆宁（右鸟）。通常每队自带主教，阶段 4 开场放盾。</p>
+    <p>盾结束后主教可能离队与冲锋队长（Bucc）组队吃伺机待发（TL）刷新圣灵之盾，再回原队续盾。视冲锋队长与火力一般伺机待发（TL）1–2 次。</p>
     <ul>
-      <li>输出若没吃到盾：被诱惑立刻勇士的意志。</li>
-      <li>冲锋队长：注意能量与 TL 时机。</li>
+      <li>输出若没吃到盾：被诱惑立刻勇士的意志（Will）。</li>
+      <li>冲锋队长：注意能量与伺机待发（TL）时机。</li>
     </ul>
-    <p>穆宁倒后同阶段 3：优先胡金 → 所罗门 → 雷克斯。</p>
+    <p>穆宁（右鸟）倒后同阶段 3：优先胡金（左鸟） → 所罗门（左人） → 雷克斯（右人）。</p>
     <p>优点：更快、阶段 4 更舒服；缺点：需要主教/冲锋队长配合与足够火力。盾断掉后群体诱惑 + 其他雕像技能很容易崩盘。</p>
   </details>
 
   <details>
-    <summary>鸟后策略（最后杀穆宁）</summary>
-    <p>先清其他雕像，再接近穆宁。地图前 10 个进图角色整阶段都会吃向左走诱惑。</p>
-    <p>通常隐士 / 侠盗先开图吃诱惑（高回避，尤其 30k HP）。被放逐的人视为<strong>最后进图</strong>，不保留原序号。</p>
+    <summary>鸟后策略（最后杀穆宁（右鸟））</summary>
+    <p>先清其他雕像，再接近穆宁（右鸟）。地图前 10 个进图角色整阶段都会吃向左走诱惑。</p>
+    <p>通常隐士（NL） / 侠盗先开图吃诱惑（高回避，尤其 30k HP）。被放逐的人视为<strong>最后进图</strong>，不保留原序号。</p>
     <p>成功依赖：大量隐士/侠盗、高血、足够主教续复活。若你在诱惑序列里苹果期一直死，可先停手等到被放逐。</p>
-    <p>顺序类似阶段 3：胡金 → 所罗门 → 雷克斯 → 最后穆宁。</p>
+    <p>顺序类似阶段 3：胡金（左鸟） → 所罗门（左人） → 雷克斯（右人） → 最后穆宁（右鸟）。</p>
   </details>
 
-  <figure class="media"><img src="https://i.imgur.com/ucmDmcV.gif" alt="穆宁群体诱惑" loading="lazy"><figcaption>穆宁群体诱惑 — 立刻勇士的意志</figcaption></figure>
-  <div class="note">被放逐到别的图：走<strong>最左侧 portal</strong> 回战斗图（有 <strong>90 秒</strong>时限，超时踢出远征）。</div>
-  <div class="note">中文社群现行跑团把鸟先写成固定口令，击杀顺序和伺机待发轮换见 <a href="#cn-run">中文社群跑团</a>。</div>
+  <figure class="media"><img src="https://i.imgur.com/ucmDmcV.gif" alt="穆宁（右鸟）群体诱惑" loading="lazy"><figcaption>穆宁（右鸟）群体诱惑 — 立刻勇士的意志</figcaption></figure>
+  <div class="note">被放逐到别的图：走<strong>最左侧传送门（portal）</strong> 回战斗图（有 <strong>90 秒</strong>时限，超时踢出远征）。</div>
+  <div class="note">打法怎么按人数/编制选型见 <a href="#strats">打法分类与人数编制</a>；中文社群现行满编鸟先口令见 <a href="#cn-run">中文社群跑团</a>。</div>
 </section>
 
 <section id="p5">
-  <h2>雕像阶段 5 · + 阿里尔 Ariel</h2>
+  <h2>雕像阶段 5 · + 阿里尔（中间）</h2>
   <figure class="media"><img src="https://i.imgur.com/TOV6BW2.jpeg" alt="阶段 5" loading="lazy"><figcaption>阶段 5</figcaption></figure>
   <div class="phase-card">
     <div class="stat"><b>难度</b>不小心会很难</div>
     <div class="stat"><b>时间</b>12–20 min</div>
     <div class="stat"><b>HP</b>2.1 bil（约 38%）</div>
   </div>
-  <p>全雕像激活（加入 <strong>阿里尔 [3]</strong>）。策略类似阶段 4：</p>
+  <p>全雕像激活（加入 <strong>阿里尔（中间，3）</strong>）。策略类似阶段 4：</p>
   <ul>
-    <li><strong>鸟先：</strong>爆发穆宁 → 所罗门 → 同时压胡金与阿里尔 → 雷克斯</li>
-    <li><strong>鸟后：</strong>先所罗门 → 同时压胡金与阿里尔 → 雷克斯 → 最后穆宁</li>
+    <li><strong>鸟先：</strong>爆发穆宁（右鸟） → 所罗门（左人） → 同时压胡金（左鸟）与阿里尔（中间） → 雷克斯（右人）</li>
+    <li><strong>鸟后：</strong>先所罗门（左人） → 同时压胡金（左鸟）与阿里尔（中间） → 雷克斯（右人） → 最后穆宁（右鸟）</li>
   </ul>
-  <p>阿里尔有武器取消；胡金（左鸟）有 DR。两边分伤可保持最大输出 uptime。</p>
-  <div class="warnbox">冲锋队长金手指 Barrage 够不到阿里尔。</div>
-  <figure class="media"><img src="https://i.imgur.com/s1vvCeD.gif" alt="阿里尔驱散动画" loading="lazy"><figcaption>阿里尔驱散动画</figcaption></figure>
-  <p>注意阿里尔驱散，保命 buff 常驻。驱散仅在阿里尔 <strong>&lt;60% HP</strong> 时出现；无人打阿里尔时该动画只能是僵尸化。</p>
+  <p>阿里尔（中间）有武器取消；胡金（左鸟）有反伤（DR）。两边分伤可保持最大输出时间。</p>
+  <div class="warnbox">冲锋队长金手指够不到阿里尔（中间）。</div>
+  <figure class="media"><img src="https://i.imgur.com/s1vvCeD.gif" alt="阿里尔（中间）驱散动画" loading="lazy"><figcaption>阿里尔（中间）驱散动画</figcaption></figure>
+  <p>注意阿里尔（中间）驱散，保命 buff 常驻。驱散仅在阿里尔（中间） <strong>&lt;60% HP</strong> 时出现；无人打阿里尔（中间）时该动画只能是僵尸化。</p>
   <p>最后一座倒下前，按策略站到正确半场，准备品克缤刷新。</p>
   <div class="note">负责索命的冲锋队长：阶段 5 结束前几分钟保持超级变身。</div>
 </section>
@@ -546,13 +739,13 @@
 <section id="pb-body">
   <h2>品克缤本体阶段</h2>
   <p>品克缤仅 2.1b HP，但对所有物理伤害 Strong（减伤 50%），等效约 <strong>4.2b</strong>。一般与雕像阶段相当，约 <strong>~40 分钟</strong>。</p>
-  <p>共 3 种技能 + 4 种攻击。最容易死人的是 <strong>伤害反弹 DR</strong> 与 <strong>音符诱惑</strong>。</p>
+  <p>共 3 种技能 + 4 种攻击。最容易死人的是 <strong>伤害反弹（DR）</strong> 与 <strong>音符诱惑</strong>。</p>
   <div class="gallery">
-    <div class="shot"><figure class="media"><img src="https://i.imgur.com/TBQiBpD.gif" alt="DR — 立刻停手" loading="lazy"><figcaption>DR — 立刻停手</figcaption></figure></div>
+    <div class="shot"><figure class="media"><img src="https://i.imgur.com/TBQiBpD.gif" alt="反伤 — 立刻停手" loading="lazy"><figcaption>反伤 — 立刻停手</figcaption></figure></div>
     <div class="shot"><figure class="media"><img src="https://i.imgur.com/fB5cXNF.gif" alt="音符 — 立刻意志" loading="lazy"><figcaption>音符 — 立刻意志</figcaption></figure></div>
   </div>
   <figure class="media"><img src="https://i.imgur.com/wgG72Fr.gif" alt="雕像全灭后品克缤刷新" loading="lazy"><figcaption>雕像全灭后，移动的品克缤在中央刷新</figcaption></figure>
-  <p>雕像全灭后，移动的品克缤从原先坐着的中央刷新。通常由冲锋队长推/拉到指定位置后，输出才开打。</p>
+  <p>雕像全灭后，移动的品克缤从原先坐着的中央刷新。通常由冲锋队长（Bucc）推/拉到指定位置后，输出才开打。</p>
 
   <h3>站位</h3>
   <figure class="media"><img src="https://i.imgur.com/XNVEYfD.jpg" alt="站位示意 (1)(2)" loading="lazy"><figcaption>站位示意 (1)(2)</figcaption></figure>
@@ -564,8 +757,8 @@
     <div class="shot"><figure class="media"><img src="https://i.imgur.com/IbjqGMc.png" alt="HD2 客户端 3.5 格" loading="lazy"><figcaption>HD2 客户端（3.5 格）</figcaption></figure></div>
   </div>
   <ul>
-    <li><strong>&gt;90%：</strong>不会 DR，朝右时可放心打。</li>
-    <li><strong>&lt;90%：</strong>开始点按技能，随时准备停 DR；神射手可改箭扫射。</li>
+    <li><strong>&gt;90%：</strong>不会反伤（DR），朝右时可放心打。</li>
+    <li><strong>&lt;90%：</strong>开始点按技能，随时准备停反伤（DR）；神射手可改箭扫射。</li>
     <li><strong>80%：</strong>开始召唤小豆。优先清豆：魔导终极技通常最快，主教创世也能打（2022 周年已移除小豆圣免疫）；物理继续打本体。</li>
   </ul>
 
@@ -574,13 +767,13 @@
     <p><span class="tag oldtag">约 2021-06</span> 当时服务器最成功的队主要用右侧站桩。</p>
     <ul>
       <li>位置 (1)，最右柱 / 右绳下方：右侧远程不用频繁重置站位，但躲不了音符诱惑。</li>
-      <li>位置 (2)，右数第二根柱 / 第二个球下方：可以躲到平台下躲音符；神圣之火断了可以爬上平台躲高伤。代价是右侧远程被击退后要重新站位。</li>
+      <li>位置 (2)，右数第二根柱 / 第二个球下方：可以躲到平台下躲音符；神圣之火（HB）断了可以爬上平台躲高伤。代价是右侧远程被击退（KB）后要重新站位。</li>
       <li>右侧大部队要求多数人血量高于 18700，才能吃住大爆炸。近战把豆保持在右一柱和右二柱之间，不要推过右边断柱。</li>
       <li>远程站右侧输出。豆漂到左边时，不要越过断柱；攻击距离够到右二柱。</li>
       <li>左侧低血远程要站在最大攻击距离。箭神不要在左侧放一击要害箭，狙击击退会重置仇恨。</li>
       <li>只要左边还有人，就要留一名近战当安全网。反伤期间尤其要防止它长时间面朝左。</li>
     </ul>
-    <p>另一套是理论输出更高、允许低血参加的左侧打法，起步功劳归 Nise。远程只吃 1/1，避开大爆炸的击退和混乱，黑骑士和船长还可以狂暴。责任全压在冲锋队长和近战身上，必须让豆面朝右。远程始终回到平台左端，近战回到平台右端。</p>
+    <p>另一套是理论输出更高、允许低血参加的左侧打法，起步功劳归 Nise。远程只吃 1/1，避开大爆炸的击退和混乱，黑骑士（DK）和船长还可以狂暴。责任全压在冲锋队长和近战身上，必须让豆面朝右。远程始终回到平台左端，近战回到平台右端。</p>
   </details>
 
   <div class="warnbox">
@@ -601,10 +794,10 @@
     <summary>Nise 关于仇恨 / 击退的说明</summary>
     <ul>
       <li>品克缤战内一切有 auto-aggro：进入范围后盯视线内第一人，每隔几秒刷新。</li>
-      <li>击退只是让它朝被 KB 的方向（硬直）。硬直结束后仇恨仍是视线内第一人。</li>
-      <li>要 KB 需：品克缤不在施法动画中；近期未被 KB；伤害超 KB 阈值（上线时 14 万，2021 周年改为 <strong>20 万</strong>）或技能自带 KB（金手指 / 冲刺 / 索命）。</li>
-      <li>箭神一击要害箭有时不硬直，多半因中动画或刚被 KB。硬直也只是重置朝向视野第一人——所以箭神被超级击退到最右时，品克缤不会一路冲向他碾压全员。</li>
-      <li>高单线伤害除非过 KB 阈值，否则不影响 aggro。其他王阈值更低（如无名约 5 万），所以单段高伤更有用；隐士多段小伤则不容易击退。</li>
+      <li>击退只是让它朝被击退的方向（硬直）。硬直结束后仇恨仍是视线内第一人。</li>
+      <li>要击退需：品克缤不在施法动画中；近期未被 击退；伤害超 击退阈值（上线时 14 万，2021 周年改为 <strong>20 万</strong>）或技能自带击退（金手指 / 冲刺 / 索命）。</li>
+      <li>箭神一击要害箭有时不硬直，多半因中动画或刚被 击退。硬直也只是重置朝向视野第一人——所以箭神被超级击退到最右时，品克缤不会一路冲向他碾压全员。</li>
+      <li>高单线伤害除非过 击退阈值，否则不影响 aggro。其他王阈值更低（如无名约 5 万），所以单段高伤更有用；隐士多段小伤则不容易击退。</li>
     </ul>
   </details>
 </section>
@@ -634,7 +827,7 @@
   <h2>冲锋队长专项与 DPM 惩罚</h2>
   <p>阶段间职责详见：<a href="https://forum.legends.ml/index.php?threads/a-buccaneers-field-guide-2021-update-pink-bean.34735/" target="_blank" rel="noopener">A Buccaneer's Field Guide（含 PB）</a>；附录亦有中文摘要。</p>
   <p>Aggro 职责对冲锋队长潜在 DPM 打击很大。通常 2 人轮换变身：A 变身时 B 不在，A 下了 B 再上——仅因等待已至少 <strong>~10.5% DPM</strong> 损失（变身空窗变长）。</p>
-  <p>金手指会 KB 并把品克缤推出最佳位，故不能狂刷金手指；未变身时最佳多为蓄能拳（Flash Fist）快速充能再超能量。潜龙出渊/上勾拳搭配因动画慢、充能慢，不如蓄能拳+能量耗转/超能量。相对满潜力约 <strong>&gt;30% DPM</strong> 损失。</p>
+  <p>金手指会 击退 并把品克缤推出最佳位，故不能狂刷金手指；未变身时最佳多为蓄能拳快速充能再超能量（Energy Orb）。潜龙出渊/上勾拳搭配因动画慢、充能慢，不如蓄能拳+能量耗转（Energy Drain）/超能量。相对满潜力约 <strong>&gt;30% DPM</strong> 损失。</p>
   <details>
     <summary>详细计算</summary>
     <p><strong>金手指惩罚（&gt;30% DPM）</strong> — %DPM/min：</p>
@@ -658,7 +851,7 @@
 </section>
 
 <section id="anim-solomon">
-  <h2>动画与效果 · 所罗门 Solomon the Wise</h2>
+  <h2>动画与效果 · 所罗门（左人）</h2>
   <ul>
     <li>HP: 300,000,000 · EXP: 3,000,000</li>
     <li>最大触碰：阶段 1–4 <strong>17.6k</strong>；阶段 5 <strong>19.1k</strong></li>
@@ -668,14 +861,14 @@
   <tr><th>最大伤害</th><td>魔法 · 雷<br>阶段1–4: 4.8k<br>阶段5: 5.5k</td><td>HP/MP → 1/1</td><td>物理 6.9k</td></tr>
   <tr><th>效果</th><td><img src="https://i.imgur.com/M8G6w5H.gif" alt="封印"><div class="muted">封印 Seal</div></td><td><img src="https://i.imgur.com/fBrAQd8.gif" alt="眩晕"><div class="muted">眩晕 + 超级击退（圣灵之盾可防晕）</div></td><td><img src="https://i.imgur.com/VxFYzot.gif" alt="缓速"><div class="muted">缓速 Slow</div></td></tr>
   <tr><th>持续</th><td>30 秒</td><td>5 秒</td><td>15 秒</td></tr>
-  <tr><th>范围</th><td>左半场</td><td>左半场（除顶平台）</td><td>左半场但不在所罗门身后</td></tr>
+  <tr><th>范围</th><td>左半场</td><td>左半场（除顶平台）</td><td>左半场但不在所罗门（左人）身后</td></tr>
   <tr><th>击退</th><td>向左</td><td>向左</td><td>向左</td></tr>
   </tbody></table>
   <p class="muted">参考 GIF：<a href="https://imgur.com/JEdcEce.gif">蓝闪电</a> · <a href="https://imgur.com/zp2k2no.gif">蓝杖砸</a> · <a href="https://imgur.com/AifI22E.gif">蓝吼</a></p>
 </section>
 
 <section id="anim-rex">
-  <h2>动画与效果 · 雷克斯 Rex the Wise</h2>
+  <h2>动画与效果 · 雷克斯（右人）</h2>
   <ul>
     <li>HP: 300,000,000 · EXP: 3,000,000</li>
     <li>最大触碰：阶段 1–4 <strong>18.6k</strong>；阶段 5 <strong>19.6k</strong></li>
@@ -685,13 +878,13 @@
   <tr><th>最大伤害</th><td>魔法 · 雷<br>阶段1–4: 4.5k<br>阶段5: 5.3k</td><td>HP/MP → 1/1</td><td>物理<br>阶段1–4: 8.5k<br>阶段5: 9.6k</td><td>技能 · 无伤害</td></tr>
   <tr><th>效果</th><td><img src="https://i.imgur.com/ITVVggH.gif" alt="黑暗"><div class="muted">黑暗 Darkness</div></td><td><img src="https://i.imgur.com/YUJTZ1T.gif" alt="僵尸化"><div class="muted">僵尸化 + 超级击退</div></td><td><img src="https://i.imgur.com/B1uuMJy.gif" alt="中毒"><div class="muted">中毒 20 DPS</div></td><td>驱散 或 <img src="https://i.imgur.com/Vzmjw8i.gif" alt="混乱"><div class="muted">混乱 Confuse</div></td></tr>
   <tr><th>持续</th><td>30 秒</td><td>20 秒</td><td>20 秒</td><td>驱散 90% 概率<br>混乱 15 秒</td></tr>
-  <tr><th>范围</th><td>右半场</td><td>右半场（除顶平台）</td><td>右半场但不在雷克斯身后</td><td>驱散全图；混乱仅地图中部</td></tr>
+  <tr><th>范围</th><td>右半场</td><td>右半场（除顶平台）</td><td>右半场但不在雷克斯（右人）身后</td><td>驱散全图；混乱仅地图中部</td></tr>
   <tr><th>击退</th><td>向左</td><td>向右</td><td>向左</td><td>无</td></tr>
   </tbody></table>
 </section>
 
 <section id="anim-hugin">
-  <h2>动画与效果 · 胡金 Hugin（左鸟）</h2>
+  <h2>动画与效果 · 胡金（左鸟）</h2>
   <ul>
     <li>HP: 450,000,000 · EXP: 3,500,000</li>
     <li>最大触碰：阶段 1–4 <strong>21.3k</strong>；阶段 5 <strong>22.9k</strong></li>
@@ -702,13 +895,13 @@
   <tr><th>最大伤害</th><td>魔法 · 火<br>阶段1–4: 6.5k<br>阶段5: 7.4k</td><td>物理 8.5k</td><td>技能 · 每击反伤</td><td>技能 · 无伤害</td></tr>
   <tr><th>效果</th><td><img src="https://i.imgur.com/VxFYzot.gif" alt="缓速"><div class="muted">缓速</div></td><td><img src="https://i.imgur.com/YUJTZ1T.gif" alt="僵尸化"><div class="muted">僵尸化</div></td><td><img src="https://i.imgur.com/LO5n3oU.png" alt=""><img src="https://i.imgur.com/Ro3ZalE.png" alt="">武器/魔法反伤: 8k–12k/hit<br><img src="https://i.imgur.com/PZiFCQO.png" alt=""> 双反伤: 13k–17k/hit</td><td><img src="https://i.imgur.com/M8G6w5H.gif" alt="封印"><div class="muted">封印</div> 或 <img src="https://i.imgur.com/KGKrESI.gif" alt="虚弱"><div class="muted">虚弱</div></td></tr>
   <tr><th>持续</th><td>15 秒</td><td>20 秒</td><td>20 秒</td><td>封印 30 / 虚弱 30</td></tr>
-  <tr><th>范围</th><td>全图</td><td>胡金周围</td><td>被击时触发</td><td>几乎全图</td></tr>
+  <tr><th>范围</th><td>全图</td><td>胡金（左鸟）周围</td><td>被击时触发</td><td>几乎全图</td></tr>
   <tr><th>击退</th><td>向左</td><td>向左</td><td>无</td><td>无</td></tr>
   </tbody></table>
 </section>
 
 <section id="anim-munin">
-  <h2>动画与效果 · 穆宁 Munin（右鸟）</h2>
+  <h2>动画与效果 · 穆宁（右鸟）</h2>
   <ul>
     <li>HP: 450,000,000 · EXP: 3,500,000</li>
     <li>最大触碰：阶段 1–4 <strong>21.8k</strong>；阶段 5 <strong>23.5k</strong></li>
@@ -719,14 +912,14 @@
   <tr><th>最大伤害</th><td>魔法 · 冰<br>阶段1–4: 7.3k<br>阶段5: 8.2k</td><td>物理 8.5k</td><td>技能 · 无伤害</td><td>技能 · 无伤害</td></tr>
   <tr><th>效果</th><td><img src="https://i.imgur.com/Vzmjw8i.gif" alt="混乱"><div class="muted">混乱</div></td><td><img src="https://i.imgur.com/fBrAQd8.gif" alt="眩晕"><div class="muted">眩晕</div></td><td>随机放逐 1–5 人</td><td><img src="https://i.imgur.com/8AEU8sb.gif" alt="群体诱惑"><div class="muted">群体诱惑</div> 或 <img src="https://i.imgur.com/KGKrESI.gif" alt="虚弱"><div class="muted">虚弱</div></td></tr>
   <tr><th>持续</th><td>15 秒</td><td>10 秒</td><td>80% 概率</td><td>左走 10s（100% HP；CD 40s；前 10 人）<br>左跳 30s（80% HP；CD 40s；前 15 人）<br>右跳 30s（60% HP；CD 40s；前 15 人）<br>虚弱 30s</td></tr>
-  <tr><th>范围</th><td>全图</td><td>穆宁周围</td><td>全图</td><td>全图</td></tr>
+  <tr><th>范围</th><td>全图</td><td>穆宁（右鸟）周围</td><td>全图</td><td>全图</td></tr>
   <tr><th>击退</th><td>向左</td><td>向左</td><td>无</td><td>无</td></tr>
   </tbody></table>
-  <div class="note">被放逐视为最后进图。放逐后出生在另一图右端，有 <strong>90 秒</strong>（超时踢出远征）需走<strong>最左 portal</strong> 回战场。</div>
+  <div class="note">被放逐视为最后进图。放逐后出生在另一图右端，有 <strong>90 秒</strong>（超时踢出远征）需走<strong>最左传送门</strong> 回战场。</div>
 </section>
 
 <section id="anim-ariel">
-  <h2>动画与效果 · 阿里尔 Ariel</h2>
+  <h2>动画与效果 · 阿里尔（中间）</h2>
   <ul>
     <li>HP: 600,000,000 · EXP: 20,000,000</li>
     <li>最大触碰：<strong>23.2k</strong></li>
@@ -737,8 +930,8 @@
   <tr><th>最大伤害</th><td>魔法 13.6k</td><td>HP/MP → 1/1</td><td>技能 · 无直接伤害</td><td>技能 · 无伤害</td></tr>
   <tr><th>效果</th><td><img src="https://i.imgur.com/ITVVggH.gif" alt="黑暗"><div class="muted">黑暗</div></td><td><img src="https://i.imgur.com/fBrAQd8.gif" alt="眩晕"><div class="muted">眩晕 + 超级击退</div></td><td>治疗 200k HP 或 <img src="https://i.imgur.com/WuI6Vlq.png" alt="武器取消"><div class="muted">武器取消</div> 或 <img src="https://i.imgur.com/ZHI8K1y.png" alt="魔法取消"><div class="muted">魔法取消</div> 或 毒云 2k DPS</td><td><img src="https://i.imgur.com/YUJTZ1T.gif" alt="僵尸化"><div class="muted">僵尸化</div> 或 驱散</td></tr>
   <tr><th>持续</th><td>10 秒</td><td>10 秒</td><td>取消 40s / 毒云 20s</td><td>僵尸化 60s（CD 2 min）<br>驱散 90% 概率；60% HP 阈值</td></tr>
-  <tr><th>范围</th><td>全图</td><td>全图</td><td>治疗全图；毒云在穆宁附近</td><td>全图</td></tr>
-  <tr><th>击退</th><td>向左</td><td>远离阿里尔</td><td>无</td><td>无</td></tr>
+  <tr><th>范围</th><td>全图</td><td>全图</td><td>治疗全图；毒云在穆宁（右鸟）附近</td><td>全图</td></tr>
+  <tr><th>击退</th><td>向左</td><td>远离阿里尔（中间）</td><td>无</td><td>无</td></tr>
   </tbody></table>
 </section>
 
@@ -757,7 +950,7 @@
   <tr><th>效果</th><td><img src="https://i.imgur.com/M8G6w5H.gif" alt="封印"><div class="muted">封印</div></td><td><img src="https://i.imgur.com/Vzmjw8i.gif" alt="混乱"><div class="muted">混乱 + 超级击退</div></td><td><img src="https://i.imgur.com/8AEU8sb.gif" alt="诱惑左跳"><div class="muted">诱惑左跳</div></td><td><img src="https://i.imgur.com/fBrAQd8.gif" alt="眩晕"><div class="muted">眩晕</div></td><td><img src="https://i.imgur.com/PZiFCQO.png" alt="双反伤"><div class="muted">双反伤 13k–17k/hit（无无敌帧）</div></td><td>召唤 12 只小豆</td><td><img src="https://i.imgur.com/YUJTZ1T.gif" alt="僵尸化"><div class="muted">僵尸化</div></td></tr>
   <tr><th>持续</th><td>15 秒</td><td>15 秒</td><td>10 秒</td><td>5 秒（圣灵之盾可防晕）</td><td>20 秒（CD 1 min；90% HP 阈值）</td><td>（CD 1 min；80% HP 阈值）</td><td>60 秒（CD 2 min）</td></tr>
   <tr><th>击退</th><td>朝向品克缤</td><td>远离品克缤</td><td>向左</td><td>向左</td><td>无</td><td>无</td><td>无</td></tr>
-  <tr><th>补充</th><td>每下把你拉近</td><td>判定框从动画起点开始；只打面朝方向</td><td>可钻平台下或走开；只在面朝左时施放；地面落点先于喇叭</td><td>仅朝左时可放</td><td>有 DR 音效；动画约 1.5–2 秒开头会打出 1 点伤害</td><td>有口哨音效</td><td>效果在动画后 5 秒生效</td></tr>
+  <tr><th>补充</th><td>每下把你拉近</td><td>判定框从动画起点开始；只打面朝方向</td><td>可钻平台下或走开；只在面朝左时施放；地面落点先于喇叭</td><td>仅朝左时可放</td><td>有反伤音效；动画约 1.5–2 秒开头会打出 1 点伤害</td><td>有口哨音效</td><td>效果在动画后 5 秒生效</td></tr>
   </tbody></table>
 </section>
 
@@ -791,7 +984,7 @@
     <li><strong>阶段 2：</strong>人留在原位。注意右雕像驱散（法杖或剑微抬、带蓝光）。</li>
     <li><strong>阶段 3：</strong>从右侧开打，雕像倒了再穿。继续防右雕像驱散。近战不要越过右人的球。远程注意左鸟胸口发黄。等远程穿过来，再打死最后一座。</li>
     <li><strong>阶段 4：</strong>10 分钟苹果检查。可能诱惑，中了就意志。继续防驱散。两侧都不要越过右人的球。继续防反伤。等远程穿过来再收尾。</li>
-    <li><strong>阶段 5：</strong>20 分钟苹果检查。右雕像仍会驱散。阿里尔现在也会驱散，看蓝圈。继续防反伤。等远程穿过来再收尾。</li>
+    <li><strong>阶段 5：</strong>20 分钟苹果检查。右雕像仍会驱散。阿里尔（中间）现在也会驱散，看蓝圈。继续防反伤。等远程穿过来再收尾。</li>
     <li><strong>本体：</strong>30 分钟苹果检查，反伤检查，宠物拾取关闭。</li>
   </ul>
 </section>
@@ -805,15 +998,15 @@
 
 <section id="cn-run">
   <h2>中文社群跑团口令</h2>
-  <p class="muted">来自 MapleLegends 中文社群 <code>#pb-策略-strategy</code>（2026-01-05 流程总览）和 <code>#pb-攻略-guides</code>（2026-01 至 2026-06 的站位与反伤补充）。这是跑团口令。上面的技能表、鸟先 / 鸟后两套仍然有效；时间和击杀顺序以本节为准。</p>
+  <p class="muted">来自 MapleLegends 中文社群 <code>#pb-策略-strategy</code>（2026-01-05 流程总览）和 <code>#pb-攻略-guides</code>（2026-01 至 2026-06 的站位与反伤（DR）补充）。这是<strong>满编约 30 人 + 鸟先 Rush</strong>的跑团口令。其他人数/鸟后/椅子变体见 <a href="#strats">打法分类与人数编制</a>；技能表仍适用于所有编制。时间和击杀顺序以本节为准。</p>
   <div class="note">
-    <strong>时间账。</strong>雕像阶段约 30 分钟，本体约 40 分钟，战斗合计约 70 分钟。远征上限仍是 1 小时 30 分。策略是 4 名冲锋队长把右鸟 Rush 掉。全场 6 段：阶段 1 到 5 是雕像，五座都倒了再进本体。
+    <strong>时间账。</strong>雕像阶段约 30 分钟，本体约 40 分钟，战斗合计约 70 分钟。远征上限仍是 1 小时 30 分。策略是 4 名冲锋队长（Bucc）把右鸟 Rush 掉。全场 6 段：阶段 1 到 5 是雕像，五座都倒了再进本体。
   </div>
   <h3>进图</h3>
   <ul>
-    <li>开报名的远征队长先确认 30 人已经登记，然后等 host 下令再进图。</li>
-    <li>后面的人听指令，按顺序点 NPC。社群原文顺序是：刀飞、骑士、弓箭手、拳手、魔导、主教。按本页译名，刀飞是隐士，拳手是冲锋队长。</li>
-    <li>进图后先站上左边最高的台子，准备打左人。队长等人齐，再等 host 下令开 Boss。</li>
+    <li>开报名的远征队长先确认 30 人已经登记，然后等主持人（host）下令再进图。</li>
+    <li>后面的人听指令，按顺序点 NPC。进图职业顺序：隐士（NL） → 骑士 → 弓箭手 → 冲锋队长 → 魔导 → 主教。（社群原文口语「刀飞 / 拳手」即隐士 / 冲锋队长。）</li>
+    <li>进图后先站上左边最高的台子，准备打左人。队长等人齐，再等主持人下令开 Boss。</li>
   </ul>
   <h3>雕像击杀顺序</h3>
   <table>
@@ -822,7 +1015,7 @@
       <tr><td>1</td><td>左人</td><td>只能集火左人。</td></tr>
       <tr><td>2</td><td>左人 → 右人</td><td>左人死后立刻转移到右侧集火右人。</td></tr>
       <tr><td>3</td><td>左鸟 → 左人 → 右人</td><td>先左鸟，再左人，然后去右侧集火右人。</td></tr>
-      <tr><td>4</td><td>右鸟 → 左鸟 → 左人 → 右人</td><td>刷新圣灵之盾，全力秒右鸟。</td></tr>
+      <tr><td>4</td><td>右鸟 → 左鸟 → 左人 → 右人</td><td>刷新圣灵之盾（HS），全力秒右鸟。</td></tr>
       <tr><td>5</td><td>右鸟 → 左人 → 中间女神像 → 左鸟 → 右人</td><td>右鸟的圣灵之盾处理与阶段 4 相同。</td></tr>
     </tbody>
   </table>
@@ -832,28 +1025,28 @@
     <li>左鸟死后，主教要把圣灵之盾的冷却留到阶段 4 开局。</li>
   </ul>
   <h3>阶段 4 和阶段 5 的圣灵之盾</h3>
-  <div class="danger">右鸟会群体诱惑。用换队伺机待发把圣灵之盾刷新掉，盖住全队。这一阶段伺机待发 2 次，一共放 3 次盾。阶段 5 的右鸟同样处理。</div>
+  <div class="danger">右鸟会群体诱惑。用换队伺机待发（TL）把圣灵之盾刷新掉，盖住全队。这一阶段伺机待发 2 次，一共放 3 次盾。阶段 5 的右鸟同样处理。</div>
   <ol>
-    <li>阶段开始，各队主教听到 host 指令后放圣灵之盾，然后立刻退队。</li>
+    <li>阶段开始，各队主教听到主持人指令后放圣灵之盾，然后立刻退队。</li>
     <li>主主教开一个伺机待发队，把所有主教拉进来，再按事先排好的顺序拉对应的冲锋队长。</li>
     <li>伺机待发完成后解散这个队。5 名队长把主教和冲锋队长拉回原来的队伍。</li>
-    <li>主教回队之后，听 host 指令放第二次圣灵之盾。</li>
+    <li>主教回队之后，听主持人指令放第二次圣灵之盾。</li>
     <li>再重复一遍上面的流程。</li>
   </ol>
-  <p>攻略频道把同一次轮换写成：开局先放盾，退到 1 名冲锋队长加 5 名主教的队伍里吃伺机待发，再回原队。host 会提前定好 4 名冲锋队长的顺序，队长要记好要拉的角色名。三次盾按大约 40 秒一次来算，窗口大约 120 秒，用来把右鸟打掉，后面就不再吃诱惑。第二次、第三次盾等 host 叫。全体站在中间，往右边打右鸟。右鸟如果把人放逐到另一张图，马上从最左侧传送门回来。</p>
+  <p>攻略频道把同一次轮换写成：开局先放盾，退到 1 名冲锋队长加 5 名主教的队伍里吃伺机待发，再回原队。主持人会提前定好 4 名冲锋队长的顺序，队长要记好要拉的角色名。三次盾按大约 40 秒一次来算，窗口大约 120 秒，用来把右鸟打掉，后面就不再吃诱惑。第二次、第三次盾等主持人叫。全体站在中间，往右边打右鸟。右鸟如果把人放逐到另一张图，马上从最左侧传送门（portal）回来。</p>
   <p>阶段 5 里，右人快被击杀时，吃不住本体碰撞的人立刻移到地图左侧，避免本体一出来就被踩死。</p>
   <h3>本体</h3>
   <p>策略帖的本体一节只有标题。下面是攻略频道对同一套打法的站位和反伤说明。</p>
   <ul>
     <li>远程站在标注平台 1 的台子下面。近战站在平台 1 右边一点，刚好打到本体。平台 2 是本体应该被放到的位置。</li>
-    <li>负责仇恨的冲锋队长站在平台 1 下面，可以躲音符。被音符砸中会被强制向左跳，立刻开勇士的意志。</li>
+    <li>负责仇恨的冲锋队长站在平台 1 下面，可以躲音符。被音符砸中会被强制向左跳，立刻开勇士的意志（Will）。</li>
     <li>本体到一定血量后开伤害反弹，物理和魔法都反。持续大约 22 秒，冷却大约 60 秒。出现的钟点经常能对上下一轮，自己记下这一轮什么时候结束、什么时候再转好。</li>
     <li>社群生存口令：本体碰撞低于 25000，远程吃到的最高伤害低于 19000。技能表里的触碰上限和远程大爆炸是同一档，停手仍以动画为准。</li>
     <li>不要挂停不下来的三连宏，反伤一开就会被反死。不要把喝药交给宠物，该补血就手动补；死一次就要多吃苹果。</li>
     <li>本体阶段不要用冲刺和磁石，也不要骑着坐骑在地上走。</li>
     <li>反伤到来之前，本体有时会先召小豆。法师这时不要按住全屏技能，命中变密以后更容易在看不清反伤图标时继续输出。</li>
-    <li>反伤期间把仇恨抢回来，贴着它走，直到反伤冷却结束再让它自己走。这段不要金手指、索命或磁石。单手武器的战士做不了这套游走：反伤时不要用抢仇恨的技能，用木桶跟着它走一小段；看到它开始闲逛，再拆木桶，用潜龙出渊、超能量或超级变身。它开始施放反伤时再把仇恨接回来。</li>
-    <li>躲诱惑时，攻略频道标过两个平台都可以爬下去。近战和远程的走位以当周 host 的图为准。</li>
+    <li>反伤期间把仇恨抢回来，贴着它走，直到反伤冷却结束再让它自己走。这段不要金手指（Barrage）、索命（Snatch）或磁石。单手武器的战士做不了这套游走：反伤时不要用抢仇恨的技能，用木桶跟着它走一小段；看到它开始闲逛，再拆木桶，用潜龙出渊、超能量或超级变身。它开始施放反伤时再把仇恨接回来。</li>
+    <li>躲诱惑时，攻略频道标过两个平台都可以爬下去。近战和远程的走位以当周主持人 的图为准。</li>
   </ul>
   <p>流程录像：<a href="https://b23.tv/40Gvl4l" target="_blank" rel="noopener">隐士第一视角 20 人</a> · <a href="https://youtu.be/PeBrZ5wF5Js" target="_blank" rel="noopener">HOOD PB1, Run 20</a> · <a href="https://www.bilibili.com/video/BV1mQFYZdExp" target="_blank" rel="noopener">PB 打法攻略</a>。</p>
   <h3>看清反伤的客户端设置</h3>
@@ -870,14 +1063,14 @@
     <tbody>
       <tr><td>Welcome Pink Bean — 引入品克缤与永恒装备</td><td><a href="https://forum.legends.ml/index.php?threads/welcome-pink-bean.35080/">Halloween 2020</a></td></tr>
       <tr><td>反击上限 5；反伤伤害 15k；命运之轮上限 1</td><td><a href="https://forum.legends.ml/index.php?threads/unscheduled-maintenance-changes-23-11-2020.35518/">Post-intro 1</a> · <a href="https://forum.legends.ml/index.php?threads/scheduled-maintenance-november-15-2020.35389/">2</a></td></tr>
-      <tr><td>雕像仇恨：阿里尔全图；胡金/穆宁区域调整</td><td><a href="https://forum.legends.ml/index.php?threads/christmas-2020-balance-changes.36030/">Christmas 2020</a></td></tr>
+      <tr><td>雕像仇恨：阿里尔（中间）全图；胡金（左鸟）/穆宁（右鸟）区域调整</td><td><a href="https://forum.legends.ml/index.php?threads/christmas-2020-balance-changes.36030/">Christmas 2020</a></td></tr>
       <tr><td>反伤延迟 −50%；永恒打造/属性</td><td><a href="https://forum.legends.ml/index.php?threads/map-mob-changes-february-19-2021.38079/">Valentine 2021</a> · <a href="https://forum.legends.ml/index.php?threads/valentines-event-2021-balance-changes-explained.38080/">Craft</a></td></tr>
       <tr><td>每周成功上限 1；命运之轮停售</td><td><a href="https://forum.legends.ml/index.php?threads/anniversary-event-2021-balance-changes-explained.40565/">Anniversary 2021</a></td></tr>
-      <tr><td>胡金仇恨；阿里尔 hitbox</td><td><a href="https://forum.legends.ml/index.php?threads/summer-event-2021-balance-changes-explained.42322/">Summer 2021</a></td></tr>
+      <tr><td>胡金（左鸟）仇恨；阿里尔（中间） hitbox</td><td><a href="https://forum.legends.ml/index.php?threads/summer-event-2021-balance-changes-explained.42322/">Summer 2021</a></td></tr>
       <tr><td>本体圣抗取消（中性）；小豆圣免疫 + HP 加倍；小豆不再弱火/弱冰</td><td><a href="https://forum.legends.ml/index.php?threads/christmas-event-2021-balance-changes-explained.43806/">Christmas 2021</a></td></tr>
-      <tr><td>雕像全图自动仇恨；穆宁按血量诱惑；音符不可躲避；放逐 90 秒；报名 175；<strong>移除小豆圣免疫</strong></td><td><a href="https://forum.legends.ml/index.php?threads/anniversary-summer-event-2022-balance-changes-explained.46741/">Anniversary 2022</a></td></tr>
+      <tr><td>雕像全图自动仇恨；穆宁（右鸟）按血量诱惑；音符不可躲避；放逐 90 秒；报名 175；<strong>移除小豆圣免疫</strong></td><td><a href="https://forum.legends.ml/index.php?threads/anniversary-summer-event-2022-balance-changes-explained.46741/">Anniversary 2022</a></td></tr>
       <tr><td>神秘袋掉率上调，最多 3 袋</td><td><a href="https://forum.legends.ml/index.php?threads/october-2022-balance-changes-explained.47418/">October 2022</a></td></tr>
-      <tr><td>雷克斯混乱技能冷却改为 60 秒（此前默认 0）</td><td><a href="https://forum.legends.ml/index.php?threads/september-2023-balance-changes-explained.51184/">September 2023</a></td></tr>
+      <tr><td>雷克斯（右人）混乱技能冷却改为 60 秒（此前默认 0）</td><td><a href="https://forum.legends.ml/index.php?threads/september-2023-balance-changes-explained.51184/">September 2023</a></td></tr>
       <tr><td>周通 / Boss log 相关 bug 修复</td><td><a href="https://forum.legends.ml/index.php?threads/general-patch-notes-summer-2025.59350/">Summer 2025</a></td></tr>
     </tbody>
   </table>
@@ -888,18 +1081,18 @@
   <h2>2024 年前的旧打法</h2>
   <div class="oldbox">
     <p>下面这些被作者收进「Old stuff: Pre-2024」。右鸟当时更像一张有激活线的地图机关，和现在按进图顺序、按血量触发的诱惑不是同一套。</p>
-    <p><strong>阶段 3 旧效率打法：</strong>若人不在左边，先全体去左边打死所罗门。然后近战去右边打雷克斯，远程打胡金。只让远程打胡金，是为了离得够远时不触发它的动画，胡金会站桩。激活线是所罗门的剑，到中右平台绳子。连射、一击必杀、碎石乱击、后跳、麻痹、链环闪电、圣光这些技能，不越过剑就打不到左鸟。</p>
-    <p><strong>阶段 4 旧共识</strong>是想尽快打死右鸟，但必须等右人先死。所罗门和雷克斯的击退会把人推进右鸟激活区。激活区边界是左侧平台和雷克斯的剑。没圣灵之盾绝不要越线。一旦越线并被诱惑，立刻意志，并走向最近的角落。断柱和剑在一条线上，右侧的人用断柱判断能不能再往前。</p>
+    <p><strong>阶段 3 旧效率打法：</strong>若人不在左边，先全体去左边打死所罗门（左人）。然后近战去右边打雷克斯（右人），远程打胡金（左鸟）。只让远程打胡金（左鸟），是为了离得够远时不触发它的动画，胡金（左鸟）会站桩。激活线是所罗门（左人）的剑，到中右平台绳子。连射、一击要害箭、碎石乱击、后跳、麻痹、链环闪电、圣光这些技能，不越过剑就打不到左鸟。</p>
+    <p><strong>阶段 4 旧共识</strong>是想尽快打死右鸟，但必须等右人先死。所罗门（左人）和雷克斯（右人）的击退会把人推进右鸟激活区。激活区边界是左侧平台和雷克斯（右人）的剑。没圣灵之盾绝不要越线。一旦越线并被诱惑，立刻意志，并走向最近的角落。断柱和剑在一条线上，右侧的人用断柱判断能不能再往前。</p>
     <p>主教不少于 5 名时，五队可以同时圣灵之盾，40 秒内自由移动……主教少于 5 名时，不能让所有人同时免疫诱惑，进图站位会一直保持到右鸟死亡。</p>
-    <p><strong>阶段 5 旧打法：</strong>远程在打下右鸟和右人之后，到左上平台集中打阿里尔（血更厚，暗杀和金手指打不到）。当时写驱散阈值是 90%。</p>
-    <p>早期阶段 3 还有「远程离远了胡金就发呆」的说法。2024 年现行阶段 3 改成优先击杀胡金，因为反伤会直接吃掉 20 秒，不再把「不触发」当成主策略。</p>
+    <p><strong>阶段 5 旧打法：</strong>远程在打下右鸟和右人之后，到左上平台集中打阿里尔（中间）（血更厚，暗杀和金手指打不到）。当时写驱散阈值是 90%。</p>
+    <p>早期阶段 3 还有「远程离远了胡金（左鸟）就发呆」的说法。2024 年现行阶段 3 改成优先击杀胡金（左鸟），因为反伤会直接吃掉 20 秒，不再把「不触发」当成主策略。</p>
   </div>
 </section>
 
 <div class="appendix-wrap" id="appendix">
   <div class="appendix-banner">
     <h2>附录 · 招募、职业与补充资料</h2>
-    <p class="muted" style="margin:0">以下内容来自第二版整理：把主帖硬门槛，与冲锋队长 / 大魔导士 / 右鸟管理 / 梯队等论坛帖合并。公会内部苹果、面板和多开要求通常更严，以主持人当周说明为准。</p>
+    <p class="muted" style="margin:0">以下内容来自第二版整理：把主帖硬门槛，与冲锋队长 / 大魔导士（AM） / 右鸟管理 / 梯队等论坛帖合并。公会内部苹果、面板和多开要求通常更严，以主持人当周说明为准。</p>
   </div>
 
 <section id="app-req">
@@ -908,25 +1101,25 @@
     <thead><tr><th>项目</th><th>门槛</th><th>来源</th></tr></thead>
     <tbody>
       <tr><td>前置</td><td>时间神殿做到力场</td><td>动画攻略</td></tr>
-      <tr><td>门票</td><td>1 颗混沌大理石。提前至少 24 小时向神殿守卫再接「打破屏障」</td><td>动画攻略；法师帖也强调开跑前 24 小时拿好</td></tr>
+      <tr><td>门票</td><td>1 颗混沌大理石（Chaos Marble）。提前至少 24 小时向神殿守卫再接「打破屏障」</td><td>动画攻略；法师帖也强调开跑前 24 小时拿好</td></tr>
       <tr><td>次数</td><td>每日进入 1 次，每周成功 1 次，周三重置</td><td>2021 周年起每周成功上限为 1</td></tr>
       <tr><td>等级</td><td>175 级才能报名。150 级是 2022 周年之前的旧线</td><td>动画攻略</td></tr>
-      <tr><td>血量</td><td>进场前：近战 15000，远程 11900；策略允许时远程可 8100</td><td>动画攻略，均指神圣之火之前</td></tr>
-      <tr><td>冲锋队长血量</td><td>超体前大约 15000–16000 才能做索命和贴身职责。触碰约 24000，洗到约 25000 就可以不依赖超体。16000 是全内容的最低计划，品克缤必须有超体</td><td>iPippy，2021</td></tr>
-      <tr><td>法师血量</td><td>推荐超体前 4600，这样魔法盾被驱散时仍扛得住约 4500 的小豆。有超体时至少 4000 才能扛面朝左的创世、大爆炸或诱惑；5000 可以更放心贴身蹭无敌帧；有超体 10000 可以在僵尸化时少靠双药硬吃大爆炸</td><td>faithie，2022</td></tr>
+      <tr><td>血量</td><td>进场前（无神圣之火（HB））：近战 15000，远程 11900；策略允许时远程可 8100</td><td>动画攻略，均指无神圣之火时</td></tr>
+      <tr><td>冲锋队长（Bucc）血量</td><td>神圣之火前大约 15000–16000 才能做索命（Snatch）和贴身职责。触碰约 24000，洗到约 25000 就可以不依赖神圣之火。16000 是全内容的最低计划，品克缤必须有神圣之火</td><td>iPippy，2021</td></tr>
+      <tr><td>法师血量</td><td>推荐神圣之火前 4600，这样魔法盾（MG）被驱散时仍扛得住约 4500 的小豆。有神圣之火时至少 4000 才能扛面朝左的创世、大爆炸或诱惑；5000 可以更放心贴身蹭无敌帧；有神圣之火时 10000 可以在僵尸化时少靠双药硬吃大爆炸</td><td>faithie，2022</td></tr>
       <tr><td>人数与时间</td><td>最多 30 人，1 小时 30 分</td><td>动画攻略</td></tr>
-      <tr><td>药剂</td><td>主帖速记：500 万能药、1000 超级药水、10 苹果。法师帖：1000 超级药水、500 万能药、5 苹果或等量奶酪。熟练法师一场大约 600–800 瓶药水、300–400 万能药</td><td>两帖都要带，按职业和队里有没有真人主教调整</td></tr>
+      <tr><td>药剂</td><td>主帖速记：500 万能药、1000 超级药水、10 苹果。法师帖：1000 超级药水、500 万能药、5 苹果或等量cheese。熟练法师一场大约 600–800 瓶药水、300–400 万能药</td><td>两帖都要带，按职业和队里有没有真人主教调整</td></tr>
       <tr><td>进图准备</td><td>宠物自动喝血喝蓝打开，拾取关闭，符咒够用。从破碎回廊进报名点时上方向键只点一下</td><td>法师帖</td></tr>
     </tbody>
   </table>
   <div class="note">
-    <strong>主持人通常还要的编制（不是系统门槛）：</strong>
+    <strong>主持人（host）通常还要的编制（不是系统门槛）：</strong>
     <ul>
-      <li>至少能轮换的冲锋队长：满级伺机待发，至少 1 点索命和勇士的意志。两名冲锋队长错开变身至少约 1 分钟，保证始终有人能索命拉怪。</li>
-      <li>主教负责圣灵之盾、复活、净化。小豆已不圣免疫后，创世也能帮忙清豆；功能上主号与小号仍接近，很多队仍带主教小号做盾/复活。</li>
-      <li>清豆<strong>不强制</strong>魔导：魔导群攻通常更快，是加分项；没魔导时主教/其他群攻也可。单法师队若要自己清豆，可能仍要奶酪把伤害做够。</li>
-      <li>隐士、箭神、神射手、船长是雕像和本体的主要物理远程。侠盗高闪避，适合鸟后死的诱惑位，也可以金币爆炸补伤害。</li>
-      <li>黑骑士的独特价值是神圣之火。本体输出通常低于隐士和射手，很多队用黑骑士小号给超体，而不是招募黑骑士主号来打伤害。</li>
+      <li>至少能轮换的冲锋队长：满级伺机待发（TL），至少 1 点索命和勇士的意志（Will）。两名冲锋队长错开变身至少约 1 分钟，保证始终有人能索命拉怪。</li>
+      <li>主教负责圣灵之盾（HS）、复活、净化（Dispel）。小豆已不圣免疫后，创世也能帮忙清豆；功能上主号与小号仍接近，很多队仍带主教小号做盾/复活。</li>
+      <li>清豆<strong>不强制</strong>魔导：魔导群攻通常更快，是加分项；没魔导时主教/其他群攻也可。单法师队若要自己清豆，可能仍要cheese把伤害做够。</li>
+      <li>隐士（NL）、箭神、神射手、船长是雕像和本体的主要物理远程。侠盗高闪避，适合鸟后死的诱惑位，也可以金币爆炸补伤害。</li>
+      <li>黑骑士（DK）的独特价值是神圣之火。本体输出通常低于隐士和射手，很多队用黑骑士小号给神圣之火，而不是招募黑骑士主号来打伤害。</li>
     </ul>
   </div>
 </section>
@@ -975,6 +1168,7 @@
     <li>目标是让前 15 个进图名额在大约 2 分钟里尽量有圣灵之盾（大致是处理右鸟需要的时间）。</li>
   </ul>
   <h3>当时讨论过的三种编组</h3>
+  <p class="muted">与人数档位的对照、刚需表见 <a href="#strats">打法分类与人数编制</a>。</p>
   <ul>
     <li><strong>轮换主教：</strong>打右鸟前，3 人输出队踢掉一人，把主教拉进来放盾；盾快结束再换第二名主教，必要时第三名。没有第三名就靠伺机待发。前 15 人分成 3 队，主教最后进。6 名主教可以给这 15 人大约 80–100 秒覆盖。</li>
     <li><strong>双主教诱惑坦克队：</strong>主教放进前 18，每队 2 名主教，提前换好队。覆盖 18 人、同样 80–100 秒。需要 6 名主教。</li>
@@ -992,16 +1186,16 @@
     <div>
       <h3>必须功能</h3>
       <ul>
-        <li>冲锋队长：索命 / 金手指控位、伺机待发续盾与复活</li>
-        <li>主教：圣灵之盾、复活、净化、神圣祈祷</li>
+        <li>冲锋队长（Bucc）：索命（Snatch） / 金手指（Barrage）控位、伺机待发（TL）续盾与复活</li>
+        <li>主教：圣灵之盾（HS）、复活、净化（Dispel）、神圣祈祷</li>
         <li>清豆：魔导终极技优先；主教创世也可（非圣免疫）</li>
-        <li>黑骑士：神圣之火覆盖</li>
+        <li>黑骑士（DK）：神圣之火（HB）覆盖</li>
       </ul>
     </div>
     <div>
       <h3>输出优先级（功能算入后）</h3>
       <ul>
-        <li>隐士 &gt; 神射手 / 箭神 / 船长</li>
+        <li>隐士（NL） &gt; 神射手 / 箭神 / 船长</li>
         <li>大魔导士（清豆快，仍打本体）</li>
         <li>冲锋队长（以控场换输出）</li>
         <li>侠盗（诱惑位 / 金币爆炸）</li>
@@ -1012,22 +1206,22 @@
 </section>
 
 <section id="app-bucc">
-  <h2>冲锋队长细则</h2>
+  <h2>冲锋队长（Bucc）细则</h2>
   <p><span class="tag job">iPippy，2020-10 / 2021-07 补品克缤</span> 品克缤成败很大程度在冲锋队长。进队前仍要听当周指挥。</p>
   <ul>
-    <li>技能：伺机待发满级；索命至少 1 点；勇士的意志至少 1 点最好满。常打团队应提早满伺机待发。1 级冷却约 49 分钟，满级约 20 分钟。</li>
-    <li>血量：触碰约 24000。超体前 15000–16000 是能执行职责的底线。约 24000–25000 可以不依赖超体。</li>
+    <li>技能：伺机待发（TL）满级；索命（Snatch）至少 1 点；勇士的意志（Will）至少 1 点最好满。常打团队应提早满伺机待发。1 级冷却约 49 分钟，满级约 20 分钟。</li>
+    <li>血量：触碰约 24000。神圣之火（HB）前 15000–16000 是能执行职责的底线。约 24000–25000 可以不依赖神圣之火。</li>
     <li>装备偏好：龙魔帽和闪避靴。命中大约 202 才能稳定打到品克缤这一档。</li>
-    <li>变身时碰撞箱更大，从所罗门或雷克斯身下走过会吃触碰。</li>
+    <li>变身时碰撞箱更大，从所罗门（左人）或雷克斯（右人）身下走过会吃触碰。</li>
     <li>跳投：起跳瞬间按技能，潜龙出渊、碎石乱击、索命等必须站地的技能可以在移动中打出去。</li>
   </ul>
   <h3>雕像习惯（作者当时队伍）</h3>
   <ul>
-    <li>阶段 1：变身，对着所罗门按碎石乱击。</li>
-    <li>阶段 2：先再打一次所罗门，然后全员去右边打雷克斯；死后回左边。</li>
-    <li>阶段 3：从左边开始。胸口徽章亮起就是反伤。近战多的队先打左鸟比先打所罗门更重要。阶段结束前远程必须在右、近战必须在左。</li>
-    <li>阶段 4：不要越右鸟线。左边不能越过最左下的绳子，因此不能再金手指左鸟。优先碎石乱击左鸟。</li>
-    <li>阶段 5：右鸟死后可贴左鸟。不变身时从第二高平台金手指左鸟；潜龙出渊同时够得到左鸟和阿里尔。阶段结束前至少一人留着变身索命本体。</li>
+    <li>阶段 1：变身，对着所罗门（左人）按碎石乱击。</li>
+    <li>阶段 2：先再打一次所罗门（左人），然后全员去右边打雷克斯（右人）；死后回左边。</li>
+    <li>阶段 3：从左边开始。胸口徽章亮起就是反伤（DR）。近战多的队先打左鸟比先打所罗门（左人）更重要。阶段结束前远程必须在右、近战必须在左。</li>
+    <li>阶段 4：不要越右鸟线。左边不能越过最左下的绳子，因此不能再金手指（Barrage）左鸟。优先碎石乱击左鸟。</li>
+    <li>阶段 5：右鸟死后可贴左鸟。不变身时从第二高平台金手指左鸟；潜龙出渊同时够得到左鸟和阿里尔（中间）。阶段结束前至少一人留着变身索命本体。</li>
   </ul>
   <h3>本体</h3>
   <p>豆在中央出现的一瞬间就要有人索命或吸住。目标三件：仇恨在自己身上，脸朝右，位置在队伍认为安全的最右侧。</p>
@@ -1041,36 +1235,36 @@
 </section>
 
 <section id="app-am">
-  <h2>大魔导士细则</h2>
+  <h2>大魔导士（AM）细则</h2>
   <p><span class="tag job">faithie，2022-03</span> <span class="tag oldtag">历史背景</span>
   帖子写于小豆一度圣免疫、血量 60.6 万且会武器取消的时期，当时队里几乎必须带魔导清豆。
   <strong>现行：</strong>2022 周年已移除小豆圣免疫；2025-04 原帖回帖也写明清豆不再是魔导专属。下面操作细节多数仍有用，编制要求按「加分项」理解。</p>
   <h3>准备</h3>
   <ul>
     <li>雕像阶段不必吃攻击药，苹果让给物理输出更赚。攻击药从本体、尤其是 80% 小豆开始再吃。</li>
-    <li>奶酪当时约 120 万、2 分钟、+220 总魔法攻击；苹果约 260 万、10 分钟、+100。</li>
+    <li>cheese当时约 120 万、2 分钟、+220 总魔法攻击；苹果约 260 万、10 分钟、+100。</li>
     <li>火毒带 5、6 阶杖，冰雷带 7、8 阶杖。平时戴 6 或 8 阶。</li>
     <li>黄雪靴减半击退。</li>
     <li>火毒戴 6 阶杖时期望增益后约 1550 总魔法攻击，天降落星最低伤害约 10 万。</li>
-    <li>技能优先级：麻痹或链环闪电满，天降落星或落霜冰破满，勇士的意志至少 1 点最好满，魔法反射满，召唤满。祝福 20，30 更好。</li>
-    <li>魔法反射靠被 1/1 打中来伤本体，<code>@dpm</code> 不计。召唤大约给法师 5% 伤害，但巨大召唤会挡住反伤动画，有的队要求本体阶段关掉。</li>
+    <li>技能优先级：麻痹或链环闪电满，天降落星或落霜冰破满，勇士的意志（Will）至少 1 点最好满，魔法反射满，召唤满。祝福 20，30 更好。</li>
+    <li>魔法反射靠被 1/1 打中来伤本体，<code>@dpm</code> 不计。召唤大约给法师 5% 伤害，但巨大召唤会挡住反伤（DR）动画，有的队要求本体阶段关掉。</li>
     <li>麻痹和链环闪电不要宏——打得太密来不及传送，也更容易死在反伤上。</li>
   </ul>
   <h3>进图与雕像要点</h3>
   <ul>
     <li>作者建议大魔导士接近最后进，排在主教前面。前 15–20 人吃右鸟诱惑。</li>
     <li>阶段 1：左上角麻痹或链环闪电。没盾没烟幕时，左人要晕你就向右传送再跳，用撞身体换无敌帧。</li>
-    <li>阶段 2：先打左人再穿去右人。超体前要有约 4600 血，否则清豆途中魔法盾掉了会被小豆打死。</li>
+    <li>阶段 2：先打左人再穿去右人。神圣之火（HB）前要有约 4600 血，否则清豆途中魔法盾（MG）掉了会被小豆打死。</li>
     <li>阶段 3：优先左鸟，魔法反伤或双反伤时改打左人。</li>
     <li>阶段 4：不要打右鸟，中间不能天降落星/落霜冰破/大爆炸以免被击退误触。冰雷在小豆出现前至少 2 秒停止链环闪电（弹射可能打到右鸟）。</li>
-    <li>阶段 5：左人死后优先打左鸟（没反伤时）；反伤且阿里尔没在魔法取消时上去打阿里尔。本体出现前超体后血量不到 5000 就先到左边，或先跳上右侧最高平台。不要带着召唤站在豆正上方。</li>
+    <li>阶段 5：左人死后优先打左鸟（没反伤时）；反伤且阿里尔（中间）没在魔法取消时上去打阿里尔（中间）。本体出现前、有神圣之火后血量不到 5000 就先到左边，或先跳上右侧最高平台。不要带着召唤站在豆正上方。</li>
   </ul>
   <h3>本体</h3>
   <ul>
     <li>职责：麻痹或链环闪电打本体 + 清小豆。作者更愿意站左边。</li>
     <li>豆面朝右、只放 1/1 时，一般两次 1/1 后向左传送一次。</li>
-    <li>小豆出现就天降落星/落霜冰破打到死。若这发生在反伤期间，清豆很容易拿到仇恨并让豆面朝左——它一转向，立刻穿到右边直到冲锋队长确认仇恨回来。</li>
-    <li>豆面朝左时不要信圣灵之盾一定在。较稳的躲法：传送进它的身体吃触碰蹭无敌帧。</li>
+    <li>小豆出现就天降落星/落霜冰破打到死。若这发生在反伤期间，清豆很容易拿到仇恨并让豆面朝左——它一转向，立刻穿到右边直到冲锋队长（Bucc）确认仇恨回来。</li>
+    <li>豆面朝左时不要信圣灵之盾（HS）一定在。较稳的躲法：传送进它的身体吃触碰蹭无敌帧。</li>
     <li>被诱惑立刻意志，因为 1/1 会跟着来。</li>
   </ul>
 </section>
@@ -1147,7 +1341,7 @@
   <p>分配物品是项链、椅子、卡片。</p>
   <ul>
     <li>至少在副本开始前 30 分钟勾选报名表。Roll 点开始后不再补登记。</li>
-    <li>品克缤被击杀后，所有人先爬上绳子或台阶，等 host 示意再下来拾取。未经同意不要拾取。</li>
+    <li>品克缤被击杀后，所有人先爬上绳子或台阶，等主持人示意再下来拾取。未经同意不要拾取。</li>
     <li>按 Roll 点从高到低拾取。前一位掉线，顺延到下一位。</li>
     <li>所有物品不可售卖，也不可自行转让给其他参加者。</li>
   </ul>
@@ -1161,7 +1355,7 @@
     </tbody>
   </table>
   <h3>苹果</h3>
-  <p><span class="tag job">物理输出</span>进战斗前至少带 10 个苹果。开打后 host 会报这一场要吃几个。现行测试是从 6 个苹果开始，目标压到一共 3 个。</p>
+  <p><span class="tag job">物理输出</span>进战斗前至少带 10 个苹果。开打后 主持人会报这一场要吃几个。现行测试是从 6 个苹果开始，目标压到一共 3 个。</p>
   <ul>
     <li>没按要求吃苹果：银行扣除双倍苹果费用。</li>
     <li>情节严重：永久禁止参加副本。</li>
@@ -1170,8 +1364,8 @@
   <h3>迟到、缺席、请假</h3>
   <p>这是 30 人的活动。一个人迟到，其余 29 人在等；一个人缺席，可能让 29 人打不了。</p>
   <ul>
-    <li>可能迟到：至少提前 30 分钟告诉 host。有 10 分钟宽限。</li>
-    <li>无法参加：至少提前 1 小时告诉 host。提前 1 小时通知不受罚。</li>
+    <li>可能迟到：至少提前 30 分钟告诉主持人。有 10 分钟宽限。</li>
+    <li>无法参加：至少提前 1 小时告诉主持人。提前 1 小时通知不受罚。</li>
     <li>计划开始 5 分钟后还没到，算迟到。迟到 5 到 10 分钟，罚 5 个苹果。超过 10 分钟，按缺席处理。</li>
     <li>没有提前通知的缺席：银行扣 30 个苹果。</li>
     <li>突发情况尽量提前说，并自己找替补。做到这两点可以免罚。</li>
@@ -1200,7 +1394,7 @@
   <div class="src-card"><a href="https://forum.legends.ml/index.php?threads/balrog-riding-marksman-guide-to-avoid-stuns-at-pink-bean-statues.44543/" target="_blank" rel="noopener">箭神坐骑无敌帧</a> — Toon（2023-07 标为过时）</div>
   <div class="src-card"><a href="https://forum.legends.ml/index.php?threads/revisiting-mini-bean-changes.44557/" target="_blank" rel="noopener">重新看小豆改动</a> — mard（2022-02 讨论帖，写于圣免疫窗口期）</div>
   <div class="src-card"><a href="https://forum.legends.ml/index.php?threads/anniversary-summer-event-2022-balance-changes-explained.46741/" target="_blank" rel="noopener">2022 周年平衡说明</a> — 含「移除小豆圣免疫」原文</div>
-  <div class="src-card"><a href="https://forum.legends.ml/index.php?threads/september-2023-balance-changes-explained.51184/" target="_blank" rel="noopener">2023-09 平衡说明</a> — 雷克斯混乱 60 秒冷却</div>
+  <div class="src-card"><a href="https://forum.legends.ml/index.php?threads/september-2023-balance-changes-explained.51184/" target="_blank" rel="noopener">2023-09 平衡说明</a> — 雷克斯（右人）混乱 60 秒冷却</div>
   <div class="src-card"><a href="https://forum.legends.ml/index.php?threads/pb-dpm-flex-thread.41739/" target="_blank" rel="noopener">PB DPM Flex</a> · <a href="https://forum.legends.ml/index.php?threads/pb-dpm-flex-thread-season-2.43956/" target="_blank" rel="noopener">第二季</a>（输出展示，无新增机制）</div>
   <div class="src-card"><a href="https://forum.legends.ml/index.php?threads/pink-bean-and-its-current-state.36123/" target="_blank" rel="noopener">PB current state</a> · <a href="https://forum.legends.ml/index.php?threads/new-pink-bean-changes-discussion.43937/" target="_blank" rel="noopener">圣诞后讨论</a> · <a href="https://forum.legends.ml/index.php?threads/pink-bean-is-bad.44083/" target="_blank" rel="noopener">Pink Bean is bad</a>（主帖外链；多为讨论帖）</div>
   <div class="src-card"><a href="https://mapleroyals.com/forum/threads/pink-bean-comprehensive-guide-to-pre-quests-boss.21239/" target="_blank" rel="noopener">其他服务器前置与首领攻略</a>（MapleRoyals，机制不完全等同 L 服）</div>
@@ -1214,7 +1408,7 @@
 
 <div class="src">
   <p>本页以初版暗色样式、结构与配图为基础，并入第二版的招募门槛、职业细则、进图顺序、指挥清单与 2024 年前旧打法；并对照主帖核对物资原文（500 ACP + 1k power elixir）与迷你豆豆技能表。</p>
-  <p>图片托管于 Imgur / maplestory.io；若外链失效请回原帖查看。打法以 2022 周年后机制 + 2026 中文社群口令为准。小豆圣免疫等数字以官方补丁为准（主帖技能表个别行已过时）。</p>
+  <p>图片托管于 Imgur / maplestory.io；若外链失效请回原帖查看。打法以 2022 周年后机制为准；编制按鸟先/鸟后 + 满编/中编分类，2026 中文社群口令对应满编鸟先。小豆圣免疫等数字以官方补丁为准（主帖技能表个别行已过时）。</p>
 </div>
 </main>
 </div>

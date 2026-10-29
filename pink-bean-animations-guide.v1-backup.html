@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pink Bean Animations Guide · MapleLegends 攻略（初版）</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --panel: #1a222c;
+    --panel2: #232d3a;
+    --line: #2e3a4a;
+    --text: #e8eef6;
+    --muted: #9aabbd;
+    --accent: #ff6b9d;
+    --accent2: #7ec8ff;
+    --warn: #ffb454;
+    --ok: #6dffa8;
+    --danger: #ff6b6b;
+    --solomon: #5b9dff;
+    --rex: #ffd34d;
+    --hugin: #ff8a5b;
+    --munin: #7dffb3;
+    --ariel: #d9a5ff;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "IBM Plex Sans", "Noto Sans SC", "PingFang SC", sans-serif;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #3a1a2e 0%, transparent 55%),
+      radial-gradient(900px 500px at 90% 0%, #1a2a3a 0%, transparent 50%),
+      var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+  }
+  a { color: var(--accent2); }
+  .layout { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+  nav {
+    position: sticky; top: 0; align-self: start;
+    height: 100vh; overflow: auto;
+    background: rgba(15,20,25,.92);
+    border-right: 1px solid var(--line);
+    padding: 1.25rem 1rem 2rem;
+  }
+  nav h1 {
+    font-size: .95rem; margin: 0 0 .25rem;
+    color: var(--accent);
+    letter-spacing: .02em;
+  }
+  nav .sub { color: var(--muted); font-size: .75rem; margin-bottom: 1rem; }
+  nav a {
+    display: block; text-decoration: none; color: var(--muted);
+    padding: .35rem .5rem; border-radius: 6px; font-size: .85rem;
+  }
+  nav a:hover { background: var(--panel2); color: var(--text); }
+  nav .group { margin-top: .85rem; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: #6b7c90; padding: 0 .5rem; }
+  main { padding: 2rem 2.5rem 4rem; max-width: 1100px; }
+  header.hero {
+    margin-bottom: 2rem;
+    padding: 1.5rem 1.75rem;
+    background: linear-gradient(135deg, #2a1524, #1a2430);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  header.hero h1 { margin: 0 0 .5rem; font-size: 1.85rem; }
+  header.hero p { margin: .35rem 0; color: var(--muted); }
+  .badge {
+    display: inline-block; font-size: .72rem; padding: .2rem .55rem;
+    border-radius: 999px; border: 1px solid var(--line); color: var(--warn);
+    margin-right: .35rem;
+  }
+  section {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1.35rem 1.5rem 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  section h2 {
+    margin: 0 0 1rem;
+    font-size: 1.35rem;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: .55rem;
+  }
+  section h3 { margin: 1.25rem 0 .55rem; font-size: 1.08rem; color: var(--accent2); }
+  section h4 { margin: 1rem 0 .4rem; font-size: .98rem; color: var(--warn); }
+  .muted { color: var(--muted); }
+  .note {
+    background: #1e2a1e; border-left: 3px solid var(--ok);
+    padding: .75rem 1rem; margin: .85rem 0; border-radius: 0 8px 8px 0;
+  }
+  .warnbox {
+    background: #2a2214; border-left: 3px solid var(--warn);
+    padding: .75rem 1rem; margin: .85rem 0; border-radius: 0 8px 8px 0;
+  }
+  .danger {
+    background: #2a1518; border-left: 3px solid var(--danger);
+    padding: .75rem 1rem; margin: .85rem 0; border-radius: 0 8px 8px 0;
+  }
+  ul, ol { padding-left: 1.25rem; }
+  li { margin: .25rem 0; }
+  .gallery {
+    display: flex; flex-wrap: wrap; gap: .75rem; margin: .85rem 0 1rem;
+  }
+  .shot, figure.media {
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: .5rem;
+    max-width: 100%;
+  }
+  .shot img, figure.media img, .inline-img {
+    display: block; max-width: 100%; height: auto; border-radius: 6px;
+  }
+  figure.media { margin: .5rem 0; }
+  figcaption { font-size: .78rem; color: var(--muted); margin-top: .35rem; }
+  table {
+    width: 100%; border-collapse: collapse; font-size: .82rem;
+    margin: .75rem 0 1rem; display: block; overflow-x: auto;
+  }
+  th, td {
+    border: 1px solid var(--line); padding: .45rem .55rem;
+    vertical-align: top; text-align: left; min-width: 110px;
+  }
+  th { background: var(--panel2); color: var(--accent2); white-space: nowrap; }
+  td img { max-width: 160px; height: auto; border-radius: 4px; }
+  .phase-card {
+    display: grid; gap: .75rem;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    margin: .75rem 0;
+  }
+  .stat {
+    background: var(--panel2); border-radius: 8px; padding: .65rem .8rem;
+    border: 1px solid var(--line);
+  }
+  .stat b { display: block; color: var(--muted); font-size: .72rem; font-weight: 500; }
+  .tldr-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;
+  }
+  .tldr-card {
+    background: var(--panel2); border-radius: 10px; padding: .9rem;
+    border: 1px solid var(--line);
+  }
+  .tldr-card h3 { margin: 0 0 .5rem; color: var(--accent); font-size: 1rem; }
+  .phase-list span { font-weight: 600; }
+  .c-solomon { color: var(--solomon); }
+  .c-rex { color: var(--rex); }
+  .c-hugin { color: var(--hugin); }
+  .c-munin { color: var(--munin); }
+  .c-ariel { color: var(--ariel); }
+  .tag {
+    display: inline-block; font-size: .7rem; padding: .1rem .4rem;
+    border-radius: 4px; background: #2a3544; color: var(--muted); margin-left: .25rem;
+  }
+  details {
+    background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 8px; padding: .55rem .85rem; margin: .65rem 0;
+  }
+  details summary { cursor: pointer; color: var(--warn); font-weight: 600; }
+  .src {
+    margin-top: 2rem; font-size: .8rem; color: var(--muted);
+    border-top: 1px solid var(--line); padding-top: 1rem;
+  }
+  .icon { height: 28px; width: auto; vertical-align: middle; display: inline; }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    nav { position: relative; height: auto; max-height: 220px; }
+    main { padding: 1rem 1rem 3rem; }
+  }
+
+  .appendix-wrap {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 3px dashed #4a5d73;
+  }
+  .appendix-banner {
+    background: linear-gradient(90deg, #1a2838, #243044);
+    border: 1px dashed #5a6f86;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .appendix-banner h2 { margin: 0 0 .4rem; color: #9ec5e8; border: 0; padding: 0; }
+  .appendix-wrap section {
+    background: #161e27;
+    border-style: dashed;
+  }
+  .src-card {
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: .75rem .9rem;
+    margin: .5rem 0;
+    font-size: .88rem;
+  }
+  .src-card a { font-weight: 600; }
+  .req-table td:first-child { white-space: nowrap; color: var(--accent2); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 800px) { .two-col { grid-template-columns: 1fr; } }
+
+</style>
+</head>
+<body>
+<div class="layout">
+<nav>
+  <h1>Pink Bean Guide</h1>
+  <div class="sub">MapleLegends · 初版整理</div>
+  <div class="group">总览</div>
+  <a href="#intro">前言 / 免责</a>
+  <a href="#tldr">TL;DR 速查</a>
+  <a href="#prereq">前置条件</a>
+  <a href="#before">开战前</a>
+  <div class="group">雕像阶段</div>
+  <a href="#statue-intro">雕像总览</a>
+  <a href="#p1">Phase 1 Solomon</a>
+  <a href="#p2">Phase 2 + Rex</a>
+  <a href="#p3">Phase 3 + Hugin</a>
+  <a href="#p4">Phase 4 + Munin</a>
+  <a href="#p5">Phase 5 + Ariel</a>
+  <div class="group">本体</div>
+  <a href="#pb-body">Pink Bean 本体</a>
+  <a href="#safety">Safety Net / Aggro</a>
+  <a href="#meso">Meso Bombing</a>
+  <a href="#bucc">Bucc 专项</a>
+  <div class="group">技能表</div>
+  <a href="#anim-solomon">Solomon</a>
+  <a href="#anim-rex">Rex</a>
+  <a href="#anim-hugin">Hugin</a>
+  <a href="#anim-munin">Munin</a>
+  <a href="#anim-ariel">Ariel</a>
+  <a href="#anim-pb">Pink Bean</a>
+  <a href="#anim-mini">Resting / Mini</a>
+  <div class="group">其他</div>
+  <a href="#tips">Tips</a>
+  <a href="#history">版本变更</a>
+
+  <div class="group">附录资料</div>
+  <a href="#appendix">附录总览</a>
+  <a href="#app-req">队员门槛 / HP</a>
+  <a href="#app-entry">进图顺序 / 右鸟</a>
+  <a href="#app-roles">职业职责 / Bucc</a>
+  <a href="#app-tier">职业梯队</a>
+  <a href="#app-tools">工具 / 招募细节</a>
+  <a href="#app-links">相关帖索引</a>
+</nav>
+<main>
+
+<header class="hero" id="intro">
+  <span class="badge">Last update: March 2024</span>
+  <span class="badge">作者 xiaoyaoz（论坛原帖）</span>
+  <h1>Pink Bean Animations Guide</h1>
+  <p>MapleLegends 专用 Pink Bean 动画与战术攻略。许多动画效果与 GMS 相似，但细节经多年调整，请以本服为准。</p>
+  <p>GIF 主要来自公开直播（感谢 Blu301、Eiji 等早期跑本玩家）。本页为玩家整理的参考资料，非官方最终裁定。</p>
+  <p class="muted">原帖：<a href="https://forum.legends.ml/index.php?threads/pink-bean-animations-guide.35740/" target="_blank" rel="noopener">forum.legends.ml · Pink Bean Animations Guide</a></p>
+</header>
+
+<section id="tldr">
+  <h2>TL;DR 速查</h2>
+  <div class="tldr-grid">
+    <div class="tldr-card">
+      <h3>Dispel（驱散）</h3>
+<div class="gallery"><div class="shot"><figure class="media"><img src="https://i.imgur.com/UrxXqCk.gif" alt="Rex Dispel" loading="lazy"><figcaption>Rex Dispel</figcaption></figure></div><div class="shot"><figure class="media"><img src="https://i.imgur.com/s1vvCeD.gif" alt="Ariel Dispel" loading="lazy"><figcaption>Ariel Dispel</figcaption></figure></div></div>
+      <p>掉 buff 时立刻补上保命 buff（HB / MG）。</p>
+    </div>
+    <div class="tldr-card">
+      <h3>Damage Reflect（DR）</h3>
+<div class="gallery"><div class="shot"><figure class="media"><img src="https://i.imgur.com/vXCHMMi.gif" alt="Hugin DR 动画" loading="lazy"><figcaption>Hugin DR 动画</figcaption></figure></div><div class="shot"><figure class="media"><img src="https://i.imgur.com/TBQiBpD.gif" alt="PB DR 动画" loading="lazy"><figcaption>PB DR 动画</figcaption></figure></div></div>
+<div class="gallery"><div class="shot"><figure class="media"><img src="https://i.imgur.com/LO5n3oU.png" alt="Weapon DR" loading="lazy"><figcaption>Weapon DR</figcaption></figure></div><div class="shot"><figure class="media"><img src="https://i.imgur.com/Ro3ZalE.png" alt="Magic DR" loading="lazy"><figcaption>Magic DR</figcaption></figure></div><div class="shot"><figure class="media"><img src="https://i.imgur.com/PZiFCQO.png" alt="Both/Double DR" loading="lazy"><figcaption>Both/Double DR</figcaption></figure></div></div>
+      <p><strong>看到胸口发黄 / DR 动画就立刻停手。</strong></p>
+    </div>
+    <div class="tldr-card">
+      <h3>Seduce（魅惑）</h3>
+<div class="gallery"><div class="shot"><figure class="media"><img src="https://i.imgur.com/ucmDmcV.gif" alt="Munin Mass Seduce" loading="lazy"><figcaption>Munin Mass Seduce</figcaption></figure></div><div class="shot"><figure class="media"><img src="https://i.imgur.com/fB5cXNF.gif" alt="PB Musical Note" loading="lazy"><figcaption>PB Musical Note</figcaption></figure></div></div>
+      <p>被魅惑立刻 <strong>Hero's Will</strong>。</p>
+    </div>
+  </div>
+  <div class="note">
+    <strong>一句话：</strong>被 DP 就补 buff；有 DR 别打；被 Seduce 立刻 Will。<br>
+    建议携带约 <strong>500 ACP</strong>、<strong>1k 万能药</strong>、<strong>10 苹果</strong>。听指挥。GLHF。
+  </div>
+</section>
+
+<section id="prereq">
+  <h2>前置条件（Pre-requisites）</h2>
+  <ul>
+    <li>完成时间神殿任务线直到 <strong>Force Field</strong>。</li>
+    <li>每次进入需要 1 个 Chaos Marble <img class="icon" src="https://maplestory.io/api/GMS/210.1.1/item/4032002/icon" alt="Chaos Marble">（与 Temple Keeper 接任务 <strong>Breaking the Barrier again</strong>，每 24 小时可领）。</li>
+    <li>每日最多进入 1 次；每周最多成功通关 1 次（周三重置）。</li>
+    <li>报名等级：最低 <strong>175</strong>（2022 周年补丁；挂经验同要求）。</li>
+    <li>最低血量（HB 前）：近战 <strong>15k</strong>；远程 <strong>11.9k</strong>（策略允许时可为 8.1k）。</li>
+  </ul>
+</section>
+
+<section id="before">
+  <h2>开战前（Before you begin）</h2>
+  <h3>集合点 Pre-gathering</h3>
+<figure class="media"><img src="https://i.imgur.com/e5xi0gh.jpeg" alt="Deep Place of Temple: Broken Corridor" loading="lazy"><figcaption>Deep Place of Temple: Broken Corridor</figcaption></figure>
+  <p>人们通常在约定时间前在此集合，可随意活动且<strong>不会消耗 Chaos Marble</strong>。</p>
+  <p>真正报名区在右侧再走 <strong>2 张图</strong>。下一张是空图，需走过。</p>
+  <div class="danger">从右侧 portal 进入会<strong>立刻消耗</strong> Chaos Marble，小心别误进！</div>
+  <p>集合完毕后：右 portal → 继续向右 → 再右 portal，到达报名区。</p>
+
+  <h3>报名区 Sign-up area</h3>
+<figure class="media"><img src="https://i.imgur.com/8qPEoQx.png" alt="Deep Place of Temple: Forgotten Twilight" loading="lazy"><figcaption>Deep Place of Temple: Forgotten Twilight</figcaption></figure>
+  <p>在此地图内可以 <strong>relog / DC</strong>，但不要离开区域，否则再进需再耗 1 个 Chaos Marble。</p>
+  <ul>
+    <li><strong>远征时间：</strong>1 小时 30 分钟</li>
+    <li><strong>人数上限：</strong>30</li>
+    <li><strong>次数：</strong>每角色每日 1 次进入 + 每周 1 次成功通关（周三重置）</li>
+  </ul>
+  <p>地图内有 2 个 NPC：</p>
+  <ul>
+    <li>左侧 Della：曾卖 Wheel of Destiny（2021 周年后不可买）</li>
+    <li>右侧 NPC：报名并进入 PB 区域</li>
+  </ul>
+</section>
+
+<section id="statue-intro">
+  <h2>雕像阶段总览</h2>
+<figure class="media"><img src="https://i.imgur.com/1tkoVDJ.png" alt="Boss 房入口示意" loading="lazy"><figcaption>Boss 房入口示意</figcaption></figure>
+  <div class="danger"><strong>所有人进图前，不要点 Kirston！</strong>与 Kirston 对话会按顺序激活 5 座雕像并开始攻击。</div>
+<figure class="media"><img src="https://i.imgur.com/C3Nw0qW.png" alt="雕像官方名（黄）与游戏内俗称（青）" loading="lazy"><figcaption>雕像官方名（黄）与游戏内俗称（青）</figcaption></figure>
+  <p>并不是打倒 5 座雕像各一次就能打 Pink Bean。进入本体前共有 <strong>5 个雕像阶段</strong>，每阶段多激活一座。</p>
+  <ul class="phase-list">
+    <li><span class="c-solomon">Phase 1：</span> Solomon the Wise</li>
+    <li><span class="c-solomon">Phase 2：</span> Solomon + <span class="c-rex">Rex the Wise</span></li>
+    <li><span class="c-solomon">Phase 3：</span> Solomon + Rex + <span class="c-hugin">Hugin</span></li>
+    <li><span class="c-solomon">Phase 4：</span> Solomon + Rex + Hugin + <span class="c-munin">Munin</span></li>
+    <li><span class="c-solomon">Phase 5：</span> Solomon + Rex + Hugin + Munin + <span class="c-ariel">Ariel</span></li>
+    <li><strong>Final：</strong> Pink Bean</li>
+  </ul>
+  <p>文字颜色对应阶段切换时的血条颜色。实际等于：Solomon×5、Rex×4、Hugin×3、Munin×2、Ariel×1，才轮到 Pink Bean。</p>
+  <p>雕像阶段总目标约 <strong>~40 分钟</strong>（总伤约 5.55 bil）。</p>
+  <div class="warnbox"><strong>注意：雕像阶段骑乘坐骑会被 touch damage 打到！</strong></div>
+</section>
+
+<section id="p1">
+  <h2>Statue Phase 1 · Solomon</h2>
+<figure class="media"><img src="https://i.imgur.com/7J9NRGU.jpeg" alt="Phase 1" loading="lazy"><figcaption>Phase 1</figcaption></figure>
+  <div class="phase-card">
+    <div class="stat"><b>难度</b>Super Easy</div>
+    <div class="stat"><b>时间</b>1–2 min</div>
+    <div class="stat"><b>HP</b>0.3 bil（约雕像总血 5.5%）</div>
+  </div>
+  <p>仅激活 Solomon the Wise (1)。一般站<strong>左上平台</strong>躲避 Solomon Slam。</p>
+  <ul>
+    <li>输出：正常打，被 debuff 用 ACP。</li>
+    <li>Bishop：Staff Slam 时尽量 Holy Shield 防晕；闪电动画时 Dispel，减少输出被 debuff 烦扰。</li>
+  </ul>
+</section>
+
+<section id="p2">
+  <h2>Statue Phase 2 · + Rex</h2>
+<figure class="media"><img src="https://i.imgur.com/73TsZmq.jpeg" alt="Phase 2" loading="lazy"><figcaption>Phase 2</figcaption></figure>
+  <div class="phase-card">
+    <div class="stat"><b>难度</b>Easy（注意 Dispel）</div>
+    <div class="stat"><b>时间</b>2–4 min</div>
+    <div class="stat"><b>HP</b>0.6 bil（约 11%）</div>
+  </div>
+  <p>激活 Solomon (1) + <strong>Rex the Wise (5)</strong>。</p>
+<figure class="media"><img src="https://i.imgur.com/UrxXqCk.gif" alt="Rex's Dispel animation" loading="lazy"><figcaption>Rex's Dispel animation</figcaption></figure>
+  <p>策略同 Phase 1，但可能被 Rex <strong>Dispel</strong>——保命 buff（HB、MG）务必常驻。</p>
+  <p>常见打法：先杀 Solomon 再杀 Rex。<br>
+  <strong>更优：</strong>先去右侧杀 Rex，再回左杀 Solomon。因为 Phase 3 有 Hugin 减速，换边更慢——Phase 2 就先就位。</p>
+  <div class="note">被黄闪电打中黑暗（命中 debuff）请 ACP 清掉。<br>
+  两座各占血条约 50%，在 50% / 0% 附近 HS。HD 客户端 50% 大约在计时器 <code>xx:<strong>X</strong>x</code> 第二位数字处。</div>
+</section>
+
+<section id="p3">
+  <h2>Statue Phase 3 · + Hugin</h2>
+<figure class="media"><img src="https://i.imgur.com/eCBaMHq.jpeg" alt="Phase 3" loading="lazy"><figcaption>Phase 3</figcaption></figure>
+  <div class="phase-card">
+    <div class="stat"><b>难度</b>Decent</div>
+    <div class="stat"><b>时间</b>5–8 min</div>
+    <div class="stat"><b>HP</b>1.05 bil（约 19%）</div>
+    <div class="stat"><b>血条占比</b>Solomon & Rex 各 ~28.6%，Hugin ~42.8%</div>
+  </div>
+  <p>激活 Solomon + <strong>Hugin (2)</strong> + Rex。</p>
+  <div class="note">&gt;8k HP 远程可无 HB 存活本阶段，DK 不一定要死跟队伍。</div>
+  <p><strong>优先杀 Hugin</strong>——DR 等于浪费约 20 秒进度。</p>
+  <h4>Hugin Damage Reflect</h4>
+<div class="gallery"><div class="shot"><figure class="media"><img src="https://i.imgur.com/vXCHMMi.gif" alt="DR 动画" loading="lazy"><figcaption>DR 动画</figcaption></figure></div><div class="shot"><figure class="media"><img src="https://i.imgur.com/ShpbGFj.png" alt="Weapon DR" loading="lazy"><figcaption>Weapon DR</figcaption></figure></div><div class="shot"><figure class="media"><img src="https://i.imgur.com/ulxlBJS.png" alt="Magic DR" loading="lazy"><figcaption>Magic DR</figcaption></figure></div><div class="shot"><figure class="media"><img src="https://i.imgur.com/kiUZW32.png" alt="Double DR" loading="lazy"><figcaption>Double DR</figcaption></figure></div></div>
+  <div class="danger">胸口发黄立刻停手。Weapon/Magic DR 反伤约 8.5k–11.5k；Double DR 约 13.5k–16.5k。<br>
+  Bowman 可用 Strafe 代替 Hurricane 降低被 DR 秒杀风险。</div>
+</section>
+
+<section id="p4">
+  <h2>Statue Phase 4 · + Munin</h2>
+<figure class="media"><img src="https://i.imgur.com/ctsz555.jpeg" alt="Phase 4" loading="lazy"><figcaption>Phase 4</figcaption></figure>
+  <div class="phase-card">
+    <div class="stat"><b>难度</b>不小心会很难</div>
+    <div class="stat"><b>时间</b>8–13 min</div>
+    <div class="stat"><b>HP</b>1.5 bil（约 27%）</div>
+  </div>
+  <p>激活 Solomon + Hugin + <strong>Munin (4)</strong> + Rex。最大威胁是 Munin（右鸟）群体魅惑。</p>
+  <p>三种群体 Seduce 按 Munin 剩余血量触发：</p>
+  <ul>
+    <li><strong>100% HP：</strong>左走 10 秒，CD 40 秒——危害相对最小</li>
+    <li><strong>80% HP：</strong>左跳 30 秒</li>
+    <li><strong>60% HP：</strong>右跳 30 秒</li>
+  </ul>
+  <p>跳跃魅惑更危险：可能跳进雕像高 touch damage，并大量浪费输出时间。</p>
+  <p>当前两种主流：<strong>鸟先（Bird first）</strong> / <strong>鸟后（Bird last）</strong>。</p>
+
+  <details open>
+    <summary>Bird first strategy（先杀 Munin）</summary>
+    <p>用较大火力在 Holy Shield 保护下爆发 Munin。通常每队自带 Bishop，Phase 4 开场 Shield。</p>
+    <p>Shield 结束后 Bishop 可能离队与 Bucc 组队吃 Time Leap（TL）刷新 Shield，再回原队续盾。视 Bucc 与火力一般 TL 1–2 次。</p>
+    <ul>
+      <li>输出若没吃到 Shield：被魅惑立刻 Hero's Will。</li>
+      <li>Bucc：注意能量与 TL 时机。</li>
+    </ul>
+    <p>Munin 倒后同 Phase 3：优先 Hugin → Solomon → Rex。</p>
+    <p>优点：更快、Phase 4 更舒服；缺点：需要 Bishop/Bucc 配合与足够火力。Shield 断掉后 Mass Seduce + 其他雕像技能很容易崩盘。</p>
+  </details>
+
+  <details>
+    <summary>Bird last strategy（最后杀 Munin）</summary>
+    <p>先清其他雕像，再接近 Munin。地图前 10 个进图角色整阶段都会吃左走魅惑。</p>
+    <p>通常 NL / Shad 先开图吃魅惑（高回避，尤其 30k HP）。被 Banish 的人视为<strong>最后进图</strong>，不保留原序号。</p>
+    <p>成功依赖：大量 NL/Shad、高血、足够 Bishop 续复活。若你在魅惑序列里苹果期一直死，可 Stopper 等到被 Banish。</p>
+    <p>顺序类似 Phase 3：Hugin → Solomon → Rex → 最后 Munin。</p>
+  </details>
+
+<figure class="media"><img src="https://i.imgur.com/ucmDmcV.gif" alt="Munin's mass seduce — 立刻 Hero's Will" loading="lazy"><figcaption>Munin's mass seduce — 立刻 Hero's Will</figcaption></figure>
+  <div class="note">被 Banish 到别的图：走<strong>最左侧 portal</strong> 回 PB 战斗图（有时限，见技能表）。</div>
+</section>
+
+<section id="p5">
+  <h2>Statue Phase 5 · + Ariel</h2>
+<figure class="media"><img src="https://i.imgur.com/TOV6BW2.jpeg" alt="Phase 5" loading="lazy"><figcaption>Phase 5</figcaption></figure>
+  <div class="phase-card">
+    <div class="stat"><b>难度</b>不小心会很难</div>
+    <div class="stat"><b>时间</b>12–20 min</div>
+    <div class="stat"><b>HP</b>2.1 bil（约 38%）</div>
+  </div>
+  <p>全雕像激活（加入 <strong>Ariel [3]</strong>）。策略类似 Phase 4：</p>
+  <ul>
+    <li><strong>鸟先：</strong>爆发 Munin → Solomon → 同时压 Hugin 与 Ariel → Rex</li>
+    <li><strong>鸟后：</strong>先 Solomon → 同时压 Hugin 与 Ariel → Rex → 最后 Munin</li>
+  </ul>
+  <p>Ariel 有 Weapon Cancel；Hugin（左鸟）有 DR。两边分伤可保持最大输出 uptime。</p>
+  <div class="warnbox">Barrage 够不到 Ariel。</div>
+<figure class="media"><img src="https://i.imgur.com/s1vvCeD.gif" alt="Ariel's Dispel animation" loading="lazy"><figcaption>Ariel's Dispel animation</figcaption></figure>
+  <p>注意 Ariel Dispel，保命 buff 常驻。Dispel 仅在 Ariel <strong>&lt;60% HP</strong> 时出现；无人打 Ariel 时该动画只能是 Zombify。</p>
+  <p>最后一座倒下前，按策略站到正确半场，准备 PB 刷新。</p>
+  <div class="note">负责 snatch 的 Bucc：Phase 5 结束前几分钟保持 Super Transform。</div>
+</section>
+
+<section id="pb-body">
+  <h2>Pink Bean 本体阶段</h2>
+  <p>PB 仅 2.1b HP，但对所有物理伤害 Strong（减伤 50%），等效约 <strong>4.2b</strong>。一般与雕像阶段相当，约 <strong>~40 分钟</strong>。</p>
+  <p>共 3 种技能 + 4 种攻击。最容易死人的是 <strong>DR</strong> 与 <strong>Musical Note Seduce</strong>。</p>
+<div class="gallery"><div class="shot"><figure class="media"><img src="https://i.imgur.com/TBQiBpD.gif" alt="DR — 立刻停手" loading="lazy"><figcaption>DR — 立刻停手</figcaption></figure></div><div class="shot"><figure class="media"><img src="https://i.imgur.com/fB5cXNF.gif" alt="Musical Note — 立刻 Will" loading="lazy"><figcaption>Musical Note — 立刻 Will</figcaption></figure></div></div>
+<figure class="media"><img src="https://i.imgur.com/wgG72Fr.gif" alt="雕像全灭后，移动的 Pink Bean 在中央刷新" loading="lazy"><figcaption>雕像全灭后，移动的 Pink Bean 在中央刷新</figcaption></figure>
+  <p>雕像全灭后，移动的 PB 从原先坐着的中央刷新。通常由 Bucc 推/拉到指定位置后，输出才开打。</p>
+
+  <h3>Pink Bean Positions</h3>
+<figure class="media"><img src="https://i.imgur.com/XNVEYfD.jpg" alt="站位示意 (1)(2)" loading="lazy"><figcaption>站位示意 (1)(2)</figcaption></figure>
+  <p>通常把 PB 控制在 (1)–(2) 之间，并<strong>保持朝右</strong>，避免 Genesis（晕）。该位置也方便远程在 Musical Note 时钻入中间平台下，Bucc 可钻右侧平台下。近战不好钻，但可贴身吃 iframe。</p>
+
+  <h4>血条参考</h4>
+<div class="gallery"><div class="shot"><figure class="media"><img src="https://i.imgur.com/arIBe7C.png" alt="HD1 client (2.5 bar)" loading="lazy"><figcaption>HD1 client (2.5 bar)</figcaption></figure></div><div class="shot"><figure class="media"><img src="https://i.imgur.com/IbjqGMc.png" alt="HD2 client (3.5 bar)" loading="lazy"><figcaption>HD2 client (3.5 bar)</figcaption></figure></div></div>
+  <ul>
+    <li><strong>&gt;90%：</strong>不会 DR，朝右时可放心打。</li>
+    <li><strong>&lt;90%：</strong>开始点按技能，随时准备停 DR；Bowman 可改 Strafe。</li>
+    <li><strong>80%：</strong>开始召唤 Mini Bean，通常法师 ult 清，物理继续打本体。</li>
+  </ul>
+</section>
+
+<section id="safety">
+  <h2>Safety Net / Aggro</h2>
+  <p>稳住 PB 仇恨能极大改善体验。虽多由 Bucc 拉，但 PB 每隔几秒切仇恨，随时可能朝左。</p>
+  <p>Aggro 机制：锁定视线内<strong>第一个看到的人</strong>。朝左时会锁左侧第一个人——此人最好是近战，以便 PB 朝左时立刻走到右侧。</p>
+  <div class="warnbox"><strong>只有 PB 朝左并开始放技能时才穿到右侧。</strong>若只是晃悠，不代表已 aggro 左侧。穿到右侧后待 3–4 秒让仇恨再切，再回左侧。左侧近战 Safety Net 对保持朝右至关重要。</div>
+  <div class="note">你自己觉得最近，但延迟可能导致短暂不是最近的人，仇恨被别人抢走。</div>
+
+  <details>
+    <summary>Nise 关于 Aggro / Knockback 的说明</summary>
+    <ul>
+      <li>PB 战内一切有 auto-aggro：进入范围后盯视线内第一人，每隔几秒刷新。</li>
+      <li>Knockback 只是让它朝被 KB 的方向（flinch）。flinch 结束后仇恨仍是视线内第一人。</li>
+      <li>要 KB 需：PB 不在施法动画中；近期未被 KB；伤害超 KB 阈值（当时帖中写 140k，周年后见技能表 200k）或技能自带 KB（barrage / rush / snatch）。</li>
+      <li>MM Snipe 有时不 flinch，多半因中动画或刚被 KB。Snipe 触发 flinch 也只是重置朝向视野第一人——所以 MM 被超 KB 到最右时，PB 不会一路冲向 MM 碾压全员。</li>
+      <li>高单线伤害除非过 KB 阈值，否则不影响 aggro。</li>
+    </ul>
+  </details>
+</section>
+
+<section id="meso">
+  <h2>Meso Bombing（Shadower）</h2>
+  <p>Shad 可用金币造成额外伤害，帮差一口气的本收尾。</p>
+  <ul>
+    <li>例：2 Shad 各花 5m，用 10k 袋，约 4 分钟打出 ~40m（约 PB 血 1.9%）。</li>
+    <li>放大：2 Shad 约 25 分钟可打掉 ~10% PB 血（合计约 50m meso），代价极高。</li>
+    <li>若纯 meso bomb、约 3 袋/秒，至少 5k 袋才有 &gt;4m DPM；<strong>10–15k 袋</strong>性价比更合适。</li>
+  </ul>
+  <details>
+    <summary>Nate + ME 细节测算</summary>
+    <p>假设 40 秒充 Nate + 丢币，4 袋/秒 → 160 袋；爆炸 20 次（0.75s/次）= 15s；Nate ×14（约每 3 秒 +1），4.6k min range → 402.5k 充能伤可对 PB 封顶。</p>
+    <ul>
+      <li>1.3k 袋：~110k/炸 → ME 共 ~2.2m（约 208k/min，接近苹果成本），ME+Nate 共 ~3.2m</li>
+      <li>10k 袋：~350k/炸 → ME 共 ~7m（1.6m/min），ME+Nate 共 ~8m</li>
+    </ul>
+    <p>纯充 Nate+丢币通常不如苹果输出，除非砸大量 meso。</p>
+  </details>
+  <div class="note">金币丢在 PB <strong>右侧</strong>，万一你被随机 aggro，PB 仍朝右。</div>
+</section>
+
+<section id="bucc">
+  <h2>Buccaneer 专项与 DPM 惩罚</h2>
+  <p>阶段间 Bucc 职责详见：<a href="https://forum.legends.ml/index.php?threads/a-buccaneers-field-guide-2021-update-pink-bean.34735/" target="_blank" rel="noopener">A Buccaneer's Field Guide（含 PB）</a></p>
+  <p>Aggro 职责对 Bucc 潜在 DPM 打击很大。通常 2 Bucc 轮换 Transform：A 变身时 B 不在，A 下了 B 再上——仅因等待已至少 <strong>~10.5% DPM</strong> 损失（变身空窗变长）。</p>
+  <p>Barrage 会 KB 并把 PB 推出最佳位，故不能狂刷 Barrage；未变身时最佳多为 Flash Fist 快速充能再 Orb。Dragonstrike/Uppercut 搭配因动画慢、充能慢，不如 Fist+Drain/Orb。相对满潜力约 <strong>&gt;30% DPM</strong> 损失。</p>
+  <details>
+    <summary>详细计算</summary>
+    <p><strong>Barrage 惩罚（&gt;30% DPM）</strong> — %DPM/min：</p>
+    <ol>
+      <li>Flash fist：35,910%</li>
+      <li>Energy Drain：47,880%</li>
+      <li>Energy Orb：57,600%</li>
+      <li>未充能 Fist → 充能 Orb：52,830%</li>
+      <li>未充能 Fist → 充能 Drain：45,270%</li>
+      <li>Barrel barrage + dragonstrike：83,030%</li>
+      <li>Barrage + dragonstrike：75,810%</li>
+    </ol>
+    <p>理论最佳 [6] vs 实际最佳 [4] ≈ 损失 36.37%（无 barrel 用 [7] 约 30.31%）。</p>
+    <p><strong>Aggro 惩罚（&gt;10.5%）</strong></p>
+    <ul>
+      <li>无 aggro：(52,830% + 220,800%)/3 = 91,210%</li>
+      <li>有 aggro：(52,830%×2 + 220,800%)/4 = 81,615%</li>
+      <li>差 = 1 − (91,210/81,615) = 10.5%</li>
+    </ul>
+  </details>
+</section>
+
+<section id="anim-solomon">
+  <h2>动画与效果 · Solomon the Wise</h2>
+  <ul>
+    <li>HP: 300,000,000 · EXP: 3,000,000</li>
+    <li>Max Touch: P1–4 <strong>17.6k</strong>；P5 <strong>19.1k</strong></li>
+  </ul>
+  <table><thead><tr><th></th><th>Blue Lightning</th><th>Blue Slam</th><th>Blue Shout</th></tr></thead><tbody><tr><th>动画</th><td><img src="https://i.imgur.com/mbfo0j0.gif" alt=""></td><td><img src="https://i.imgur.com/MrlUORH.gif" alt=""></td><td><img src="https://i.imgur.com/kEPYuIQ.gif" alt=""></td></tr><tr><th>最大伤害</th><td>Magic · Lightning<br>P1–4: 4.8k HP<br>P5: 5.5k HP</td><td>HP/MP → 1/1</td><td>Physical 6.9k HP</td></tr><tr><th>效果</th><td><img src="https://i.imgur.com/M8G6w5H.gif" alt="Seal"><div class="muted">Seal</div></td><td><img src="https://i.imgur.com/fBrAQd8.gif" alt="Stun + Super KB"><div class="muted">Stun + Super KB</div></td><td><img src="https://i.imgur.com/VxFYzot.gif" alt="Slow"><div class="muted">Slow</div></td></tr><tr><th>持续</th><td>30 secs</td><td>5 secs</td><td>15 secs</td></tr><tr><th>范围</th><td>左半场</td><td>左半场（除顶平台）</td><td>左半场但不在 Solomon 身后</td></tr><tr><th>KB 方向</th><td>Left</td><td>Left</td><td>Left</td></tr></tbody></table>
+  <p class="muted">参考 GIF：<a href="https://imgur.com/JEdcEce.gif">Blue Lightning</a> · <a href="https://imgur.com/zp2k2no.gif">Blue Slam</a> · <a href="https://imgur.com/AifI22E.gif">Blue Shout</a></p>
+</section>
+
+<section id="anim-rex">
+  <h2>动画与效果 · Rex the Wise</h2>
+  <ul>
+    <li>HP: 300,000,000 · EXP: 3,000,000</li>
+    <li>Max Touch: P1–4 <strong>18.6k</strong>；P5 <strong>19.6k</strong></li>
+  </ul>
+  <table><thead><tr><th></th><th>Yellow Lightning</th><th>Yellow Slam</th><th>Yellow Shout</th><th>Blue Glow</th></tr></thead><tbody><tr><th>动画</th><td><img src="https://i.imgur.com/TgTtQB1.gif" alt=""></td><td><img src="https://i.imgur.com/GJN7uft.gif" alt=""></td><td><img src="https://i.imgur.com/cxVbUQs.gif" alt=""></td><td><img src="https://i.imgur.com/UrWZcJw.gif" alt=""></td></tr><tr><th>最大伤害</th><td>Magic · Lightning<br>P1–4: 4.5k<br>P5: 5.3k</td><td>HP/MP → 1/1</td><td>Physical<br>P1–4: 8.5k<br>P5: 9.6k</td><td>Skill · 无伤害</td></tr><tr><th>效果</th><td><img src="https://i.imgur.com/ITVVggH.gif" alt="Darkness"><div class="muted">Darkness</div></td><td><img src="https://i.imgur.com/YUJTZ1T.gif" alt="Zombify + Super KB"><div class="muted">Zombify + Super KB</div></td><td><img src="https://i.imgur.com/B1uuMJy.gif" alt="Poison 20 DPS"><div class="muted">Poison 20 DPS</div></td><td>Dispel 或 <img src="https://i.imgur.com/Vzmjw8i.gif" alt="Confuse"><div class="muted">Confuse</div></td></tr><tr><th>持续</th><td>30 secs</td><td>20 secs</td><td>20 secs</td><td>Dispel 90% 概率<br>Confuse 15 secs</td></tr><tr><th>范围</th><td>右半场</td><td>右半场（除顶平台）</td><td>右半场但不在 Rex 身后</td><td>Dispel 全图；Confuse 仅地图中部</td></tr><tr><th>KB</th><td>Left</td><td>Right</td><td>Left</td><td>None</td></tr></tbody></table>
+</section>
+
+<section id="anim-hugin">
+  <h2>动画与效果 · Hugin</h2>
+  <ul>
+    <li>HP: 450,000,000 · EXP: 3,500,000</li>
+    <li>Max Touch: P1–4 <strong>21.3k</strong>；P5 <strong>22.9k</strong></li>
+    <li>Weak: Ice · Strong: Fire</li>
+  </ul>
+  <table><thead><tr><th></th><th>Yellow Beak</th><th>Feather Rocks</th><th>Yellow Chest Glow</th><th>Blue Summon Circle</th></tr></thead><tbody><tr><th>动画</th><td><img src="https://i.imgur.com/8x8u7Uu.gif" alt=""></td><td><img src="https://i.imgur.com/IuwVzRJ.gif" alt=""></td><td><img src="https://i.imgur.com/vXCHMMi.gif" alt=""></td><td><img src="https://i.imgur.com/oueOZ1n.gif" alt=""></td></tr><tr><th>最大伤害</th><td>Magic · Fire<br>P1–4: 6.5k<br>P5: 7.4k</td><td>Physical 8.5k</td><td>Skill · 每击反伤</td><td>Skill · 无伤害</td></tr><tr><th>效果</th><td><img src="https://i.imgur.com/VxFYzot.gif" alt="Slow"><div class="muted">Slow</div></td><td><img src="https://i.imgur.com/YUJTZ1T.gif" alt="Zombify"><div class="muted">Zombify</div></td><td><img src="https://i.imgur.com/LO5n3oU.png" alt=""><img src="https://i.imgur.com/Ro3ZalE.png" alt="">Weapon/Magic DR: 反伤 8k–12k/hit<br><img src="https://i.imgur.com/PZiFCQO.png" alt=""> Double DR: 13k–17k/hit</td><td><img src="https://i.imgur.com/M8G6w5H.gif" alt="Seal"><div class="muted">Seal</div> 或 <img src="https://i.imgur.com/KGKrESI.gif" alt="Weakness"><div class="muted">Weakness</div></td></tr><tr><th>持续</th><td>15 secs</td><td>20 secs</td><td>20 secs</td><td>Seal 30 / Weakness 30</td></tr><tr><th>范围</th><td>全图</td><td>Hugin 周围</td><td>被击时触发</td><td>几乎全图</td></tr><tr><th>KB</th><td>Left</td><td>Left</td><td>None</td><td>None</td></tr></tbody></table>
+</section>
+
+<section id="anim-munin">
+  <h2>动画与效果 · Munin</h2>
+  <ul>
+    <li>HP: 450,000,000 · EXP: 3,500,000</li>
+    <li>Max Touch: P1–4 <strong>21.8k</strong>；P5 <strong>23.5k</strong></li>
+    <li>Weak: Fire · Strong: Ice</li>
+  </ul>
+  <table><thead><tr><th></th><th>Blue Beak</th><th>Feather Rocks</th><th>Green Chest Glow</th><th>Yellow Summon Circle</th></tr></thead><tbody><tr><th>动画</th><td><img src="https://i.imgur.com/vENsS9q.gif" alt=""></td><td><img src="https://i.imgur.com/Sxuxaz9.gif" alt=""></td><td><img src="https://i.imgur.com/lBWqjfb.gif" alt=""></td><td><img src="https://i.imgur.com/ucmDmcV.gif" alt=""></td></tr><tr><th>最大伤害</th><td>Magic · Ice<br>P1–4: 7.3k<br>P5: 8.2k</td><td>Physical 8.5k</td><td>Skill · 无伤害</td><td>Skill · 无伤害</td></tr><tr><th>效果</th><td><img src="https://i.imgur.com/Vzmjw8i.gif" alt="Confuse"><div class="muted">Confuse</div></td><td><img src="https://i.imgur.com/fBrAQd8.gif" alt="Stun"><div class="muted">Stun</div></td><td>随机 Banish 1–5 人</td><td><img src="https://i.imgur.com/8AEU8sb.gif" alt="Mass Seduce"><div class="muted">Mass Seduce</div> 或 <img src="https://i.imgur.com/KGKrESI.gif" alt="Weakness"><div class="muted">Weakness</div></td></tr><tr><th>持续</th><td>15 secs</td><td>10 secs</td><td>80% 概率</td><td>左走 10s（100% HP；CD 40s；前 10 人）<br>左跳 30s（80% HP；CD 40s；前 15 人）<br>右跳 30s（60% HP；CD 40s；前 15 人）<br>Weakness 30s</td></tr><tr><th>范围</th><td>全图</td><td>Munin 周围</td><td>全图</td><td>全图</td></tr><tr><th>KB</th><td>Left</td><td>Left</td><td>None</td><td>None</td></tr></tbody></table>
+  <div class="note">被 Banish 视为最后进图。Banish 后出生在另一图右端，有 <strong>90 秒</strong>（超时踢出远征）需走<strong>最左 portal</strong> 回战场。</div>
+</section>
+
+<section id="anim-ariel">
+  <h2>动画与效果 · Ariel</h2>
+  <ul>
+    <li>HP: 600,000,000 · EXP: 20,000,000</li>
+    <li>Max Touch: <strong>23.2k</strong></li>
+    <li>Strong: Fire, Lightning, Ice · Immune: Holy</li>
+  </ul>
+  <table><thead><tr><th></th><th>Genesis</th><th>Falling Rocks</th><th>Green Glow</th><th>Blue Circle</th></tr></thead><tbody><tr><th>动画</th><td><img src="https://i.imgur.com/PD6zGRX.gif" alt=""></td><td><img src="https://i.imgur.com/wSD2s5o.gif" alt=""></td><td><img src="https://i.imgur.com/wRSaxmc.gif" alt=""></td><td><img src="https://i.imgur.com/s1vvCeD.gif" alt=""></td></tr><tr><th>最大伤害</th><td>Magic 13.6k</td><td>HP/MP → 1/1</td><td>Skill · 无伤害</td><td>Skill · 无伤害</td></tr><tr><th>效果</th><td><img src="https://i.imgur.com/ITVVggH.gif" alt="Darkness"><div class="muted">Darkness</div></td><td><img src="https://i.imgur.com/fBrAQd8.gif" alt="Stun + Super KB"><div class="muted">Stun + Super KB</div></td><td>Heal 200k HP 或 <img src="https://i.imgur.com/WuI6Vlq.png" alt="Weapon Cancel"><div class="muted">Weapon Cancel</div> 或 <img src="https://i.imgur.com/ZHI8K1y.png" alt="Magic Cancel"><div class="muted">Magic Cancel</div> 或 Poison Cloud 2k DPS</td><td><img src="https://i.imgur.com/YUJTZ1T.gif" alt="Zombify"><div class="muted">Zombify</div> 或 Dispel</td></tr><tr><th>持续</th><td>10 secs</td><td>10 secs</td><td>Cancel 40s / Poison Cloud 20s</td><td>Zombify 60s（CD 2 min）<br>Dispel 90% 概率；60% HP 阈值</td></tr><tr><th>范围</th><td>全图</td><td>全图</td><td>Heal 全图；Poison Cloud 在 Munin 附近</td><td>全图</td></tr><tr><th>KB</th><td>Left</td><td>远离 Ariel</td><td>None</td><td>None</td></tr></tbody></table>
+</section>
+
+<section id="anim-pb">
+  <h2>动画与效果 · Pink Bean</h2>
+  <ul>
+    <li>HP: 2,100,000,000</li>
+    <li>EXP: 120,000,000（2021 周年）</li>
+    <li>Knockback: 140,000 → <strong>200,000</strong>（2021 周年）</li>
+    <li>Strong: Neutral, Holy（2021 圣诞）, Fire, Ice</li>
+    <li>Max Touch: 24.6k；Bishop ~17k（Invincible）；Warrior ~20k（Achilles）或 ~16k（Achilles+PG）；其他 ~23k</li>
+  </ul>
+  <table><thead><tr><th></th><th>Tail Slam</th><th>Big Bang</th><th>Musical Note</th><th>Genesis</th><th>Damage Reflect</th><th>Whistle Blow</th><th>Green Skull</th></tr></thead><tbody><tr><th>动画</th><td><img src="https://i.imgur.com/UsQH46U.gif" alt=""></td><td><img src="https://i.imgur.com/UvEr2rh.gif" alt=""></td><td><img src="https://i.imgur.com/fB5cXNF.gif" alt=""></td><td><img src="https://i.imgur.com/jQOTstr.gif" alt=""></td><td><img src="https://i.imgur.com/TBQiBpD.gif" alt=""></td><td><img src="https://i.imgur.com/FEHH7F0.gif" alt=""></td><td><img src="https://i.imgur.com/xubBe4D.gif" alt=""></td></tr><tr><th>最大伤害</th><td>HP/MP → 1/1</td><td>Physical 19.2k</td><td>不可避免 Magic 11.6k</td><td>Magic 11.6k</td><td>Skill · 每击反伤</td><td>Skill · 无伤害</td><td>Skill · 无伤害</td></tr><tr><th>效果</th><td><img src="https://i.imgur.com/M8G6w5H.gif" alt="Seal"><div class="muted">Seal</div></td><td><img src="https://i.imgur.com/Vzmjw8i.gif" alt="Confuse + Super KB"><div class="muted">Confuse + Super KB</div></td><td><img src="https://i.imgur.com/8AEU8sb.gif" alt="Seduce Left Jump"><div class="muted">Seduce Left Jump</div></td><td><img src="https://i.imgur.com/fBrAQd8.gif" alt="Stun"><div class="muted">Stun</div></td><td><img src="https://i.imgur.com/PZiFCQO.png" alt="Double DR 13k–17k/hit"><div class="muted">Double DR 13k–17k/hit</div></td><td>召唤 12 Minis</td><td><img src="https://i.imgur.com/YUJTZ1T.gif" alt="Zombify"><div class="muted">Zombify</div></td></tr><tr><th>持续</th><td>15 secs</td><td>15 secs</td><td>10 secs</td><td>5 secs</td><td>20 secs（CD 1 min；90% HP 阈值）</td><td>（CD 1 min；80% HP 阈值）</td><td>60 secs（CD 2 min）</td></tr><tr><th>KB</th><td>朝向 PB</td><td>远离 PB</td><td>Left</td><td>Left</td><td>None</td><td>None</td><td>None</td></tr><tr><th>补充</th><td>—</td><td>判定框从动画起点开始</td><td>可钻平台下或走开躲避</td><td>仅朝左时可放</td><td>有 DR 音效提示</td><td>有口哨音效</td><td>效果在动画后 5 秒生效</td></tr></tbody></table>
+</section>
+
+<section id="anim-mini">
+  <h2>Resting Bean / Mini-Bean</h2>
+  <h3>Resting Bean（仅 Phase 1–5）</h3>
+<figure class="media"><img src="https://maplestory.io/api/GMS/217/mob/8820001/render/move" alt="Resting / Pink Bean 参考渲染" loading="lazy"><figcaption>Resting / Pink Bean 参考渲染</figcaption></figure>
+  <p><strong>Cheer cheer for some mini-beans!</strong> 欢呼两次后召唤 6 只 Mini-Bean。</p>
+  <p class="muted">另有疑似提升 MDEF/WDEF/WATK 的动画，Legends 上是否生效未完全确认。</p>
+
+  <h3>Mini-Bean</h3>
+  <ul>
+    <li>HP: 303,000 → <strong>606,000</strong>（2021 圣诞）</li>
+    <li>EXP: 11,000 · Damage: 3k–5k · Max Touch: 4.2k</li>
+    <li>Weak: Ice, Fire（2021 圣诞）· Strong: Poison · Immune: Holy（2021 圣诞 / 2022 周年）</li>
+  </ul>
+  {mini}
+</section>
+
+<section id="tips">
+  <h2>Tips</h2>
+  <ul>
+    <li>用 <code>@time</code> <code>@online</code> <code>@uptime</code> <code>@mapowner</code> 等指令找自己，少打断别人（感谢 boofoo）。</li>
+  </ul>
+</section>
+
+<section id="history">
+  <h2>Balance 变更简史</h2>
+  <table>
+    <thead><tr><th>内容</th><th>帖子</th></tr></thead>
+    <tbody>
+      <tr><td>Welcome Pink Bean — 引入 PB 与 Timeless 装备</td><td><a href="https://forum.legends.ml/index.php?threads/welcome-pink-bean.35080/">Halloween 2020</a></td></tr>
+      <tr><td>RoT cap 5；DR dmg 15k；Wheel cap 1</td><td><a href="https://forum.legends.ml/index.php?threads/unscheduled-maintenance-changes-23-11-2020.35518/">Post-intro 1</a> · <a href="https://forum.legends.ml/index.php?threads/scheduled-maintenance-november-15-2020.35389/">2</a></td></tr>
+      <tr><td>雕像 aggro：Ariel 全图；Hugin/Munin 区域调整</td><td><a href="https://forum.legends.ml/index.php?threads/christmas-2020-balance-changes.36030/">Christmas 2020</a></td></tr>
+      <tr><td>DR delay −50%；Timeless 打造/属性</td><td><a href="https://forum.legends.ml/index.php?threads/map-mob-changes-february-19-2021.38079/">Valentine 2021</a></td></tr>
+      <tr><td>每周成功上限 1；Wheel 停售</td><td><a href="https://forum.legends.ml/index.php?threads/anniversary-event-2021-balance-changes-explained.40565/">Anniversary 2021</a></td></tr>
+      <tr><td>Hugin aggro；Ariel hitbox</td><td><a href="https://forum.legends.ml/index.php?threads/summer-event-2021-balance-changes-explained.42322/">Summer 2021</a></td></tr>
+      <tr><td>Munin aggro；Mini HP；Holy 元素</td><td><a href="https://forum.legends.ml/index.php?threads/christmas-event-2021-balance-changes-explained.43806/">Christmas 2021</a></td></tr>
+      <tr><td>Munin seduce/banish；等级；Musical Notes 不可避免；Zombify；Banish 地图计时</td><td><a href="https://forum.legends.ml/index.php?threads/anniversary-summer-event-2022-balance-changes-explained.46741/">Anniversary 2022</a></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<div class="src">
+  <p>本 HTML 初版整理自 <a href="https://forum.legends.ml/index.php?threads/pink-bean-animations-guide.35740/">xiaoyaoz · Pink Bean Animations Guide</a>（Last update March 2024 / Last edited Apr 29, 2024）。</p>
+  <p>图片托管于 Imgur / maplestory.io；若外链失效请回原帖查看。正文以 2024 主版本策略为准，论坛 Spoiler「Old stuff: Pre-2024」中的旧站位/旧机制未全文展开，以免与现行冲突。</p>
+</div>
+</main>
+</div>
+</body>
+</html>
