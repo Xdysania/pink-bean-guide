@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>黑龙指挥计时 · MapleLegends</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --panel: #1a222c;
+    --panel2: #232d3a;
+    --line: #2e3a4a;
+    --text: #e8eef6;
+    --muted: #9aabbd;
+    --accent: #ff6b9d;
+    --accent2: #7ec8ff;
+    --warn: #ffc46b;
+    --ok: #8dffc0;
+    --danger: #ff8d8d;
+    --bs: #ffc46b;
+    --am: #8fd4ff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background:
+      radial-gradient(1000px 480px at 8% -10%, #3a1a2e 0%, transparent 55%),
+      radial-gradient(900px 420px at 100% 0%, #14283a 0%, transparent 50%),
+      var(--bg);
+    color: var(--text);
+    line-height: 1.45;
+  }
+  button, input { font: inherit; color: inherit; }
+  input { color-scheme: dark; }
+  input:not([data-field="group-name"]) {
+    background: #0f1419;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px 8px;
+  }
+  button { cursor: pointer; }
+  .wrap { max-width: none; margin: 0; padding: 8px 12px 28px; }
+  .topbar {
+    position: sticky; top: 0; z-index: 6;
+    display: flex; flex-wrap: wrap; gap: 8px;
+    align-items: center;
+    padding: 6px 0;
+    background: rgba(15, 20, 25, .92);
+    backdrop-filter: blur(10px);
+  }
+  .brand { font-size: .95rem; margin-right: 4px; }
+  .tabs, .tools { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .tabs { margin-right: auto; }
+  .tab, .tool {
+    border: 1px solid var(--line); background: var(--panel);
+    border-radius: 999px; padding: 4px 10px; color: var(--muted); font-size: .82rem;
+  }
+  .tab[aria-selected="true"] {
+    color: var(--text); border-color: var(--accent);
+    background: #2a1824;
+  }
+  .tool.on { color: var(--ok); border-color: #2f6b4a; }
+  .clock { font-variant-numeric: tabular-nums; color: var(--warn); font-size: .95rem; }
+  .raid {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--line); background: #241820;
+    border-radius: 999px; padding: 3px 10px 3px 12px;
+    color: #ffd0e2; font-weight: 700; font-size: .82rem;
+  }
+  .raid-time {
+    font-variant-numeric: tabular-nums; font-size: 1.05rem; font-weight: 760;
+    color: var(--warn); min-width: 4.6em;
+  }
+  .raid.on { border-color: #8a6a32; background: #2a2114; color: var(--text); }
+  .raid.hot { border-color: var(--danger); }
+  .raid.done { border-color: var(--danger); color: var(--danger); }
+  .raid.done .raid-time { color: var(--danger); }
+  .dps { display: flex; flex-direction: column; gap: 3px; margin: 0 0 6px; }
+  .dps-btn {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    width: 100%; text-align: left;
+    border: 1px solid var(--line); background: #152433;
+    border-radius: 8px; padding: 5px 10px;
+    font-weight: 700; font-size: .82rem; color: #d6efff;
+  }
+  .dps-btn.on { border-color: #2d5f86; background: #14202b; color: var(--text); }
+  .dps-btn.locked { border-color: #2f8a5a; background: #14281c; color: var(--text); }
+  .dps-btn.done { border-color: var(--ok); color: var(--ok); }
+  .dps-time { font-variant-numeric: tabular-nums; font-size: 1.05rem; font-weight: 760; color: var(--warn); }
+  .dps-btn.done .dps-time { color: var(--ok); }
+  .dps-time:empty { display: none; }
+  .dps-note { margin: 0; font-size: .72rem; color: var(--muted); line-height: 1.35; }
+  .brow--sample { box-shadow: inset 3px 0 0 var(--warn); }
+  .urgent {
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+    margin: 0 0 8px; padding: 4px 8px;
+    background: #241c14; border: 1px solid #5a4630; border-radius: 8px;
+  }
+  .urgent[hidden] { display: none; }
+  .urgent b { font-size: .78rem; color: var(--warn); font-weight: 650; }
+  .chip {
+    border: 0; border-radius: 999px; padding: 2px 8px;
+    background: #3a2c1c; color: var(--text); font-size: .78rem;
+  }
+  .chip:hover { background: #4d3b24; }
+  .toolbar { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 6px; }
+  .toolbar .toolbar { margin: 0; }
+  .toolbar input, .toolbar select, dialog input {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 3px 6px; min-width: 0; font-size: .75rem;
+  }
+  .toolbar select { max-width: 140px; }
+  .primary, .ghost, .danger-btn, .icon-btn {
+    border-radius: 7px; padding: 4px 8px; border: 1px solid var(--line); background: var(--panel2); font-size: .8rem;
+  }
+  .primary { background: #3a2433; border-color: #6a3a52; color: #ffd0e2; }
+  .danger-btn, .icon-btn { color: var(--danger); padding: 2px 7px; }
+  .board {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(420px, 500px);
+    gap: 8px; align-items: start;
+  }
+  .col-title { font-size: .75rem; color: var(--muted); margin: 0 0 4px; letter-spacing: .04em; }
+  .sheet { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); overflow: hidden; }
+  .party-sheet { display: flex; flex-direction: column; gap: 8px; background: transparent; border: 0; overflow: visible; }
+  .group-block {
+    border: 1px solid color-mix(in srgb, var(--team) 45%, var(--line));
+    border-left: 5px solid var(--team);
+    border-radius: 8px;
+    background: var(--panel);
+    overflow: hidden;
+  }
+  .group-block:nth-child(5n+1) { --team: #ff6b9d; --team-ink: #ffd0e2; --team-bg: #2a1824; }
+  .group-block:nth-child(5n+2) { --team: #7ec8ff; --team-ink: #d6efff; --team-bg: #152433; }
+  .group-block:nth-child(5n+3) { --team: #8dffc0; --team-ink: #d8ffe9; --team-bg: #14281c; }
+  .group-block:nth-child(5n+4) { --team: #ffc46b; --team-ink: #ffe6bf; --team-bg: #2a2114; }
+  .group-block:nth-child(5n+5) { --team: #d2b4ff; --team-ink: #efe4ff; --team-bg: #241832; }
+  .group-head, .part-head, .lane-head {
+    display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  }
+  .group-head .tools, .lane-head { min-width: 0; }
+  .group-head { padding: 5px 8px; background: var(--team-bg, #141b24); }
+  .group-head input[data-field="group-name"] {
+    background: transparent; border: 0; border-bottom: 1px solid transparent;
+    font-size: 1rem; font-weight: 800; padding: 0; width: 8em;
+    color: var(--team-ink, var(--text)); letter-spacing: .04em;
+  }
+  .group-head input[data-field="group-name"]:focus { border-bottom-color: var(--team, var(--accent)); outline: none; }
+  .group-block .member { background: color-mix(in srgb, var(--team) 7%, transparent); }
+  .group-block .num { border-color: color-mix(in srgb, var(--team) 55%, var(--line)); }
+  .lane-title { display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: .78rem; padding: 2px 6px; color: var(--job, var(--muted)); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--job, var(--muted)); }
+  .lane[data-job="BS"] { --job: var(--bs); }
+  .lane[data-job="AM"] { --job: var(--am); }
+  .tag {
+    font-size: .72rem; letter-spacing: .06em; color: var(--job, var(--muted));
+    border: 1px solid var(--line); border-radius: 999px; padding: 1px 7px;
+  }
+  .member, .brow {
+    display: flex; align-items: center; gap: 6px;
+    padding: 2px 6px; border-top: 1px solid var(--line); background: transparent;
+  }
+  .num {
+    flex: 0 0 28px; height: 24px;
+    display: grid; place-items: center;
+    font-size: .75rem; font-weight: 760; font-variant-numeric: tabular-nums;
+    border-radius: 6px; background: #141b24; color: var(--job, var(--text));
+    border: 1px solid var(--line);
+  }
+  .meta { display: flex; gap: 4px; align-items: center; flex: 0 0 auto; }
+  .meta input[data-field="member-name"] { width: 72px; padding: 2px 6px; font-size: .75rem; line-height: 1.2; }
+  .meta input[data-field="member-no"] { width: 40px; padding: 2px 4px; font-size: .75rem; line-height: 1.2; }
+  .skills { display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 auto; min-width: 0; }
+  .skill { position: relative; scroll-margin-top: 48px; flex: 0 0 auto; max-width: none; }
+  .skill-hit {
+    --p: 100%;
+    width: auto; min-width: 78px; min-height: 26px;
+    display: flex; flex-direction: row; align-items: baseline; justify-content: space-between;
+    gap: 4px; text-align: left; padding: 3px 16px 3px 7px;
+    border-radius: 7px; border: 1px solid var(--line);
+    background:
+      linear-gradient(90deg, rgba(255, 196, 107, .18) var(--p), transparent var(--p)),
+      #141b24;
+  }
+  .skill.tier-minor .skill-hit { min-width: 68px; padding-top: 2px; padding-bottom: 2px; }
+  .part-name { flex: 0 0 52px; font-size: .75rem; font-weight: 700; line-height: 1.15; }
+  .part-name .hp { display: block; font-weight: 500; }
+  .brow.part--dead { opacity: .4; }
+  .brow.part--dead .skills { pointer-events: none; }
+  .dead-check { flex: 0 0 auto; font-size: .7rem; color: var(--muted); white-space: nowrap; }
+  .skill.kind-active .skill-hit, .skill.kind-both .skill-hit {
+    border-color: #8a6a32;
+    background:
+      linear-gradient(90deg, rgba(255, 196, 107, .38) var(--p), transparent var(--p)),
+      #2a2114;
+  }
+  .skill.kind-cd .skill-hit {
+    border-color: #2d5f86;
+    background:
+      linear-gradient(90deg, rgba(127, 200, 255, .32) var(--p), transparent var(--p)),
+      #14202b;
+  }
+  .skill.death .skill-hit {
+    border-color: #6a3434;
+    background:
+      linear-gradient(90deg, rgba(255, 141, 141, .28) var(--p), transparent var(--p)),
+      #1c1416;
+  }
+  .skill.death.kind-run .skill-hit, .skill.death.kind-town .skill-hit {
+    border-color: #a84848;
+    background:
+      linear-gradient(90deg, rgba(255, 100, 100, .45) var(--p), transparent var(--p)),
+      #2a1416;
+  }
+  .skill.death.kind-town .sk-time { color: var(--danger); }
+  .skill.death.has-icon .skill-hit { padding-right: 6px; }
+  .member--down .num { border-color: #a84848; }
+  .member--town { background: rgba(255, 80, 80, .08); }
+  .skill.kind-tail .skill-hit, .skill.ping .skill-hit {
+    border-color: #2f8a5a;
+    background: #14281c;
+  }
+  .skill.hot .skill-hit { animation: pulse 1s ease-in-out infinite; }
+  .skill.flash .skill-hit { outline: 2px solid var(--warn); }
+  .sk-name { font-size: .75rem; font-weight: 700; white-space: nowrap; display: inline-flex; }
+  .sk-icon { width: 28px; height: 28px; display: block; image-rendering: pixelated; }
+  .skill.has-icon .skill-hit { min-width: 0; min-height: 30px; align-items: center; padding: 1px 14px 1px 2px; gap: 3px; }
+  .sk-label { display: none; }
+  .sk-time { font-size: .85rem; font-weight: 760; font-variant-numeric: tabular-nums; line-height: 1; white-space: nowrap; }
+  .sk-sub { font-size: .68rem; color: var(--muted); white-space: nowrap; }
+  .sk-time:empty, .sk-sub:empty { display: none; }
+  .skill-edit {
+    position: absolute; top: 1px; right: 1px;
+    width: 16px; height: 16px; padding: 0; font-size: .7rem;
+    border: 0; border-radius: 4px; background: transparent; color: var(--muted);
+    opacity: 0;
+  }
+  .skill:hover .skill-edit, .skill-edit:focus { opacity: 1; }
+  .skill-edit:hover { background: rgba(255,255,255,.06); color: var(--text); }
+  .job-tag { flex: 0 0 22px; font-size: .75rem; font-weight: 800; color: var(--job, var(--muted)); }
+  .hp { color: var(--warn); font-size: .68rem; font-weight: 500; }
+  .sources { margin-top: 10px; color: var(--muted); font-size: .75rem; }
+  .sources summary { cursor: pointer; color: var(--accent2); }
+  .sources p { margin: 8px 0; }
+  dialog {
+    background: var(--panel); color: var(--text);
+    border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; width: min(420px, 92vw);
+  }
+  dialog::backdrop { background: rgba(0,0,0,.55); }
+  dialog h3 { margin: 0 0 10px; }
+  dialog label { display: grid; gap: 4px; font-size: .8rem; color: var(--muted); margin-bottom: 10px; }
+  dialog .row { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+  .hint { font-size: .78rem; color: var(--muted); }
+  .empty { color: var(--muted); padding: 8px; font-size: .8rem; }
+  @keyframes pulse {
+    50% { box-shadow: 0 0 0 2px rgba(255, 180, 84, .35); }
+  }
+  @media (max-width: 980px) {
+    .board { grid-template-columns: 1fr; }
+    .member { flex-wrap: wrap; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skill.hot .skill-hit { animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <header class="topbar">
+    <strong class="brand" title="点一下开始记。再点重计，右键清除。数据留在这台浏览器里。">黑龙计时</strong>
+    <button class="raid" type="button" data-act="raid" aria-pressed="false" title="一场黑龙 2 小时。再点一次结束。">
+      <span class="js-raid-label">开始攻略</span>
+      <span class="raid-time js-raid">2:00:00</span>
+    </button>
+    <div class="tabs">
+      <span class="clock js-clock">--:--:--</span>
+    </div>
+    <div class="tools">
+      <button class="tool" type="button" data-act="sound">声音</button>
+      <button class="tool" type="button" data-act="clear-timers">清空计时</button>
+      <button class="tool" type="button" data-act="reset-demo">恢复示例</button>
+    </div>
+  </header>
+  <div class="urgent js-urgent" hidden></div>
+  <div id="view"></div>
+  <details class="sources">
+    <summary>这版冷却是从哪来的</summary>
+    <p>队友只记会进冷却的技能。勇士的意志：图书馆 2321009 / 2221008，满级 5 级 6 分钟。HSS 圣盾：2321005，冷却 2 分钟，30 级持续 40 秒。复活 Reg：2321006，10 级冷却 30 分钟，身边没有死人时不进冷却。神圣祈祷、冒险岛勇士、终极无限不记。死亡按 10 分钟记，到点还没复活就按回城处理。</p>
+    <p>黑龙只记最有威胁的：物免、魔免、诱惑、群体诱惑、DP（驱散）。秒数来自和 L 服血量一致的旧版部位攻略（MapleRoyals 的 Horntail 指南，数据沿用旧 GMS）。图书馆能对上血量，但不写技能冷却。腿 8810008 是 1.3 亿，尾巴 8810009 是 8000 万，翅膀 8810007 是 2.7 亿，左右手各 2.3 亿。这三处只留血量和石化。飞龙、回血、封印、黑暗、虚弱、毒雾这些不记。每个技能右上角可以改秒数。输出测算默认全屏同时打在腿和手上：腿石化时打出 1.3 亿，同一段伤害也算在每只被打到的手上，再用这个速度推手还要多久。翅膀回血不算进去。</p>
+  </details>
+</div>
+
+<dialog id="editDialog">
+  <form method="dialog">
+    <h3 id="editTitle">调整秒数</h3>
+    <label>冷却（秒，0 表示没有冷却）<input id="editCd" type="number" min="0" max="7200" step="1"></label>
+    <label>持续（秒，0 表示瞬间生效）<input id="editDur" type="number" min="0" max="7200" step="1"></label>
+    <p class="hint" id="editHint"></p>
+    <div class="row">
+      <button class="ghost" type="submit" value="cancel">取消</button>
+      <button class="ghost" type="submit" value="reset">恢复默认</button>
+      <button class="primary" type="submit" value="save">保存</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+/** @typedef {{id:string, name:string, cooldown:number, duration:number, tier?:string, note?:string, icon?:string}} SkillDef */
+/** @typedef {{id:string, no:number, name:string, timers:Record<string, number>, deadAt?:number}} Member */
+/** @typedef {{job:"BS"|"AM", members:Member[]}} Lane */
+/** @typedef {{id:string, name:string, lanes:Lane[]}} Group */
+/** @typedef {{v:number, tab:"party"|"boss", sound:boolean, raidStart:number|null, dpsStart:number|null, dpsLockedAt:number|null, overrides:Record<string, {cooldown:number, duration:number}>, bossDead:Record<string, boolean>, bossTimers:Record<string, number>, groups:Group[]}} TimerState */
+
+const STORAGE_KEY = "ml-ht-host-timer-v1";
+
+/**
+ * L 服图书馆的技能图标。嵌在页面里，打本时断网也能显示。
+ * 勇士的意志 2321009 / 2221008 / 2121008 在图书馆是同一张图。
+ * 死亡用墓碑道具 4032436 的图标。
+ */
+const SKILL_ICON = {
+  death: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB0AAAAgCAYAAADud3N8AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAI9SURBVEhLtZULlYMwFERrAQu1gIVawAIWsIAFLGChFmqhFtYCyw1MdhqykP7mnDmEJO/dvCSlpxc1Jf6qAmS8XqPr+vIR+H9Jpq7vfSxYYIMjn3OoCd3u9zQgJtE41iIA8/SqfXz2RnGiy8ChjYbxOrVdH5708UzBnicB46iY1MXkpmmzYwIL7ol9Pm05B3+Y7EDvl+irzudg5vLO1qqtGLUx+TCsBbkoBGGdjSeQeBdQpo8YJdaCNd9gD0DJB6fr7TYvYoiJc0DMNqexWEXkKswpTCKZJ0+hVIfpZz5tzlv9yrN6VyGQp0OVPAWqn/mXpnn4aGD6SbqnACSoaduY0JP7O2b7iBOMuGfB2UDOFpgkuC6d5sqKZ+w878remYZLoyBdAiV28Z6r2E0edq0Y6hY0BXg7jZGLoJ5Ypr/EuVgM+OgnM91/fjbWGeJcRTk7mLyrs4ogtq3tunC+pW7XrQY0jOMhzBWh/TBuKtgzcfrJWYVFilupS9IPQ6zG3//6u9BPDFD8NBQ7dM/LX9wY5vPEAEu/t6lCEJU4nOo4a503Y4DYWp6q8mUoqwekqgGSeKlwqUpWpe8AUawOIEmxzsyBqvITULRA5wpVMQC2VTCZdxbzLhDFat1VVUWwG+BbWysDyJlvKluZWuOWo0jV7PX/5DlRreDcA/LMPq85s4qrQ/Vl+ZSVmI8Dou1VcwRrznr2BhwuCxeFtm5qiV1aAAs+gmrgmw5HNnsjBth/mdWlvmT6sMdhcsmJTqdfUsrY1NkgaHYAAAAASUVORK5CYII=",
+  will: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAJgSURBVFhHvZaBcepAEEPpiRbSwm8hLdACLbgFWqAFt+AW0gLZtzk58vpsTOYnmtGcfd6V5D1gOBU8/ohdPMZx+hPi9WX5jXzgmO7/HtMtGGvFOIXQBit6OsPtvgixMhequUzO5/Mme0F6L+Eh5gC9QlCNhffb22IFe0GAPFYBeNAbec/4Mrwlr0HAqj3BgwjucWgCMhcwglPsD83s1lbu2VeN0AsBugEcbo7gMJzTQBzb2H3159QrSA0BugEoEt1cooB1jDECVlH3XgdrCHEVQKbiJd6oaz6EYRD0Vuj1EB30XH8zQMU9GvVmMgC6dvp+1kcf/RVPA5CYM/TmldH1y0TkPvdLHUCnfiZ2A6R5G3+esYnJqDUvCPQcZJA2PfTQBU8D8NWiCWQIhELYzSumj49FiGT0uY6+srsBri2ln3vehyD3PXNBIbKvhVUI9AD6uwE0pt8KgP5uADD/uETz/wgwazTdQwGUOAVC7CcBkrN5XL8SIEVaM0ixSz8ExgvzqKNeQCf3fxLAQwAPIeNq7pDGywF0BGAeZ4i3ppkyd2oCiyk8OwKgEPoFVHoJUbuFOg2QIZoGQBd9fHYD5HUkZmyiRN2gCSS17yG8XxM9HADk2CI9NcDFtecrVI3qcgJ2nIcCQH67BWq0OmXy7BlAT9qbAQAPFYQzI70LOWSiN65M7ej3s4dgFWDv/6BCvEqNXuaOzQk4PARAUJ8JvY0z9zfOvGIzwNYkPAg9Qh25oJ5q3vtXDFZT8CB6Q4lSD9xU127s5q5XzYV8cITUgvv0HUDXvfpK6oJd6OFvs+F0+gTgOBvVcijm3gAAAABJRU5ErkJggg==",
+  hss: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHrSURBVFhHvZSBlYMgEAXTU1qwp7SQFmzBFmiBFqzFY5Al67KYeCb+9/ahgMxAuLuZLBeVmyXG+ZKCtSJfyQNkjo8ljEOeFGPMfWfDOqw3jGEZQljGKWwkKpxcIUC0xEaAhDB8TcKDk0YAqOSTU6Dflhf6s0AC1t3PsyOQgFpi7xR4D880bsqbl+H66BPc3oMsQNtIOAICLx9vykpUgQQDTIAj1AjIZC1hT0HDbWIC5O+LRIWr3QucfvcSuhJKoAeXWAmeZfcazpgrQKyEPoUjArQA74ANnHQFSCNxQsCDk10BUiUQKAvuCQBvBB6rAM8aTg4J0JL8LneiAHXZcdqvC9gSUK//qwJHckqgwuUSlt9Ul413EnIHDl3CBk4rl5Dn8hvbiICekwU6fwmuwB6cMeoTAZnL+/D0/xc0AvJBhfcEpjcCaVzm8i6nYCUaAVqBEwsnnoA8W4HcJxLpFIATkWgENnBn9+TfAuouENpWoMCJBydHBUiVUKdA3EtIersnpwTMKfQFDNyWCAAUqH4WAVuM6VNwBezudbEIoRUJW3r3AtWlT6EvkOC61vHXkZIswVxT3rwK1tUTIHmxzh3Qod+WF/qrxLs78Cn8aDwJLUCyxC/gOqxLjdO0gUuy1RUFa0W2kcFfV8nt9geM9MvjW3EM8gAAAABJRU5ErkJggg==",
+  res: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAJzSURBVFhHvVYLdcMwDCynUhiFURiFUhiFUAiFUDCFUDCFTif5EtmW02btdu/pxR/p7mwnrS8N7v8UIe4prf8S0DLJHTpBpOnD4vvD+vK0dtb+MbLLL7WFj5jmpTKh4mv6rpIATwSgndMiGoERGcNcm+/7ADSg5U2YgeXWOSU60pv0s+yYi1asFQbID63OQCQ8AsjzMgvRpIF2JDgCtDoDZwHBdbppnBEn3mNgFgMSbzFw5ggANVCO4KyBl44AYhrTpxJZ7O1n8SsDumps+fRViZn4V5l7zkR4BI+2UnPmWpw4mvPQPInAwLUqHhGRoMVoHPDjlncdv4Qk8kWvouXEszcwy4ukIYkS7wZ5qRMbWGyS8K5b+PGjnCrPaXQGtgQNKxyJ+DZxlKvhVg+EBoDNgDNBQt+OEOVqkK+IA+ERAGZAvggp0L6S2BfCzwxRiquoc/avysTBuWs8OIKSqIQm6P+uUdMirXbTqXJLrc433IEBucnIZM5pa69JfufL1h2JE96EiYkZ5YCoXFiEm+3OAG4pSlIScMnQlZDkpAGaB4deWsqigPhGhCuZfCIAEvMq16tSwK08YwA1OtZyicbQABIJFKipjeCEAcmlKDkIjIcG8jpjevuhQD8niUKkgZXdrp0JCG/iMm87YMaNQ65sqNcdlndB+sFLSNiNF4WSqdGK+6BwNeZMoN4Wp6zl+eA+oOIFRyv34C5EOwHsJgxDA5U4jqMRpwBQCDQ24SdNhAb0vPA7gG0fiJOcY/6JYE5nQvjATRPeAHBfpADCFuVlbAzg6YMiR3PeAPlbcUInosBchE1EnlGMODEuEYKTfx0Fl8sPH9Hj+ycfpscAAAAASUVORK5CYII="
+};
+
+/** 主教 / 大魔导在黑龙里值得报号的技能。 */
+const JOBS = {
+  BS: {
+    label: "主教",
+    short: "BS",
+    blurb: "解诱惑、圣盾、复活",
+    skills: [
+      { id: "will", name: "意志", icon: SKILL_ICON.will, cooldown: 360, duration: 0, tier: "key", note: "勇士的意志。L 服图书馆 2321009，满级 5 级冷却 6 分钟，用来解诱惑。" },
+      { id: "hss", name: "HSS", icon: SKILL_ICON.hss, cooldown: 120, duration: 40, tier: "key", note: "圣盾 Holy Shield，图书馆 2321005。冷却 2 分钟，30 级持续 40 秒。" },
+      { id: "res", name: "复活", icon: SKILL_ICON.res, cooldown: 1800, duration: 0, tier: "key", note: "Reg / Resurrection，图书馆 2321006。10 级冷却 30 分钟。身边没有死人时不进冷却。" }
+    ]
+  },
+  AM: {
+    label: "大魔导",
+    short: "AM",
+    blurb: "冰雷 / 火毒",
+    skills: [
+      { id: "will", name: "意志", icon: SKILL_ICON.will, cooldown: 360, duration: 0, tier: "key", note: "勇士的意志。L 服图书馆 2221008（火毒同一张表），满级 5 级冷却 6 分钟。终极无限不记。" }
+    ]
+  }
+};
+
+/** @type {SkillDef[]} 前头：物免、魔免、单体诱惑。 */
+const PRE_HEAD_SKILLS = [
+  { id: "wcancel", name: "物免", cooldown: 60, duration: 40, tier: "key", note: "物攻无效。持续 40 秒，冷却 60 秒。" },
+  { id: "mcancel", name: "魔免", cooldown: 60, duration: 40, tier: "key", note: "魔攻无效。持续 40 秒，冷却 60 秒。" },
+  { id: "seduce", name: "诱惑", cooldown: 180, duration: 10, tier: "key", note: "冷却 180 秒。前头攻略没写持续，这里按主体诱惑的 10 秒。" }
+];
+
+/** @type {SkillDef[]} 主体侧头：物免、魔免。 */
+const BODY_HEAD_SKILLS = [
+  { id: "wcancel", name: "物免", cooldown: 60, duration: 40, tier: "key", note: "物攻无效。约 99% 血后出现。持续 40 秒，冷却 60 秒。" },
+  { id: "mcancel", name: "魔免", cooldown: 60, duration: 40, tier: "key", note: "魔攻无效。约 99% 血后出现。持续 40 秒，冷却 60 秒。" }
+];
+
+const BOSS_PARTS = [
+  {
+    id: "pre-l", name: "前置左", stage: "前置头", hp: "3.3亿", span: "span-3",
+    note: "前置头左侧。物免、魔免、诱惑都可以点。先进图的人吃诱惑。",
+    skills: PRE_HEAD_SKILLS
+  },
+  {
+    id: "pre-r", name: "前置右", stage: "前置头", hp: "3.3亿", span: "span-3",
+    note: "前置头右侧。物免、魔免、诱惑和前置左同一套，弱火。",
+    skills: PRE_HEAD_SKILLS
+  },
+  {
+    id: "legs", name: "腿", stage: "主体", hp: "1.3亿", span: "span-2",
+    note: "图书馆 8810008，1.3 亿。没有要记的技能，只留血量和石化。",
+    skills: []
+  },
+  {
+    id: "tail", name: "尾巴", stage: "主体", hp: "0.8亿", span: "span-2",
+    note: "图书馆 8810009，8000 万。毒雾不记。",
+    skills: []
+  },
+  {
+    id: "wings", name: "翅膀", stage: "主体", hp: "2.7亿", span: "span-2",
+    note: "图书馆 8810007，2.7 亿。回血和飞龙不记，只留血量和石化。",
+    skills: []
+  },
+  {
+    id: "head-a", name: "左头", stage: "主体", hp: "3.3亿", span: "span-2",
+    note: "弱雷。只记物免和魔免。",
+    skills: BODY_HEAD_SKILLS
+  },
+  {
+    id: "head-b", name: "主头", stage: "主体", hp: "4.9亿", span: "span-2",
+    note: "血最厚。六成血和三成血各有一次全图 DP。",
+    skills: BODY_HEAD_SKILLS.concat([
+      { id: "dispel60", name: "DP六成", cooldown: 300, duration: 0, tier: "key", note: "驱散。约 60% 血后，冷却 300 秒。" },
+      { id: "dispel30", name: "DP三成", cooldown: 180, duration: 0, tier: "key", note: "驱散。约 30% 血后，冷却 180 秒。" }
+    ])
+  },
+  {
+    id: "head-c", name: "右头", stage: "主体", hp: "3.3亿", span: "span-2",
+    note: "弱火。技能和左头相同。",
+    skills: BODY_HEAD_SKILLS
+  },
+  {
+    id: "hand-l", name: "左手", stage: "主体", hp: "2.3亿", span: "span-2",
+    note: "弱雷。主体开打大约 120 秒后才开始单体诱惑。",
+    skills: [
+      { id: "seduce", name: "诱惑", cooldown: 180, duration: 10, tier: "key", note: "持续 10 秒，冷却 180 秒。先点进图顺序靠前的人。" },
+      { id: "mass", name: "群诱", cooldown: 60, duration: 10, tier: "key", note: "群体诱惑。约 30% 血后，最多影响先进图的 10 人。持续 10 秒，冷却 60 秒。" },
+      { id: "dispel", name: "DP", cooldown: 300, duration: 0, tier: "key", note: "驱散。约 60% 血后，冷却 300 秒。" }
+    ]
+  },
+  {
+    id: "hand-r", name: "右手", stage: "主体", hp: "2.3亿", span: "span-2",
+    note: "弱火。人走到右边会触发单体诱惑。",
+    skills: [
+      { id: "seduce", name: "诱惑", cooldown: 180, duration: 10, tier: "key", note: "有人跨到右边会触发。持续 10 秒，冷却 180 秒。" },
+      { id: "mass", name: "群诱", cooldown: 60, duration: 10, tier: "key", note: "群体诱惑。约 30% 血后。持续 10 秒，冷却 60 秒。" }
+    ]
+  }
+];
+
+/** @type {TimerState} */
+let state = loadState();
+/** @type {Record<string, string>} */
+const lastKind = {};
+let primed = false;
+let urgentHtml = "";
+/** @type {AudioContext|null} */
+let audioCtx = null;
+/** @type {{key:string, base:SkillDef}|null} */
+let editing = null;
+/** 添加队友的表单是否展开，以及上次选的队伍。不写进存档。 */
+let addOpen = false;
+let addSlot = "";
+
+const app = document.getElementById("app");
+const view = document.getElementById("view");
+const urgentBox = document.querySelector(".js-urgent");
+const editDialog = document.getElementById("editDialog");
+const editTitle = document.getElementById("editTitle");
+const editHint = document.getElementById("editHint");
+const editCd = document.getElementById("editCd");
+const editDur = document.getElementById("editDur");
+
+/**
+ * @returns {TimerState}
+ */
+function createSeed() {
+  return {
+    v: 1,
+    tab: "party",
+    sound: true,
+    raidStart: null,
+    dpsStart: null,
+    dpsLockedAt: null,
+    overrides: {},
+    bossDead: {},
+    bossTimers: {},
+    groups: [
+      {
+        id: "g-left",
+        name: "1队",
+        lanes: [
+          { job: "BS", members: [{ id: "m1", no: 1, name: "小主教", timers: {} }] },
+          { job: "AM", members: [{ id: "m2", no: 2, name: "冰雷", timers: {} }] }
+        ]
+      },
+      {
+        id: "g-right",
+        name: "2队",
+        lanes: [
+          { job: "AM", members: [{ id: "m3", no: 3, name: "火毒", timers: {} }] },
+          { job: "BS", members: [{ id: "m4", no: 4, name: "副奶", timers: {} }] }
+        ]
+      }
+    ]
+  };
+}
+
+/**
+ * @returns {TimerState}
+ */
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return createSeed();
+    const parsed = JSON.parse(raw);
+    if (!parsed || !Array.isArray(parsed.groups)) return createSeed();
+    parsed.overrides = parsed.overrides || {};
+    parsed.bossDead = parsed.bossDead || {};
+    parsed.bossTimers = parsed.bossTimers || {};
+    parsed.sound = parsed.sound !== false;
+    parsed.raidStart = Number.isFinite(parsed.raidStart) ? parsed.raidStart : null;
+    parsed.dpsStart = Number.isFinite(parsed.dpsStart) ? parsed.dpsStart : null;
+    parsed.dpsLockedAt = Number.isFinite(parsed.dpsLockedAt) && parsed.dpsStart && parsed.dpsLockedAt >= parsed.dpsStart
+      ? parsed.dpsLockedAt
+      : null;
+    parsed.tab = parsed.tab === "boss" ? "boss" : "party";
+    const demoNames = { "左绳": "1队", "右台": "2队" };
+    parsed.groups.forEach((group) => {
+      if (demoNames[group.name]) group.name = demoNames[group.name];
+    });
+    return parsed;
+  } catch (err) {
+    return createSeed();
+  }
+}
+
+/** @returns {void} */
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+/**
+ * @param {string} value
+ * @returns {string}
+ */
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+/**
+ * @param {number} no
+ * @returns {string}
+ */
+function formatNo(no) {
+  return String(no).padStart(2, "0");
+}
+
+/**
+ * @param {number} seconds
+ * @returns {string}
+ */
+function formatRemain(seconds) {
+  const s = Math.max(0, Math.ceil(seconds));
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  if (m <= 0) return `${r}s`;
+  return `${m}:${String(r).padStart(2, "0")}`;
+}
+
+/** 一场黑龙的时限，2 小时。 */
+const RAID_SECONDS = 2 * 60 * 60;
+
+/** 腿的血量。图书馆 8810008。全屏样本就用这一段。 */
+const LEGS_HP = 130000000;
+
+/** 一只手的血量。图书馆 8810005 / 8810006。 */
+const HAND_HP = 230000000;
+
+/** 死亡后不复活，10 分钟自动回城。 */
+const DEATH_SECONDS = 10 * 60;
+
+/**
+ * 整场攻略用时：时:分:秒。
+ * @param {number} seconds
+ * @returns {string}
+ */
+function formatClock(seconds) {
+  const s = Math.max(0, Math.ceil(seconds));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const r = s % 60;
+  return `${h}:${String(m).padStart(2, "0")}:${String(r).padStart(2, "0")}`;
+}
+
+/**
+ * 画出顶栏的 2 小时攻略开关。到点只响一声。
+ * @param {number} now
+ * @param {boolean} announce
+ * @returns {void}
+ */
+function paintRaid(now, announce) {
+  const btn = document.querySelector("[data-act='raid']");
+  const label = document.querySelector(".js-raid-label");
+  const time = document.querySelector(".js-raid");
+  if (!(btn instanceof HTMLElement) || !label || !time) return;
+  if (!state.raidStart) {
+    btn.classList.remove("on", "hot", "done");
+    btn.setAttribute("aria-pressed", "false");
+    label.textContent = "开始攻略";
+    time.textContent = formatClock(RAID_SECONDS);
+    lastKind.raid = "idle";
+    return;
+  }
+  const remain = RAID_SECONDS - (now - state.raidStart) / 1000;
+  btn.classList.add("on");
+  btn.setAttribute("aria-pressed", "true");
+  if (remain <= 0) {
+    label.textContent = "时间到";
+    time.textContent = formatClock(0);
+    btn.classList.add("done");
+    btn.classList.remove("hot");
+    if (announce && lastKind.raid === "run") beep();
+    lastKind.raid = "done";
+    return;
+  }
+  label.textContent = "攻略中";
+  time.textContent = formatClock(remain);
+  btn.classList.toggle("hot", remain <= 600);
+  btn.classList.remove("done");
+  lastKind.raid = "run";
+}
+
+/**
+ * 把血量写成「亿」。
+ * @param {number} hp
+ * @returns {string}
+ */
+function formatYi(hp) {
+  const yi = Math.max(0, hp) / 100000000;
+  const digits = yi >= 10 ? 1 : 2;
+  return `${yi.toFixed(digits)}亿`;
+}
+
+/**
+ * 画出输出测算。腿石化之后，用 1.3 亿除以用时，再推手还要多久。
+ * @param {number} now
+ * @param {boolean} announce
+ * @returns {void}
+ */
+function paintDps(now, announce) {
+  const btn = document.querySelector("[data-act='dps']");
+  const label = document.querySelector(".js-dps-label");
+  const time = document.querySelector(".js-dps-time");
+  const note = document.querySelector(".js-dps-note");
+  const legs = document.querySelector(".brow[data-part='legs']");
+  if (legs) legs.classList.toggle("brow--sample", !!state.dpsStart && !state.dpsLockedAt);
+  if (!(btn instanceof HTMLElement) || !label || !time || !note) return;
+  btn.classList.remove("on", "locked", "done");
+  if (!state.dpsStart) {
+    label.textContent = "开始打";
+    time.textContent = "";
+    note.textContent = "到本体点这里。全屏同时打腿和手，腿石化后用 1.3 亿推手还要多久。";
+    lastKind.dps = "idle";
+    return;
+  }
+  if (!state.dpsLockedAt) {
+    btn.classList.add("on");
+    label.textContent = "测算中";
+    time.textContent = formatRemain((now - state.dpsStart) / 1000);
+    note.textContent = state.bossDead.legs
+      ? "腿已经是石化。取消勾选，等它真的倒下再勾一次。"
+      : "腿倒了就勾石化。";
+    lastKind.dps = "run";
+    return;
+  }
+  const sample = (state.dpsLockedAt - state.dpsStart) / 1000;
+  const rate = sample > 0 ? LEGS_HP / sample : 0;
+  const dealt = Math.min(HAND_HP, rate * ((now - state.dpsStart) / 1000));
+  const remainHp = Math.max(0, HAND_HP - dealt);
+  const eta = rate > 0 ? remainHp / rate : 0;
+  btn.classList.add("locked");
+  if (eta <= 0) {
+    btn.classList.add("done");
+    label.textContent = "手该倒了";
+    time.textContent = "0s";
+    if (announce && lastKind.dps === "run") beep();
+    lastKind.dps = "done";
+  } else {
+    label.textContent = "手还要";
+    time.textContent = formatRemain(eta);
+    lastKind.dps = "run";
+  }
+  note.textContent = `每分 ${formatYi(rate * 60)} · 手上已打 ${formatYi(dealt)}，还剩 ${formatYi(remainHp)}。没算翅膀回血。`;
+}
+
+/**
+ * 死亡后的 10 分钟。到点还没清掉，就停在回城。
+ * @param {number|undefined} start
+ * @param {number} now
+ * @returns {{kind:"idle"|"run"|"town", remain:number}}
+ */
+function describeDeath(start, now) {
+  if (!start) return { kind: "idle", remain: DEATH_SECONDS };
+  const elapsed = (now - start) / 1000;
+  if (elapsed < 0) return { kind: "idle", remain: DEATH_SECONDS };
+  const remain = DEATH_SECONDS - elapsed;
+  if (remain > 0) return { kind: "run", remain };
+  return { kind: "town", remain: 0 };
+}
+
+/**
+ * @param {Element} node
+ * @param {{kind:"idle"|"run"|"town", remain:number}} desc
+ * @returns {void}
+ */
+function paintDeath(node, desc) {
+  const skill = node.closest(".skill");
+  if (!skill) return;
+  skill.classList.remove("kind-idle", "kind-run", "kind-town", "hot");
+  skill.classList.add(`kind-${desc.kind}`);
+  const name = skill.querySelector(".sk-name");
+  const time = skill.querySelector(".sk-time");
+  const hit = skill.querySelector(".skill-hit");
+  if (!name || !time || !hit) return;
+  time.textContent = desc.kind === "town" ? "回城" : desc.kind === "idle" ? "" : formatRemain(desc.remain);
+  if (desc.kind === "run" && desc.remain <= 60) skill.classList.add("hot");
+  const ratio = desc.kind === "idle" ? 1 : Math.max(0, desc.remain / DEATH_SECONDS);
+  hit.style.setProperty("--p", `${Math.round(ratio * 100)}%`);
+  const row = node.closest(".member");
+  if (row) {
+    row.classList.toggle("member--down", desc.kind === "run");
+    row.classList.toggle("member--town", desc.kind === "town");
+  }
+}
+
+/**
+ * @param {string} memberId
+ * @returns {string}
+ */
+function deathMarkup(memberId) {
+  const key = `d|${memberId}`;
+  return `
+    <div class="skill death has-icon">
+      <button class="skill-hit death-hit" type="button" data-act="death" data-id="${escapeHtml(memberId)}" data-key="${escapeHtml(key)}" title="死亡。左键记下死亡，10 分钟内不复活会回城。再点重计，右键表示已经复活。">
+        <span class="sk-name"><img class="sk-icon" alt="死亡" src="${SKILL_ICON.death}"></span>
+        <span class="sk-time"></span>
+      </button>
+    </div>`;
+}
+
+/**
+ * @param {string} overrideKey
+ * @param {SkillDef} base
+ * @returns {SkillDef}
+ */
+function resolveSkill(overrideKey, base) {
+  const over = state.overrides[overrideKey];
+  if (!over) return base;
+  return {
+    ...base,
+    cooldown: clampSeconds(over.cooldown, base.cooldown),
+    duration: clampSeconds(over.duration, base.duration)
+  };
+}
+
+/**
+ * @param {unknown} value
+ * @param {number} fallback
+ * @returns {number}
+ */
+function clampSeconds(value, fallback) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(7200, Math.max(0, Math.round(n)));
+}
+
+/**
+ * @param {number|undefined} start
+ * @param {SkillDef} def
+ * @param {number} now
+ * @returns {{kind:string, durRemain:number, cdRemain:number}}
+ */
+function describeTimer(start, def, now) {
+  if (!start) return { kind: "idle", durRemain: 0, cdRemain: 0 };
+  const elapsed = (now - start) / 1000;
+  if (elapsed < 0) return { kind: "idle", durRemain: 0, cdRemain: 0 };
+  const duration = def.cooldown > 0 && def.duration <= 1 ? 0 : def.duration;
+  const cdRemain = def.cooldown > 0 ? def.cooldown - elapsed : 0;
+  const durRemain = duration > 0 ? duration - elapsed : 0;
+  const cdOn = def.cooldown > 0 && cdRemain > 0;
+  const durOn = duration > 0 && durRemain > 0;
+  if (durOn && cdOn) return { kind: "both", durRemain, cdRemain };
+  if (durOn && !cdOn) return { kind: def.cooldown > 0 ? "tail" : "active", durRemain, cdRemain: 0 };
+  if (cdOn) return { kind: "cd", durRemain: 0, cdRemain };
+  return { kind: "idle", durRemain: 0, cdRemain: 0 };
+}
+
+/**
+ * 冷却走完，或没有冷却的持续效果结束时响一声。
+ * @param {string|undefined} prev
+ * @param {string} next
+ * @param {SkillDef} def
+ * @returns {boolean}
+ */
+function shouldBeep(prev, next, def) {
+  if (!prev || prev === "idle") return false;
+  if (def.cooldown > 0) return (prev === "cd" || prev === "both") && (next === "idle" || next === "tail");
+  return prev === "active" && next === "idle";
+}
+
+/**
+ * @returns {number}
+ */
+function nextNo() {
+  let max = 0;
+  state.groups.forEach((group) => {
+    group.lanes.forEach((lane) => {
+      lane.members.forEach((member) => {
+        max = Math.max(max, member.no);
+      });
+    });
+  });
+  return max + 1;
+}
+
+/**
+ * @param {number} no
+ * @param {string} exceptId
+ * @returns {boolean}
+ */
+function isNoTaken(no, exceptId) {
+  return state.groups.some((group) => group.lanes.some((lane) => (
+    lane.members.some((member) => member.id !== exceptId && member.no === no)
+  )));
+}
+
+/**
+ * @param {string} id
+ * @returns {string}
+ */
+function uid(id) {
+  return `${id}-${Math.random().toString(36).slice(2, 7)}`;
+}
+
+/**
+ * @returns {void}
+ */
+function unlockAudio() {
+  const Ctx = window.AudioContext || window.webkitAudioContext;
+  if (!Ctx) return;
+  if (!audioCtx) audioCtx = new Ctx();
+  if (audioCtx.state === "suspended") audioCtx.resume();
+}
+
+/** @returns {void} */
+function beep() {
+  if (!state.sound || !audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = "sine";
+  osc.frequency.value = 880;
+  const t = audioCtx.currentTime;
+  gain.gain.setValueAtTime(0.0001, t);
+  gain.gain.exponentialRampToValueAtTime(0.07, t + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(t);
+  osc.stop(t + 0.3);
+}
+
+/**
+ * @param {HTMLElement} node
+ * @param {SkillDef} def
+ * @param {{kind:string, durRemain:number, cdRemain:number}} desc
+ * @param {number} now
+ * @param {number|undefined} start
+ * @returns {void}
+ */
+function paintButton(node, def, desc, now, start) {
+  const skill = node.closest(".skill");
+  if (!skill) return;
+  skill.classList.remove("kind-idle", "kind-active", "kind-both", "kind-cd", "kind-tail", "hot");
+  skill.classList.add(`kind-${desc.kind}`);
+  const label = skill.querySelector(".sk-label");
+  const time = skill.querySelector(".sk-time");
+  const sub = skill.querySelector(".sk-sub");
+  const hit = skill.querySelector(".skill-hit");
+  if (!label || !time || !sub || !hit) return;
+
+  label.textContent = "";
+  if (desc.kind === "both") {
+    time.textContent = formatRemain(desc.durRemain);
+    sub.textContent = `冷${formatRemain(desc.cdRemain)}`;
+  } else if (desc.kind === "active") {
+    time.textContent = formatRemain(desc.durRemain);
+    sub.textContent = "";
+  } else if (desc.kind === "cd") {
+    time.textContent = formatRemain(desc.cdRemain);
+    sub.textContent = "";
+  } else if (desc.kind === "tail") {
+    time.textContent = "可放";
+    sub.textContent = formatRemain(desc.durRemain);
+  } else {
+    time.textContent = "";
+    sub.textContent = "";
+  }
+
+  const total = Math.max(def.cooldown, def.duration, 1);
+  const elapsed = start ? Math.max(0, (now - start) / 1000) : 0;
+  const remainRatio = desc.kind === "idle" ? 1 : Math.max(0, 1 - elapsed / total);
+  hit.style.setProperty("--p", `${Math.round(remainRatio * 100)}%`);
+  const urgentRemain = def.cooldown > 0 ? desc.cdRemain : desc.durRemain;
+  if (desc.kind !== "idle" && urgentRemain > 0 && urgentRemain <= 15) skill.classList.add("hot");
+}
+
+/**
+ * @returns {Array<{key:string, who:string, skill:string, remain:number, tab:"party"|"boss"}>}
+ */
+function collectUrgent(now) {
+  /** @type {Array<{key:string, who:string, skill:string, remain:number, tab:"party"|"boss"}>} */
+  const list = [];
+  state.groups.forEach((group) => {
+    group.lanes.forEach((lane) => {
+      const job = JOBS[lane.job];
+      lane.members.forEach((member) => {
+        job.skills.forEach((base) => {
+          const key = `p|${member.id}|${base.id}`;
+          const def = resolveSkill(`job|${lane.job}|${base.id}`, base);
+          const desc = describeTimer(member.timers[base.id], def, now);
+          const remain = def.cooldown > 0 ? desc.cdRemain : desc.durRemain;
+          if (desc.kind !== "idle" && remain > 0 && remain <= 45) {
+            list.push({
+              key,
+              who: `${formatNo(member.no)} ${member.name}`,
+              skill: base.name,
+              remain,
+              tab: "party"
+            });
+          }
+        });
+        const death = describeDeath(member.deadAt, now);
+        if (death.kind === "town" || (death.kind === "run" && death.remain <= 120)) {
+          list.push({
+            key: `d|${member.id}`,
+            who: `${formatNo(member.no)} ${member.name}`,
+            skill: death.kind === "town" ? "已回城" : "回城",
+            remain: death.remain,
+            tab: "party"
+          });
+        }
+      });
+    });
+  });
+  BOSS_PARTS.forEach((part) => {
+    if (state.bossDead[part.id]) return;
+    part.skills.forEach((base) => {
+      const key = `b|${part.id}|${base.id}`;
+      const def = resolveSkill(`boss|${part.id}|${base.id}`, base);
+      const desc = describeTimer(state.bossTimers[key], def, now);
+      const remain = def.cooldown > 0 ? desc.cdRemain : desc.durRemain;
+      if (desc.kind !== "idle" && remain > 0 && remain <= 45) {
+        list.push({ key, who: part.name, skill: base.name, remain, tab: "boss" });
+      }
+    });
+  });
+  list.sort((a, b) => a.remain - b.remain);
+  return list;
+}
+
+/**
+ * 扫一遍全部计时：到点就响，并把屏幕上的按钮画出来。
+ * @param {boolean} announce
+ * @returns {void}
+ */
+function scan(announce) {
+  const now = Date.now();
+  state.groups.forEach((group) => {
+    group.lanes.forEach((lane) => {
+      const job = JOBS[lane.job];
+      lane.members.forEach((member) => {
+        job.skills.forEach((base) => {
+          const key = `p|${member.id}|${base.id}`;
+          const def = resolveSkill(`job|${lane.job}|${base.id}`, base);
+          const desc = describeTimer(member.timers[base.id], def, now);
+          if (announce && shouldBeep(lastKind[key], desc.kind, def)) beep();
+          lastKind[key] = desc.kind;
+          const node = document.querySelector(`.skill-hit[data-key="${CSS.escape(key)}"]`);
+          if (node) paintButton(node, def, desc, now, member.timers[base.id]);
+        });
+        const deathKey = `d|${member.id}`;
+        const death = describeDeath(member.deadAt, now);
+        if (announce && lastKind[deathKey] === "run" && death.kind === "town") beep();
+        lastKind[deathKey] = death.kind;
+        const deathNode = document.querySelector(`.death-hit[data-key="${CSS.escape(deathKey)}"]`);
+        if (deathNode) paintDeath(deathNode, death);
+      });
+    });
+  });
+  BOSS_PARTS.forEach((part) => {
+    part.skills.forEach((base) => {
+      const key = `b|${part.id}|${base.id}`;
+      const def = resolveSkill(`boss|${part.id}|${base.id}`, base);
+      const desc = describeTimer(state.bossTimers[key], def, now);
+      if (!state.bossDead[part.id] && announce && shouldBeep(lastKind[key], desc.kind, def)) beep();
+      lastKind[key] = desc.kind;
+      const node = document.querySelector(`.skill-hit[data-key="${CSS.escape(key)}"]`);
+      if (node) paintButton(node, def, desc, now, state.bossTimers[key]);
+    });
+  });
+
+  const clock = document.querySelector(".js-clock");
+  if (clock) clock.textContent = new Date(now).toLocaleTimeString("zh-CN", { hour12: false });
+  paintRaid(now, announce);
+  paintDps(now, announce);
+
+  const urgent = collectUrgent(now).slice(0, 8);
+  if (!urgent.length) {
+    urgentHtml = "";
+    urgentBox.hidden = true;
+    urgentBox.innerHTML = "";
+    return;
+  }
+  const html = `<b>注意</b>` + urgent.map((item) => {
+    const extra = item.remain > 0 ? ` ${formatRemain(item.remain)}` : "";
+    return `<button class="chip" type="button" data-act="jump" data-key="${escapeHtml(item.key)}" data-tab="${item.tab}">${escapeHtml(item.who)} · ${escapeHtml(item.skill)}${extra}</button>`;
+  }).join("");
+  urgentBox.hidden = false;
+  if (html !== urgentHtml) {
+    urgentHtml = html;
+    urgentBox.innerHTML = html;
+  }
+}
+
+/**
+ * @param {string} jobId
+ * @param {SkillDef} skill
+ * @param {string} timerKey
+ * @param {string} who
+ * @returns {string}
+ */
+function skillMarkup(jobOrBossKey, skill, timerKey, who) {
+  const tier = skill.tier === "minor" ? "tier-minor" : "tier-key";
+  const face = skill.icon
+    ? `<img class="sk-icon" alt="${escapeHtml(skill.name)}" src="${skill.icon}">`
+    : escapeHtml(skill.name);
+  return `
+    <div class="skill ${tier}${skill.icon ? " has-icon" : ""}">
+      <button class="skill-hit" type="button" data-act="start" data-key="${escapeHtml(timerKey)}" data-who="${escapeHtml(who)}" title="${escapeHtml(skill.name)}。${escapeHtml(skill.note || "")} 左键记录，再点重计，右键清除。">
+        <span class="sk-name">${face}</span>
+        <span class="sk-label">点按记录</span>
+        <span class="sk-time"></span>
+        <span class="sk-sub"></span>
+      </button>
+      <button class="skill-edit" type="button" data-act="edit" data-over="${escapeHtml(jobOrBossKey)}" data-skill="${escapeHtml(skill.id)}" title="改秒数">✎</button>
+    </div>`;
+}
+
+/**
+ * 添加队友时的队伍选项：分组加上职业。
+ * @returns {string}
+ */
+function teamOptions() {
+  return state.groups.map((group) => (
+    ["BS", "AM"].map((job) => {
+      const value = `${group.id}|${job}`;
+      const selected = value === addSlot ? " selected" : "";
+      return `<option value="${escapeHtml(value)}"${selected}>${escapeHtml(group.name)} · ${JOBS[job].short}</option>`;
+    }).join("")
+  )).join("");
+}
+
+/** @returns {string} */
+function partyMarkup() {
+  const blocks = state.groups.map((group) => {
+    const lanes = group.lanes.map((lane) => {
+      const job = JOBS[lane.job];
+      const members = lane.members.map((member) => {
+        const who = `${formatNo(member.no)} ${member.name}`;
+        const skills = job.skills.map((skill) => (
+          skillMarkup(`job|${lane.job}|${skill.id}`, skill, `p|${member.id}|${skill.id}`, who)
+        )).join("");
+        return `
+          <div class="member">
+            <div class="num" title="语音编号">${formatNo(member.no)}</div>
+            <span class="job-tag" title="${escapeHtml(job.blurb)}">${job.short}</span>
+            <div class="meta">
+              <input data-field="member-name" data-id="${member.id}" value="${escapeHtml(member.name)}" maxlength="16" spellcheck="false" aria-label="游戏 ID" title="游戏 ID">
+              <input data-field="member-no" data-id="${member.id}" type="number" min="1" max="99" value="${member.no}" aria-label="编号" title="编号">
+            </div>
+            <div class="skills">${deathMarkup(member.id)}${skills}</div>
+            <button class="icon-btn" type="button" data-act="del-member" data-id="${member.id}" title="移除">×</button>
+          </div>`;
+      }).join("");
+      return `<section class="lane" data-job="${lane.job}">${members}</section>`;
+    }).join("");
+    const laneTools = group.lanes.map((lane) => (
+      `<button class="ghost" type="button" data-act="del-lane" data-group="${group.id}" data-job="${lane.job}" title="移去${JOBS[lane.job].label}">${JOBS[lane.job].short}×</button>`
+    )).join("");
+    return `
+      <section class="group-block">
+        <div class="group-head">
+          <input data-field="group-name" data-group="${group.id}" value="${escapeHtml(group.name)}" maxlength="20" aria-label="分组名">
+          <div class="tools">
+            ${laneTools}
+            <button class="icon-btn" type="button" data-act="del-group" data-group="${group.id}" title="删除分组">×</button>
+          </div>
+        </div>
+        ${lanes || `<div class="empty">点上面的添加，选这个队再录入</div>`}
+      </section>`;
+  }).join("");
+  const adder = addOpen ? `
+    <form class="toolbar" data-form="member">
+      <select name="slot" required aria-label="队伍">
+        <option value="">选择队伍</option>
+        ${teamOptions()}
+      </select>
+      <input name="name" maxlength="16" placeholder="游戏 ID" required aria-label="游戏 ID">
+      <button class="primary" type="submit">录入</button>
+    </form>` : "";
+  return `
+    <div class="toolbar">
+      <form class="toolbar" data-form="group">
+        <input name="name" maxlength="20" placeholder="${state.groups.length + 1}队" required aria-label="新分组">
+        <button class="primary" type="submit">新建分组</button>
+      </form>
+      <button class="ghost" type="button" data-act="toggle-add">${addOpen ? "收起" : "添加"}</button>
+      ${adder}
+    </div>
+    <div class="sheet party-sheet">${blocks || `<div class="empty">还没有分组</div>`}</div>`;
+}
+
+/** @returns {string} */
+function bossMarkup() {
+  const rows = BOSS_PARTS.map((part) => {
+    const dead = !!state.bossDead[part.id];
+    const skills = part.skills.length
+      ? part.skills.map((skill) => (
+        skillMarkup(`boss|${part.id}|${skill.id}`, skill, `b|${part.id}|${skill.id}`, part.name)
+      )).join("")
+      : "";
+    return `
+      <div class="brow${dead ? " part--dead" : ""}" data-part="${escapeHtml(part.id)}">
+        <div class="part-name" title="${escapeHtml(part.note)}">${escapeHtml(part.name)}<span class="hp">${escapeHtml(part.hp)}</span></div>
+        <label class="dead-check" title="${escapeHtml(part.note)}"><input type="checkbox" data-act="dead" data-part="${part.id}" ${dead ? "checked" : ""}> 石化</label>
+        <div class="skills">${skills}</div>
+      </div>`;
+  }).join("");
+  return `<div class="sheet">${rows}</div>`;
+}
+
+/** @returns {void} */
+function render() {
+  const soundBtn = document.querySelector("[data-act='sound']");
+  if (soundBtn) soundBtn.classList.toggle("on", state.sound);
+  view.innerHTML = `
+    <div class="board">
+      <section>
+        <h2 class="col-title">队友</h2>
+        ${partyMarkup()}
+      </section>
+      <section>
+        <h2 class="col-title">黑龙</h2>
+        <div class="dps">
+          <button class="dps-btn" type="button" data-act="dps" title="到本体开始打。腿石化后，按 1.3 亿算出每分钟输出，再推每只被全屏打到的手还要多久。再点一次清除。">
+            <span class="js-dps-label">开始打</span>
+            <span class="dps-time js-dps-time"></span>
+          </button>
+          <p class="dps-note js-dps-note"></p>
+        </div>
+        ${bossMarkup()}
+      </section>
+    </div>`;
+  scan(primed);
+}
+
+/**
+ * @param {string} memberId
+ * @returns {{group:Group, lane:Lane, member:Member}|null}
+ */
+function findMember(memberId) {
+  for (const group of state.groups) {
+    for (const lane of group.lanes) {
+      const member = lane.members.find((item) => item.id === memberId);
+      if (member) return { group, lane, member };
+    }
+  }
+  return null;
+}
+
+/**
+ * @param {string} key
+ * @param {number|null} start
+ * @returns {void}
+ */
+function setTimer(key, start) {
+  if (key.startsWith("p|")) {
+    const memberId = key.split("|")[1];
+    const skillId = key.split("|")[2];
+    const found = findMember(memberId);
+    if (!found) return;
+    if (start == null) delete found.member.timers[skillId];
+    else found.member.timers[skillId] = start;
+    return;
+  }
+  if (start == null) delete state.bossTimers[key];
+  else state.bossTimers[key] = start;
+}
+
+/**
+ * @param {string} key
+ * @returns {SkillDef|null}
+ */
+function defForTimer(key) {
+  const parts = key.split("|");
+  if (parts[0] === "p") {
+    const found = findMember(parts[1]);
+    if (!found) return null;
+    const base = JOBS[found.lane.job].skills.find((skill) => skill.id === parts[2]);
+    if (!base) return null;
+    return resolveSkill(`job|${found.lane.job}|${base.id}`, base);
+  }
+  const part = BOSS_PARTS.find((item) => item.id === parts[1]);
+  const base = part && part.skills.find((skill) => skill.id === parts[2]);
+  if (!part || !base) return null;
+  return resolveSkill(`boss|${part.id}|${base.id}`, base);
+}
+
+/**
+ * @param {string} overKey
+ * @returns {{base:SkillDef, title:string}|null}
+ */
+function findEditable(overKey) {
+  const bits = overKey.split("|");
+  if (bits[0] === "job") {
+    const job = JOBS[bits[1]];
+    const base = job && job.skills.find((skill) => skill.id === bits[2]);
+    if (!job || !base) return null;
+    return { base, title: `${job.label} · ${base.name}` };
+  }
+  const part = BOSS_PARTS.find((item) => item.id === bits[1]);
+  const base = part && part.skills.find((skill) => skill.id === bits[2]);
+  if (!part || !base) return null;
+  return { base, title: `${part.name} · ${base.name}` };
+}
+
+/**
+ * @param {string} key
+ * @returns {void}
+ */
+function jumpTo(key) {
+  const node = document.querySelector(`.skill-hit[data-key="${CSS.escape(key)}"]`);
+  if (!node) return;
+  node.scrollIntoView({ behavior: "smooth", block: "center" });
+  const skill = node.closest(".skill");
+  if (!skill) return;
+  skill.classList.add("flash");
+  window.setTimeout(() => skill.classList.remove("flash"), 1200);
+}
+
+/**
+ * @param {SubmitEvent} event
+ * @returns {void}
+ */
+function onSubmit(event) {
+  const form = event.target;
+  if (!(form instanceof HTMLFormElement) || !app.contains(form)) return;
+  event.preventDefault();
+  unlockAudio();
+  if (form.dataset.form === "group") {
+    const name = new FormData(form).get("name");
+    const text = String(name || "").trim();
+    if (!text) return;
+    state.groups.push({ id: uid("g"), name: text, lanes: [] });
+    form.reset();
+    saveState();
+    render();
+    return;
+  }
+  if (form.dataset.form === "member") {
+    const data = new FormData(form);
+    const slot = String(data.get("slot") || "");
+    const [groupId, jobId] = slot.split("|");
+    const job = jobId === "AM" ? "AM" : jobId === "BS" ? "BS" : "";
+    const group = state.groups.find((item) => item.id === groupId);
+    const name = String(data.get("name") || "").trim();
+    if (!group || !job || !name) return;
+    addSlot = slot;
+    let lane = group.lanes.find((item) => item.job === job);
+    if (!lane) {
+      lane = { job, members: [] };
+      group.lanes.push(lane);
+    }
+    const no = nextNo();
+    if (no > 99) {
+      window.alert("编号已经到 99 了。");
+      return;
+    }
+    lane.members.push({ id: uid("m"), no, name, timers: {} });
+    lane.members.sort((a, b) => a.no - b.no);
+    saveState();
+    render();
+    const nameInput = document.querySelector("[data-form='member'] [name='name']");
+    if (nameInput instanceof HTMLInputElement) nameInput.focus();
+  }
+}
+
+/**
+ * @param {Event} event
+ * @returns {void}
+ */
+function onClick(event) {
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+  const actor = target.closest("[data-act]");
+  if (!actor || !app.contains(actor)) return;
+  unlockAudio();
+  const act = actor.dataset.act;
+
+  if (act === "toggle-add") {
+    addOpen = !addOpen;
+    render();
+    const slot = document.querySelector("[data-form='member'] [name='slot']");
+    if (addOpen && slot instanceof HTMLElement) slot.focus();
+    return;
+  }
+  if (act === "dps") {
+    if (state.dpsStart) {
+      const ask = state.dpsLockedAt ? "清除这次输出测算？" : "停下这次测算？";
+      if (!window.confirm(ask)) return;
+      state.dpsStart = null;
+      state.dpsLockedAt = null;
+      lastKind.dps = "idle";
+    } else {
+      state.dpsStart = Date.now();
+      state.dpsLockedAt = null;
+    }
+    saveState();
+    scan(primed);
+    return;
+  }
+  if (act === "raid") {
+    if (state.raidStart) {
+      const remain = RAID_SECONDS - (Date.now() - state.raidStart) / 1000;
+      if (remain > 0 && !window.confirm("结束这场 2 小时攻略计时？")) return;
+      state.raidStart = null;
+    } else {
+      state.raidStart = Date.now();
+    }
+    saveState();
+    scan(primed);
+    return;
+  }
+  if (act === "death" && actor.dataset.id) {
+    const found = findMember(actor.dataset.id);
+    if (!found) return;
+    found.member.deadAt = Date.now();
+    saveState();
+    scan(primed);
+    return;
+  }
+  if (act === "sound") {
+    state.sound = !state.sound;
+    saveState();
+    render();
+    return;
+  }
+  if (act === "clear-timers") {
+    if (!window.confirm("清空全部倒计时？队伍和改过的秒数会留下。")) return;
+    state.groups.forEach((group) => group.lanes.forEach((lane) => lane.members.forEach((member) => {
+      member.timers = {};
+      delete member.deadAt;
+    })));
+    state.bossTimers = {};
+    saveState();
+    render();
+    return;
+  }
+  if (act === "reset-demo") {
+    if (!window.confirm("恢复示例分组？当前队伍会换成 1队 / 2队，黑龙计时和攻略倒计时也会清掉。改过的秒数还在。")) return;
+    const overrides = state.overrides;
+    state = createSeed();
+    state.overrides = overrides;
+    saveState();
+    render();
+    return;
+  }
+  if (act === "jump" && actor.dataset.key) {
+    jumpTo(actor.dataset.key);
+    return;
+  }
+  if (act === "add-lane") {
+    const group = state.groups.find((item) => item.id === actor.dataset.group);
+    const job = actor.dataset.job === "AM" ? "AM" : "BS";
+    if (!group || group.lanes.some((lane) => lane.job === job)) return;
+    group.lanes.push({ job, members: [] });
+    saveState();
+    render();
+    return;
+  }
+  if (act === "del-group") {
+    const group = state.groups.find((item) => item.id === actor.dataset.group);
+    if (!group || !window.confirm(`删除分组「${group.name}」？`)) return;
+    state.groups = state.groups.filter((item) => item.id !== group.id);
+    saveState();
+    render();
+    return;
+  }
+  if (act === "del-lane") {
+    const group = state.groups.find((item) => item.id === actor.dataset.group);
+    if (!group) return;
+    group.lanes = group.lanes.filter((lane) => lane.job !== actor.dataset.job);
+    saveState();
+    render();
+    return;
+  }
+  if (act === "del-member" && actor.dataset.id) {
+    const found = findMember(actor.dataset.id);
+    if (!found) return;
+    found.lane.members = found.lane.members.filter((member) => member.id !== found.member.id);
+    saveState();
+    render();
+    return;
+  }
+  if (act === "start" && actor.dataset.key) {
+    const key = actor.dataset.key;
+    const partId = key.startsWith("b|") ? key.split("|")[1] : "";
+    if (partId && state.bossDead[partId]) return;
+    const start = Date.now();
+    setTimer(key, start);
+    const def = defForTimer(key);
+    if (def) lastKind[key] = describeTimer(start, def, start).kind;
+    saveState();
+    scan(false);
+    return;
+  }
+  if (act === "edit" && actor.dataset.over) {
+    const found = findEditable(actor.dataset.over);
+    if (!found) return;
+    const current = resolveSkill(actor.dataset.over, found.base);
+    editing = { key: actor.dataset.over, base: found.base };
+    editTitle.textContent = found.title;
+    editHint.textContent = found.base.note || "";
+    editCd.value = String(current.cooldown);
+    editDur.value = String(current.duration);
+    editDialog.showModal();
+  }
+}
+
+/**
+ * @param {MouseEvent} event
+ * @returns {void}
+ */
+function onContext(event) {
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+  const death = target.closest("[data-act='death']");
+  if (death && app.contains(death) && death.dataset.id) {
+    event.preventDefault();
+    const found = findMember(death.dataset.id);
+    if (!found) return;
+    delete found.member.deadAt;
+    lastKind[`d|${death.dataset.id}`] = "idle";
+    saveState();
+    scan(false);
+    return;
+  }
+  const hit = target.closest("[data-act='start']");
+  if (!hit || !app.contains(hit) || !hit.dataset.key) return;
+  event.preventDefault();
+  setTimer(hit.dataset.key, null);
+  lastKind[hit.dataset.key] = "idle";
+  saveState();
+  scan(false);
+}
+
+/**
+ * @param {Event} event
+ * @returns {void}
+ */
+function onChange(event) {
+  const target = event.target;
+  if (!(target instanceof HTMLInputElement)) return;
+  if (target.dataset.field === "group-name" && target.dataset.group) {
+    const group = state.groups.find((item) => item.id === target.dataset.group);
+    if (!group) return;
+    group.name = target.value.trim() || group.name;
+    target.value = group.name;
+    saveState();
+    return;
+  }
+  if (target.dataset.field === "member-name" && target.dataset.id) {
+    const found = findMember(target.dataset.id);
+    if (!found) return;
+    found.member.name = target.value.trim() || found.member.name;
+    target.value = found.member.name;
+    const who = `${formatNo(found.member.no)} ${found.member.name}`;
+    const card = target.closest(".member");
+    card?.querySelectorAll("[data-who]").forEach((node) => {
+      if (node instanceof HTMLElement) node.dataset.who = who;
+    });
+    saveState();
+    return;
+  }
+  if (target.dataset.act === "dead" && target.dataset.part) {
+    state.bossDead[target.dataset.part] = target.checked;
+    if (target.dataset.part === "legs" && target.checked && state.dpsStart && !state.dpsLockedAt) {
+      const elapsed = (Date.now() - state.dpsStart) / 1000;
+      if (elapsed >= 1) state.dpsLockedAt = Date.now();
+    }
+    saveState();
+    render();
+    return;
+  }
+  if (target.dataset.field === "member-no" && target.dataset.id) {
+    const found = findMember(target.dataset.id);
+    if (!found) return;
+    const no = clampSeconds(target.value, found.member.no);
+    if (no < 1 || no > 99 || isNoTaken(no, found.member.id)) {
+      window.alert("编号要在 1 到 99 之间，并且不能和别人重复。");
+      target.value = String(found.member.no);
+      return;
+    }
+    found.member.no = no;
+    found.lane.members.sort((a, b) => a.no - b.no);
+    saveState();
+    render();
+  }
+}
+
+editDialog.addEventListener("close", () => {
+  if (!editing) return;
+  const mode = editDialog.returnValue;
+  if (mode === "reset") delete state.overrides[editing.key];
+  if (mode === "save") {
+    state.overrides[editing.key] = {
+      cooldown: clampSeconds(editCd.value, editing.base.cooldown),
+      duration: clampSeconds(editDur.value, editing.base.duration)
+    };
+  }
+  editing = null;
+  if (mode === "save" || mode === "reset") {
+    saveState();
+    render();
+  }
+});
+
+app.addEventListener("submit", onSubmit);
+app.addEventListener("click", onClick);
+app.addEventListener("contextmenu", onContext);
+app.addEventListener("change", onChange);
+
+render();
+window.setInterval(() => {
+  scan(primed);
+  primed = true;
+}, 250);
+</script>
+</body>
+</html>
