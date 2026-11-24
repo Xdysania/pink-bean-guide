@@ -22,7 +22,7 @@
   .wrap { width: min(720px, 92vw); padding: 2rem 0 3rem; }
   h1 { margin: 0 0 .5rem; font-size: 1.75rem; }
   p { color: var(--muted); margin: .4rem 0 1.5rem; }
-  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
   a.card {
     display: block; text-decoration: none; color: inherit;
     background: var(--panel); border: 1px solid var(--line);
@@ -50,6 +50,11 @@
         <div class="tag">PB</div>
         <h2>品克缤</h2>
         <p>动画 / 鸟先鸟后 / 满编编制合并稿，资料较完整。</p>
+      </a>
+      <a class="card pb" href="pink-bean-skills.html">
+        <div class="tag">PB</div>
+        <h2>品克缤技能表</h2>
+        <p>各阶段雕像和本体的效果、触发血量、冷却。数字来自本地 WZ。</p>
       </a>
       <a class="card bga" href="bodyguard-a-bga-guide.html">
         <div class="tag">BGA</div>
