@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>品克缤 · 成员</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --panel: #1a222c;
+    --panel2: #232d3a;
+    --line: #2e3a4a;
+    --text: #e8eef6;
+    --muted: #9aabbd;
+    --accent: #ff6b9d;
+    --accent2: #7ec8ff;
+    --warn: #ffb454;
+    --ok: #6dffa8;
+    --danger: #ff6b6b;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "IBM Plex Sans", "Noto Sans SC", "PingFang SC", sans-serif;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #3a1a2e 0%, transparent 55%),
+      radial-gradient(900px 500px at 90% 0%, #1a2a3a 0%, transparent 50%),
+      var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+  }
+  a { color: var(--accent2); }
+  .boss-switch {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap;
+    padding: .65rem 1rem;
+    background: rgba(10,14,20,.94);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(8px);
+  }
+  .boss-switch a {
+    text-decoration: none; color: var(--muted);
+    padding: .45rem 1rem; border-radius: 999px;
+    border: 1px solid var(--line); font-size: .88rem;
+  }
+  .boss-switch a:hover { color: var(--text); background: var(--panel2); }
+  .boss-switch a.active {
+    color: #1a1016; background: var(--accent); border-color: var(--accent); font-weight: 700;
+  }
+  .layout { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+  nav {
+    position: sticky; top: 52px; align-self: start;
+    height: calc(100vh - 52px); overflow: auto;
+    background: rgba(15,20,25,.92);
+    border-right: 1px solid var(--line);
+    padding: 1.25rem 1rem 2rem;
+  }
+  nav h1 { font-size: .95rem; margin: 0 0 .25rem; color: var(--accent); }
+  nav .sub { color: var(--muted); font-size: .75rem; margin-bottom: 1rem; }
+  nav a {
+    display: block; text-decoration: none; color: var(--muted);
+    padding: .35rem .5rem; border-radius: 6px; font-size: .82rem;
+  }
+  nav a:hover { background: var(--panel2); color: var(--text); }
+  main { padding: 2rem 2.5rem 4rem; max-width: 980px; }
+  header.hero {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem 1.75rem;
+    background: linear-gradient(135deg, #2a1524, #1a2430);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  header.hero h1 { margin: 0 0 .5rem; font-size: 1.85rem; }
+  header.hero p { margin: .35rem 0; color: var(--muted); }
+  .badge {
+    display: inline-block; font-size: .72rem; padding: .2rem .55rem;
+    border-radius: 999px; border: 1px solid var(--line); color: var(--warn);
+    margin-right: .35rem;
+  }
+  section {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1.35rem 1.5rem 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  section h2 {
+    margin: 0 0 1rem;
+    font-size: 1.35rem;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: .55rem;
+  }
+  section h3 { margin: 1.25rem 0 .55rem; font-size: 1.08rem; color: var(--accent2); }
+  .note, .warnbox, .danger {
+    padding: .75rem 1rem; margin: .85rem 0; border-radius: 0 8px 8px 0;
+  }
+  .note { background: #1e2a1e; border-left: 3px solid var(--ok); }
+  .warnbox { background: #2a2214; border-left: 3px solid var(--warn); }
+  .danger { background: #2a1518; border-left: 3px solid var(--danger); }
+  ul, ol { padding-left: 1.25rem; }
+  li { margin: .25rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; margin: .75rem 0 1rem; }
+  th, td { border: 1px solid var(--line); padding: .45rem .55rem; text-align: left; vertical-align: top; }
+  th { background: var(--panel2); color: var(--accent2); white-space: nowrap; }
+  .gallery { display: flex; flex-wrap: wrap; gap: .75rem; margin: .85rem 0 1rem; }
+  figure.media {
+    background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 10px; padding: .5rem; margin: .35rem 0; max-width: 100%;
+  }
+  figure.media img { display: block; max-width: 100%; height: auto; border-radius: 6px; }
+  figcaption { font-size: .78rem; color: var(--muted); margin-top: .35rem; }
+  .jobs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: .85rem; }
+  .job {
+    background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 10px; padding: .9rem 1rem;
+  }
+  .job h3 { margin: 0 0 .4rem; font-size: 1rem; color: var(--accent); }
+  .job ul { margin: .35rem 0 0; }
+  code {
+    background: #2a3544; padding: 0 .35rem; border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .9em;
+  }
+  @media (max-width: 800px) {
+    .layout { grid-template-columns: 1fr; }
+    nav { position: relative; height: auto; max-height: 320px; }
+    main { padding: 1rem 1rem 3rem; }
+  }
+</style>
+</head>
+<body>
+<div class="boss-switch" role="navigation" aria-label="攻略版本">
+  <a href="pink-bean-animations-guide.html">Host</a>
+  <a class="active" href="pink-bean-member.html">成员</a>
+</div>
+<div class="layout">
+<nav>
+  <h1>品克缤 · 成员</h1>
+  <div class="sub">听 host，按这个打</div>
+  <a href="#words">先认这几个词</a>
+  <a href="#bring">进本前</a>
+  <a href="#see">认动画</a>
+  <a href="#enter">进图</a>
+  <a href="#order">雕像</a>
+  <a href="#bird">右鸟和盾</a>
+  <a href="#body">本体</a>
+  <a href="#pin">Bucc pin</a>
+  <a href="#job">按职业</a>
+  <a href="#rules">现场</a>
+</nav>
+<main>
+
+<header class="hero">
+  <span class="badge">给成员</span>
+  <h1>品克缤</h1>
+  <p>这一场是满编、鸟先：先用盾把右鸟秒掉，再清别的雕像，最后打本体。雕像大约 30 分钟，本体大约 40 分钟，远征上限 1 小时 30 分。编制和技能表在 <a href="pink-bean-animations-guide.html">Host</a> 页。</p>
+</header>
+
+<section id="words">
+  <h2>先认这几个词</h2>
+  <p>正文用的是场上喊法。对不上技能栏时看这一表。</p>
+  <table>
+    <thead><tr><th>喊法</th><th>是什么</th></tr></thead>
+    <tbody>
+      <tr><td>左人 / 右人 / 左鸟 / 右鸟 / 中间</td><td>五座雕像。左人在左边，右人在右边，两只鸟在两侧高处，中间是女神像。</td></tr>
+      <tr><td>HB</td><td>Hyper Body，国服叫神圣之火。近战和远程的血量门槛都按「没 HB」来算。</td></tr>
+      <tr><td>Will</td><td>Hero's Will，勇士的意志。被诱惑立刻开。</td></tr>
+      <tr><td>圣灵之盾</td><td>主教的盾，挡住绝大多数异常。挡不住右鸟的放逐。</td></tr>
+      <tr><td>TL</td><td>Time Leap，伺机待发。Bucc 用它把主教的盾冷却刷掉。</td></tr>
+      <tr><td>反伤</td><td>你打它，伤害弹回你自己。胸口发黄就是。</td></tr>
+      <tr><td>驱散</td><td>把你的 buff 清掉。右人和中间都会放。</td></tr>
+      <tr><td>诱惑</td><td>右鸟的群体控制，还有本体的音符。中了就往指定方向走或跳。</td></tr>
+      <tr><td>放逐</td><td>把人扔到另一张图。90 秒内从最左边的传送门回来，超时踢出远征。</td></tr>
+      <tr><td>鸟先</td><td>阶段 4、5 一开始就集火右鸟。这一页按鸟先写。</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="bring">
+  <h2>进本前</h2>
+  <ul>
+    <li>175 级。每天能进 1 次，每周成功通关 1 次，周三重置。</li>
+    <li>带 1 颗混沌大理石。提前至少 24 小时向神殿守卫接「打破屏障」，每 24 小时领一颗。</li>
+    <li>约 500 万能药、1000 超级药水。万能药清异常，超级药水回满血蓝。本体阶段把宠物拾取关掉，喝药自己按。</li>
+    <li>物理输出再带至少 10 个苹果。开打后 host 报这一场吃几个。法师战斗里不吃苹果。</li>
+    <li>没 HB 时：近战至少 15000 血，远程至少 11900。本体碰撞大约 24000，吃不住的人在右人快死时先挪到地图左边。</li>
+  </ul>
+  <h3>怎么走到报名点</h3>
+  <ul>
+    <li>在神殿深处「破碎回廊」集合。这里随便走，不扣大理石。</li>
+    <li>报名点在右边再过 2 张图，地图叫「被遗忘的黄昏」。第一张是空图，走过去就行。</li>
+    <li>从右侧传送门走进去会立刻扣 1 颗大理石。上方向键只点一下，连点可能直接扣掉。等 host 说再进。</li>
+    <li>已经进了报名区之后可以小退重连，但不要离开这片区域，否则再进来又要一颗大理石。</li>
+  </ul>
+  <div class="warnbox">雕像阶段不要骑坐骑。坐骑会被雕像的触碰打到。</div>
+</section>
+
+<section id="see">
+  <h2>认动画</h2>
+  <p>这三种最容易死人。先看清样子，再记该停还是该开技能。</p>
+  <h3>反伤</h3>
+  <div class="gallery">
+    <figure class="media"><img src="https://i.imgur.com/vXCHMMi.gif" alt="左鸟反伤"><figcaption>左鸟：胸口发黄</figcaption></figure>
+    <figure class="media"><img src="https://i.imgur.com/TBQiBpD.gif" alt="本体反伤"><figcaption>本体反伤</figcaption></figure>
+    <figure class="media"><img src="https://i.imgur.com/LO5n3oU.png" alt="武器反伤"><figcaption>武器反伤</figcaption></figure>
+    <figure class="media"><img src="https://i.imgur.com/Ro3ZalE.png" alt="魔法反伤"><figcaption>魔法反伤</figcaption></figure>
+    <figure class="media"><img src="https://i.imgur.com/PZiFCQO.png" alt="双反伤"><figcaption>双反伤</figcaption></figure>
+  </div>
+  <div class="danger">看到胸口发黄或上面这些动画，立刻停手。左鸟武器或魔法反伤大约 8k–12k，双反伤大约 13k–17k。本体反伤物理和魔法都反，持续大约 22 秒，冷却大约 60 秒。停手看动画，不要靠宏自己停。</div>
+  <p>伤害数字如果挡在怪身上，反伤图标会被盖住。冒险岛目录的 <code>Legends.ini</code> 里把伤害数字改到怪物上方；同一文件 <code>[APPEARANCE]</code> 里写 <code>WeaponEffects = false</code>，人堆在一起时更容易看见自己。</p>
+  <h3>诱惑</h3>
+  <div class="gallery">
+    <figure class="media"><img src="https://i.imgur.com/ucmDmcV.gif" alt="右鸟群体诱惑"><figcaption>右鸟群体诱惑</figcaption></figure>
+    <figure class="media"><img src="https://i.imgur.com/fB5cXNF.gif" alt="本体音符"><figcaption>本体音符，也是诱惑</figcaption></figure>
+  </div>
+  <div class="warnbox">中了立刻开 Will。右鸟按自己的血量放三种，不是随机三选一：满血就会向左走，打最先进图的大约 10 人；80% 向左跳、60% 向右跳，打最先进图的大约 15 人，持续更长，还会跳进雕像吃触碰。所以阶段 4、5 要用盾把右鸟先秒掉。</div>
+  <h3>驱散</h3>
+  <div class="gallery">
+    <figure class="media"><img src="https://i.imgur.com/UrxXqCk.gif" alt="右人驱散"><figcaption>右人驱散</figcaption></figure>
+    <figure class="media"><img src="https://i.imgur.com/s1vvCeD.gif" alt="中间驱散"><figcaption>中间驱散。没人打中间时，这个动画是僵尸化</figcaption></figure>
+  </div>
+  <div class="note">buff 掉了就补，先补 HB 和魔法盾。别的异常喝万能药。右人法杖或剑微抬、带蓝光，就是在驱散。中间只有血量低于 60% 才驱散；没人打它时，蓝圈动画是僵尸化。</div>
+</section>
+
+<section id="enter">
+  <h2>进图</h2>
+  <p>诱惑和放逐都按进图先后挑人。所以不要抢点，听 host 报你的职业再点 NPC。</p>
+  <ul>
+    <li>顺序：NL → 骑士 → 弓箭手 → Bucc → AM → 主教。</li>
+    <li>进去先站上左边最高的台子，准备打左人。人齐、host 下令之前不要开 Boss。</li>
+  </ul>
+  <div class="danger">所有人进图之前，不要点 Kirston。一点，五座雕像会按阶段醒过来并开始打人。</div>
+  <p>被放逐再进来时，你变成最后一个进图的人，进图顺位会往后滚。放逐图限时 90 秒，从最左边的传送门回战斗图。</p>
+</section>
+
+<section id="order">
+  <h2>雕像</h2>
+  <p>不是五座各打一次就结束。一共 5 个阶段，每阶段多醒一座，上一座还在。五座都倒了，本体才从原来坐着的位置站起来。</p>
+  <figure class="media"><img src="https://i.imgur.com/C3Nw0qW.png" alt="雕像位置"><figcaption>黄字是官方名，青字是场上喊法。这一页只用左人、右人、左鸟、右鸟、中间。</figcaption></figure>
+  <table>
+    <thead><tr><th>阶段</th><th>场上有谁</th><th>大约多久</th><th>你打谁</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>左人</td><td>1–2 分钟</td><td>只打左人。站左上平台，躲开杖砸。</td></tr>
+      <tr><td>2</td><td>左人 + 右人</td><td>2–4 分钟</td><td>先去右边打死右人，再回左边打左人。阶段 3 有左鸟的缓速，到时候再换边会很慢。</td></tr>
+      <tr><td>3</td><td>再加左鸟</td><td>5–8 分钟</td><td>先打左鸟。它一反伤，大约白打 20 秒。倒了再打左人，然后去右边打右人。</td></tr>
+      <tr><td>4</td><td>再加右鸟</td><td>8–13 分钟</td><td>先秒右鸟，再按阶段 3 的顺序：左鸟 → 左人 → 右人。</td></tr>
+      <tr><td>5</td><td>五座都在</td><td>12–20 分钟</td><td>先秒右鸟，然后左人，左鸟和中间一起压，最后右人。</td></tr>
+    </tbody>
+  </table>
+  <h3>阶段 1、2</h3>
+  <ul>
+    <li>左人的杖砸会晕。主教尽量用圣灵之盾盖住这一下；它放闪电时用净化，别的异常自己喝万能药。</li>
+    <li>阶段 2 起右人会驱散。HB 和魔法盾掉了马上补。被黄闪电打出黑暗（命中下降）也喝万能药。</li>
+  </ul>
+  <h3>阶段 3</h3>
+  <ul>
+    <li>BM、MM，以及没有召唤船的船长，不要打左鸟。反伤反应时间很短，暴风箭雨和连射收不住。</li>
+    <li>能打左鸟的人：胸口一黄就停。BM 这段改箭扫射，不要暴风箭雨。</li>
+    <li>左鸟死后，主教把圣灵之盾的冷却留到阶段 4 开局，不要在阶段 3 收尾时随便交掉。</li>
+  </ul>
+  <h3>阶段 5 多出来的中间</h3>
+  <ul>
+    <li>中间会武器取消，左鸟会反伤。两边分开打，总有一边能继续输出。</li>
+    <li>Bucc 的金手指打不到中间。</li>
+    <li>右人快被打死时，吃不住本体碰撞的人立刻移到地图左边。本体一出来是从中间刷新的，站在脚底下会被踩死。</li>
+  </ul>
+</section>
+
+<section id="bird">
+  <h2>右鸟和盾</h2>
+  <p>阶段 4 和阶段 5 的右鸟用同一套。开场先放盾，趁大家吃不到诱惑，把右鸟打掉。盾大约 40 秒一次，TL 刷两次，一共 3 次盾，窗口大约 120 秒。右鸟死了之后，这一阶段就不再吃那波群体诱惑。</p>
+  <h3>你是主教</h3>
+  <ol>
+    <li>host 一叫，放圣灵之盾，然后立刻退队。</li>
+    <li>主主教会开一个队，把主教拉进去，再按事先排好的顺序拉 Bucc。你被拉了就等 TL。</li>
+    <li>TL 完了这个队解散。队长把你拉回原来的队伍。</li>
+    <li>回队之后听 host，放第二次盾。然后再重复一遍，放第三次。</li>
+  </ol>
+  <h3>你是被点名的 Bucc</h3>
+  <p>host 事先定好 4 名 Bucc 的顺序。轮到你就被拉进那个队放 TL，放完回原队。注意自己的能量，没能量放不出 TL。</p>
+  <h3>其他人</h3>
+  <ul>
+    <li>站在地图中间，往右边打右鸟。不要跟着主教跑。</li>
+    <li>没吃到盾又被诱惑：立刻开 Will。</li>
+    <li>第二次、第三次盾等 host 叫，不要自己猜时间交技能。</li>
+    <li>被放逐：马上从最左边的传送门回来。</li>
+  </ul>
+</section>
+
+<section id="body">
+  <h2>本体</h2>
+  <p>血量 21 亿，但物理伤害减半，体感接近 42 亿，通常再打大约 40 分钟。最容易死人的是反伤和音符。</p>
+  <figure class="media"><img src="https://i.imgur.com/wgG72Fr.gif" alt="本体刷新"><figcaption>五座倒完，品克缤从中间站起来。等 Bucc 把它拉到右边、脸朝右，再开打。</figcaption></figure>
+  <figure class="media"><img src="https://i.imgur.com/XNVEYfD.jpg" alt="站位"><figcaption>平台 1 给远程躲，平台 2 是本体该待的位置。把它放在 (1) 和 (2) 之间，脸朝右。</figcaption></figure>
+  <ul>
+    <li>远程站在平台 1 下面，音符来了可以钻进去。近战站在平台 1 右边一点，刚好打得到。近战不好钻平台，贴着它吃无敌帧。</li>
+    <li>脸朝右时它不放创世。创世会晕。所以不要把它往左推，也不要从左边用会击退的技能。</li>
+    <li>90% 以上不会反伤，脸朝右可以打。掉到 90% 之后改成点按，随时能停。BM 可以改箭扫射。</li>
+    <li>80% 开始召小豆，一次 12 只。物理继续打本体。AM 用终极技清豆最快，主教创世也能清。小豆已经不圣免疫。</li>
+    <li>反伤之前它有时会先召小豆。法师这时不要按住全屏，技能太密，反伤图标出来你还在打。</li>
+    <li>不要挂停不下来的三连宏。喝药不要交给宠物，死一次就要多吃苹果。不要用冲刺和磁石，不要骑着坐骑在地上走。</li>
+    <li>负责仇恨的 Bucc 站在平台 1 下面躲音符。被音符砸中会被强制往左跳，立刻开 Will。</li>
+  </ul>
+  <h3>脸突然朝左</h3>
+  <p>它每隔几秒会换一次仇恨，朝左不代表已经锁死左边的人。只有它朝左并且开始放技能，左边的近战才穿到它右边，停 3–4 秒让仇恨再换回来，然后回到左边。它只是在晃，不要穿。</p>
+</section>
+
+<section id="pin">
+  <h2>Bucc pin</h2>
+  <p>反伤那几秒把仇恨拿满，其余时间让它丢掉目标自己走。木桶不用一直待着，用出去的一瞬间人会从这张图上消失，它就失去目标。</p>
+  <ul>
+    <li>抢仇恨：金手指、索命、螺旋拳。</li>
+    <li>丢仇恨：木桶、碎石乱击。两个一起按，抢了马上丢。</li>
+    <li>它在走、而且没有反伤：不要金手指。输出用潜龙出渊、超能量、碎石乱击。闪光拳也不抢仇恨。</li>
+    <li>反伤还没好，不要把仇恨留在身上。留着的话，它一转好就会立刻放反伤。</li>
+    <li>反伤一好：不管脸朝哪，金手指打满，整段都拿住仇恨。这段不要待在木桶里。</li>
+    <li>反伤结束：再抢一次，马上用木桶或碎石乱击丢掉。没开始走就再丢一次。闲逛可以持续几分钟。</li>
+    <li>平时不要金手指。只有它正在放反伤，或者往左走得太远，才用。走得还没太远就让它走。</li>
+    <li>丢掉目标之后，它还可能锁最近一个在跑的人。这时从两侧用金手指拉回来，然后再丢掉。</li>
+    <li>晕、诱惑、混乱时这套容易断。大爆炸和诱惑要躲开。</li>
+  </ul>
+  <p>阶段 5 结束前几分钟，负责接本体的人保持超级变身。更细的旧打法在 <a href="pink-bean-animations-guide.html#app-bucc-pin">Host · Bucc pin</a>。</p>
+</section>
+
+<section id="job">
+  <h2>按职业再对一遍</h2>
+  <div class="jobs">
+    <div class="job">
+      <h3>主教</h3>
+      <ul>
+        <li>阶段 1：杖砸用圣灵之盾防晕，闪电用净化。</li>
+        <li>阶段 3 收尾不要把盾交掉，留给阶段 4 开场。</li>
+        <li>阶段 4、5 的三次盾按上面的退队、吃 TL、回队来。盾挡得住诱惑，挡不住放逐。</li>
+        <li>本体可以用创世清小豆。僵尸化期间治疗会害人。</li>
+      </ul>
+    </div>
+    <div class="job">
+      <h3>Bucc</h3>
+      <ul>
+        <li>右鸟 TL 的顺序 host 事先排好，轮到你再进那个队，放完回原队。</li>
+        <li>金手指打不到中间，也会把本体推离位置。本体 pin 按上一节，不要全程金手指。</li>
+        <li>阶段 5 结束前留着超级变身，本体一出来就接。</li>
+      </ul>
+    </div>
+    <div class="job">
+      <h3>BM / MM / 船长</h3>
+      <ul>
+        <li>阶段 3 不要打左鸟。暴风箭雨、连射在反伤里收不住。</li>
+        <li>左鸟和本体进入反伤血线后，BM 改箭扫射。</li>
+        <li>MM 不要从左侧放一击要害箭，这一下会击退，把本体的脸打向左边。</li>
+        <li>音符时钻进平台 1 下面。被打出去要回到 host 指定的柱子，不要越过断柱。</li>
+      </ul>
+    </div>
+    <div class="job">
+      <h3>AM</h3>
+      <ul>
+        <li>雕像阶段可以不吃攻击药，苹果让给物理。本体、尤其是 80% 小豆再吃。</li>
+        <li>小豆一出来就用天降落星或落霜冰破清掉。清豆如果发生在反伤里，你很容易拿到仇恨并把脸打向左边，这时穿到右边，等 Bucc 确认仇恨回来。</li>
+        <li>麻痹和链环闪电不要做成宏，太密就来不及停反伤。</li>
+        <li>本体脸朝左时，不要默认盾还在。比较稳的是传送进它身体里吃一下触碰，蹭无敌帧。</li>
+      </ul>
+    </div>
+    <div class="job">
+      <h3>NL / Shad</h3>
+      <ul>
+        <li>这一场是鸟先，按进图顺序走，不是整场负责去吃诱惑。NL 仍然排在最前面进图。</li>
+        <li>Shad 反伤空窗可以打满蓄力暗杀。最后一击可能把本体击退，起手站哪要先想好。金币丢在它右边。</li>
+      </ul>
+    </div>
+    <div class="job">
+      <h3>近战</h3>
+      <ul>
+        <li>安全网站在本体左边。它朝左开始放技能才穿到右边，停 3–4 秒再回来。只是晃，不要穿。</li>
+        <li>音符和创世靠贴着它吃触碰来蹭无敌帧。尾砸会把你向它拉近。</li>
+        <li>DK 主要是给别人 HB。远程血量过了 8000 时，阶段 3 可以不跟着队伍跑。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="rules">
+  <h2>现场</h2>
+  <ul>
+    <li>物理输出进战斗前至少带 10 个苹果。host 报几个就吃几个。法师战斗里不吃，苹果费用战后从分成里扣。</li>
+    <li>品克缤死了，所有人先爬上绳子或台阶，等 host 示意再下来拾取。没点名不要捡。</li>
+    <li>可能迟到，至少提前 30 分钟告诉 host，有 10 分钟宽限。来不了，至少提前 1 小时说。</li>
+    <li>战斗里不要同时去操作别的号打 Boss、卖携带或做组队任务。</li>
+  </ul>
+  <p>银行扣费和拾取处罚的完整条文在 <a href="pink-bean-animations-guide.html#app-rules">Host · 社群规则</a>。</p>
+</section>
+
+</main>
+</div>
+</body>
+</html>
